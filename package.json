@@ -1,0 +1,26 @@
+{
+  "name": "sarvabhasha",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "packageManager": "bun@1.1.38",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "mobile": "bun run --cwd apps/mobile start",
+    "mobile:ios": "bun run --cwd apps/mobile ios",
+    "mobile:android": "bun run --cwd apps/mobile android",
+    "admin": "bun run --cwd apps/admin dev",
+    "backend": "bun run --cwd packages/backend dev",
+    "typecheck": "tsc --build --verbose",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "typescript": "~5.6.3",
+    "@types/node": "^20.14.0"
+  }
+}

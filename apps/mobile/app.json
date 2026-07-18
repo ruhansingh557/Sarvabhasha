@@ -1,0 +1,62 @@
+{
+  "expo": {
+    "name": "Sarvabhasha",
+    "slug": "sarvabhasha",
+    "version": "0.1.0",
+    "scheme": "sarvabhasha",
+    "orientation": "default",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFF8F0"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.sarvabhasha.app",
+      "requireFullScreen": false,
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "Sarvabhasha uses your microphone so you can practise speaking and get pronunciation feedback.",
+        "UISupportedInterfaceOrientations~ipad": [
+          "UIInterfaceOrientationPortrait",
+          "UIInterfaceOrientationPortraitUpsideDown",
+          "UIInterfaceOrientationLandscapeLeft",
+          "UIInterfaceOrientationLandscapeRight"
+        ]
+      }
+    },
+    "android": {
+      "package": "com.sarvabhasha.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFF8F0"
+      },
+      "permissions": ["android.permission.RECORD_AUDIO"],
+      "edgeToEdgeEnabled": true,
+      "resizeableActivity": true
+    },
+    "plugins": [
+      "expo-secure-store",
+      "expo-web-browser",
+      "expo-audio",
+      "expo-localization",
+      [
+        "expo-video",
+        {
+          "supportsBackgroundPlayback": false,
+          "supportsPictureInPicture": false
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": false
+    },
+    "extra": {
+      "eas": {
+        "projectId": "TODO-set-on-first-eas-build"
+      }
+    }
+  }
+}
