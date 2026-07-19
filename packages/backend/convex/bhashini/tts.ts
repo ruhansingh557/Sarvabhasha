@@ -22,6 +22,7 @@
 import { v } from 'convex/values';
 import { internalAction, internalMutation, internalQuery } from '../_generated/server';
 import { internal } from '../_generated/api';
+import type { Doc, Id } from '../_generated/dataModel';
 import { voiceForCharacter } from '@sarvabhasha/shared';
 
 const BHASHINI_PIPELINE_URL =
@@ -174,6 +175,18 @@ export const insertAudioAsset = internalMutation({
  * if a male voice is rough in some language, force female for that language
  * rather than ship an unintelligible clip.
  */
+type GenerateAudioResult =
+  | { ok: false; reason: string }
+  | { ok: true; skipped: true; audioId: Id<'audioAssets'> }
+  | {
+      ok: true;
+      skipped: false;
+      audioId: Id<'audioAssets'>;
+      durationMs: number;
+      bytes: number;
+      gender: 'male' | 'female';
+    };
+
 export const generateAudioForPhrase = internalAction({
   args: {
     phraseId: v.id('phrases'),
@@ -181,12 +194,12 @@ export const generateAudioForPhrase = internalAction({
     genderOverride: v.optional(v.union(v.literal('male'), v.literal('female'))),
     force: v.optional(v.boolean()),
   },
-  handler: async (ctx, args) => {
+  handler: async (ctx, args): Promise<GenerateAudioResult> => {
     if (!TTS_LANGUAGES.has(args.languageCode)) {
       return { ok: false as const, reason: `No Bhashini TTS voice for "${args.languageCode}"` };
     }
 
-    const phrase = await ctx.runQuery(internal.bhashini.tts.getPhrase, {
+    const phrase: Doc<'phrases'> | null = await ctx.runQuery(internal.bhashini.tts.getPhrase, {
       phraseId: args.phraseId,
     });
     if (!phrase) return { ok: false as const, reason: 'Phrase not found' };
@@ -194,17 +207,17 @@ export const generateAudioForPhrase = internalAction({
     const gender = args.genderOverride ?? voiceForCharacter(phrase.speakerCharacter);
 
     if (!args.force) {
-      const existing = await ctx.runQuery(internal.bhashini.tts.findExistingAudio, {
-        phraseId: args.phraseId,
-        languageCode: args.languageCode,
-      });
+      const existing: Doc<'audioAssets'> | null = await ctx.runQuery(
+        internal.bhashini.tts.findExistingAudio,
+        { phraseId: args.phraseId, languageCode: args.languageCode },
+      );
       if (existing) return { ok: true as const, skipped: true, audioId: existing._id };
     }
 
-    const translation = await ctx.runQuery(internal.bhashini.tts.getTranslation, {
-      phraseId: args.phraseId,
-      languageCode: args.languageCode,
-    });
+    const translation: Doc<'phraseTranslations'> | null = await ctx.runQuery(
+      internal.bhashini.tts.getTranslation,
+      { phraseId: args.phraseId, languageCode: args.languageCode },
+    );
     if (!translation) {
       return { ok: false as const, reason: `No translation for ${args.languageCode}` };
     }
@@ -223,13 +236,16 @@ export const generateAudioForPhrase = internalAction({
       // Rough: Bhashini returns 22.05kHz 16-bit mono WAV.
       const durationMs = Math.round((bytes.length / (22050 * 2)) * 1000);
 
-      const audioId = await ctx.runMutation(internal.bhashini.tts.insertAudioAsset, {
-        phraseId: args.phraseId,
-        languageCode: args.languageCode,
-        storageId,
-        voiceGender: gender,
-        durationMs,
-      });
+      const audioId: Id<'audioAssets'> = await ctx.runMutation(
+        internal.bhashini.tts.insertAudioAsset,
+        {
+          phraseId: args.phraseId,
+          languageCode: args.languageCode,
+          storageId,
+          voiceGender: gender,
+          durationMs,
+        },
+      );
 
       return { ok: true as const, skipped: false, audioId, durationMs, bytes: bytes.length, gender };
     } catch (err) {

@@ -11,9 +11,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@convex-dev/better-auth": "^0.9.0",
+    "@better-auth/expo": "^1.6.23",
+    "@convex-dev/better-auth": "^0.12.0",
     "@sarvabhasha/shared": "workspace:*",
-    "better-auth": "^1.3.0",
+    "better-auth": "^1.6.23",
     "convex": "^1.31.0",
     "convex-helpers": "^0.1.104"
   }

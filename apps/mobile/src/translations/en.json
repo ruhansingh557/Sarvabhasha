@@ -1,0 +1,16 @@
+{
+  "Auth.SIGN_IN_TITLE": "Welcome back",
+  "Auth.SIGN_UP_TITLE": "Create your account",
+  "Auth.EMAIL_LABEL": "Email",
+  "Auth.PASSWORD_LABEL": "Password",
+  "Auth.SIGN_IN_BUTTON": "Sign in",
+  "Auth.SIGN_UP_BUTTON": "Create account",
+  "Auth.SWITCH_TO_SIGN_UP": "Need an account? Sign up",
+  "Auth.SWITCH_TO_SIGN_IN": "Have an account? Sign in",
+  "Auth.SIGNED_IN_AS": "Signed in as {{email}}",
+  "Auth.SIGN_OUT_BUTTON": "Sign out",
+  "Auth.EMAIL_REQUIRED": "Enter your email",
+  "Auth.EMAIL_INVALID": "Enter a valid email",
+  "Auth.PASSWORD_MIN": "Password must be at least 8 characters",
+  "Auth.SUBMIT_ERROR": "Something went wrong. Try again."
+}

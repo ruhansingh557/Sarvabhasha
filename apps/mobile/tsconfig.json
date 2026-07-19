@@ -5,16 +5,37 @@
     "noUncheckedIndexedAccess": true,
     "baseUrl": ".",
     "paths": {
-      "@theme": ["src/theme"],
-      "@theme/*": ["src/theme/*"],
-      "@shared/*": ["src/shared/*"],
-      "@features/*": ["src/features/*"],
-      "@core/*": ["src/core/*"],
-      "@navigation/*": ["src/navigation/*"],
-      "@translations/*": ["src/translations/*"],
-      "@backend/*": ["../../packages/backend/convex/*"]
+      "@theme": [
+        "src/theme"
+      ],
+      "@theme/*": [
+        "src/theme/*"
+      ],
+      "@shared/*": [
+        "src/shared/*"
+      ],
+      "@features/*": [
+        "src/features/*"
+      ],
+      "@core/*": [
+        "src/core/*"
+      ],
+      "@navigation/*": [
+        "src/navigation/*"
+      ],
+      "@translations/*": [
+        "src/translations/*"
+      ],
+      "@backend/*": [
+        "../../packages/backend/convex/*"
+      ]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

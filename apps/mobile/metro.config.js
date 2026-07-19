@@ -17,8 +17,11 @@ config.resolver.nodeModulesPaths = [
   path.resolve(workspaceRoot, 'node_modules'),
 ];
 
-// 3. Do NOT walk up past the workspace root looking for node_modules.
-//    Prevents Metro resolving a stray copy outside the repo.
-config.resolver.disableHierarchicalLookup = true;
+// 3. Keep hierarchical lookup ON. Bun's package store (node_modules/.bun/<pkg>@<ver>+<hash>/)
+//    nests each package's own peer deps as siblings inside ITS versioned folder — e.g.
+//    react-native-gesture-handler's `invariant` import resolves by walking up from
+//    gesture-handler's own directory, not from the two roots above. Disabling this breaks
+//    resolution of any such nested dependency, which is bun's normal (non-hoisted) layout.
+config.resolver.disableHierarchicalLookup = false;
 
 module.exports = config;
