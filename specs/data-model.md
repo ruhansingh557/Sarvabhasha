@@ -112,6 +112,10 @@ phrases: defineTable({
   phraseKey: v.string(),           // stable slug, e.g. "how-much-is-this"
   sourceText: v.string(),          // English source
   situation: v.string(),           // scene brief for the animation prompt
+  speakerCharacter: v.union(       // dadi | parent | kid | neighbour
+    v.literal("dadi"), v.literal("parent"),
+    v.literal("kid"), v.literal("neighbour"),
+  ),
   difficulty: v.number(),          // 1–3
   sortOrder: v.number(),
   status: /* lifecycle union */,
@@ -165,6 +169,18 @@ characters: defineTable({
 ```
 
 `model`, `ratePerSecond`, `seed`, `prompt`, and `attempt` on `animations` exist so a bad batch can be diagnosed and selectively regenerated rather than redone wholesale. `characters` is the bible from [`branding-and-voice.md`](branding-and-voice.md) made queryable — every keyframe generation conditions on `referenceStorageIds`.
+
+### One voice per phrase, not two
+
+`phrases.speakerCharacter` drives **both** the TTS voice (via `CHARACTER_VOICES` in `@sarvabhasha/shared`) and the animation prompt. There is exactly one `audioAsset` per (phrase, language) — not a male and a female version.
+
+Generation is free, so the constraint isn't cost. It's **review time**: a human must listen to every clip, and two versions takes the full catalogue from ~1,080 clips (~4.5 hours) to ~2,160 (~9 hours). Skimmed review is how mispronounced audio ships.
+
+The learner still hears both registers across the catalogue — which is the actual pedagogical need — and the voice matches whoever will be on screen once the phrase is animated, so audio and video stay coherent.
+
+Per-language fallback: female voices are generally better trained in Bhashini. If a male voice is rough in a given language, pass `genderOverride: "female"` for that language. A mismatched gender is a smaller problem than an unintelligible clip.
+
+User-selectable voice gender is a possible v2 feature — generated on demand for phrases people actually replay, never 1,080 clips up front.
 
 ### Progress
 
@@ -310,6 +326,7 @@ generationJobs: defineTable({
 - **Receipt validation** is unimplemented. Apple App Store Server API / Google Play Developer API integration must land before any pack is sold — credits are never granted from a client-reported purchase.
 - **Verifiable parental consent** has a schema slot (`parentalConsentAt`) but no mechanism. DPDP requirements aren't settled; build it swappable.
 - **Offline download** (a candidate perk) has no schema. Needs a client-side manifest and probably a `downloads` table.
+- **Bhashini male voice quality per language is unverified.** Female voices are generally better trained. Test one male-speaker phrase in each of the six live languages during the first generation pass and record the result — it determines whether `neighbour` phrases need a per-language override.
 - **Pronunciation scoring** via Bhashini ASR has no result table. Add when the feature is specced.
 - The **±1 day clamp** on user-supplied `day` is a proposal, not a verified-safe bound.
 

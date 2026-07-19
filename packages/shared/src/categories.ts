@@ -26,6 +26,36 @@ export interface CategoryDef {
 
 export type CharacterSlug = 'dadi' | 'parent' | 'kid' | 'neighbour';
 
+/**
+ * Bhashini voice per character. ONE audio file per phrase, matched to whoever
+ * is speaking — not a male and female version of everything.
+ *
+ * Rationale: generation is free, but a human must listen to every clip, and
+ * two versions doubles review from ~1,080 to ~2,160 clips (~9 hours) for the
+ * full catalogue. Skimmed review is how bad audio ships. The learner still
+ * hears both registers across the catalogue, which is the actual pedagogical
+ * need, and the voice matches the character who will be on screen once the
+ * phrase is animated.
+ *
+ * Note: Bhashini has no child voice. `kid` uses female, which reads acceptably
+ * for a young character.
+ *
+ * VERIFY PER LANGUAGE: female voices are generally better trained. If a male
+ * voice is rough in a given language, fall back to female for that language
+ * rather than shipping bad audio — a mismatched gender is a smaller problem
+ * than an unintelligible clip.
+ */
+export const CHARACTER_VOICES: Record<CharacterSlug, 'male' | 'female'> = {
+  dadi: 'female',
+  parent: 'female',
+  kid: 'female',
+  neighbour: 'male',
+};
+
+export function voiceForCharacter(character: CharacterSlug): 'male' | 'female' {
+  return CHARACTER_VOICES[character];
+}
+
 export const CATEGORIES: readonly CategoryDef[] = [
   {
     slug: 'greetings',

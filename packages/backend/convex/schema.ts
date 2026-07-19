@@ -95,6 +95,21 @@ export default defineSchema({
     sourceText: v.string(),
     /** Scene brief driving the animation prompt. Three beats. */
     situation: v.string(),
+    /**
+     * Who says this line. Drives the TTS voice (via CHARACTER_VOICES in
+     * @sarvabhasha/shared) AND the animation prompt, so audio and video stay
+     * coherent instead of drifting apart.
+     *
+     * ONE audio file per phrase, matched to the speaker — not male+female
+     * versions of everything. Review time, not generation cost, is the
+     * constraint. See specs/data-model.md.
+     */
+    speakerCharacter: v.union(
+      v.literal('dadi'),
+      v.literal('parent'),
+      v.literal('kid'),
+      v.literal('neighbour'),
+    ),
     difficulty: v.number(),
     sortOrder: v.number(),
     status: contentStatus,

@@ -1,0 +1,7 @@
+
+.env.local
+
+# Convex AI-tooling scaffold — regenerate with `npx convex ai-files install`
+.agents/
+.claude/
+skills-lock.json
