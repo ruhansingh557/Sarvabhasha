@@ -6,7 +6,7 @@ import { ConvexReactClient, ConvexProvider } from 'convex/react';
 import { ConvexBetterAuthProvider, type AuthClient } from '@convex-dev/better-auth/react';
 import { lightTheme, darkTheme } from '@theme';
 import { authClient } from '@core/auth/authClient';
-import { AuthScreen } from '@features/auth/screens/AuthScreen';
+import { RootNavigator } from '@navigation/RootNavigator';
 import '@core/i18n';
 
 const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL as string, {
@@ -25,7 +25,7 @@ export default function App() {
             {/* Upstream generic-inference rough edge: createAuthClient's concrete
                 plugin union doesn't structurally match AuthClient's constraint. */}
             <ConvexBetterAuthProvider client={convex} authClient={authClient as unknown as AuthClient}>
-              <AuthScreen />
+              <RootNavigator />
             </ConvexBetterAuthProvider>
           </ConvexProvider>
         </ThemeProvider>

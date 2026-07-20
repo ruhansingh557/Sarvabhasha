@@ -12,5 +12,23 @@
   "Auth.EMAIL_REQUIRED": "Enter your email",
   "Auth.EMAIL_INVALID": "Enter a valid email",
   "Auth.PASSWORD_MIN": "Password must be at least 8 characters",
-  "Auth.SUBMIT_ERROR": "Something went wrong. Try again."
+  "Auth.SUBMIT_ERROR": "Something went wrong. Try again.",
+
+  "Navigation.HOME_TAB": "Home",
+  "Navigation.LEARN_TAB": "Learn",
+  "Navigation.TUTOR_TAB": "Tutor",
+  "Navigation.PROFILE_TAB": "Profile",
+
+  "Home.TITLE": "Home",
+  "Home.COMING_SOON": "Your daily practice dashboard is coming soon.",
+
+  "Learn.TITLE": "Learn",
+  "Learn.COMING_SOON": "Language categories and phrase lessons are coming soon.",
+
+  "Tutor.TITLE": "Tutor",
+  "Tutor.COMING_SOON": "Your conversational AI tutor is coming soon.",
+
+  "Profile.TITLE": "Profile",
+  "Profile.COMING_SOON": "Account and language settings are coming soon.",
+  "Profile.SIGN_OUT_BUTTON": "Sign out"
 }
