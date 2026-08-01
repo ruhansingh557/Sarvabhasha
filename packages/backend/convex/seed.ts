@@ -215,3 +215,51 @@ export const seedTranslation = internalMutation({
     return null;
   },
 });
+
+/**
+ * The human-review gate for one (phrase, language) pair, after a reviewer has
+ * actually listened to the audio and read the translation. Flips BOTH the
+ * translation and audio to `live` — a phrase isn't browsable to a learner
+ * until both are, so approving one without the other is never useful.
+ *
+ * Stopgap until `apps/admin` exists: at seed-data volume (a handful of rows),
+ * running this via `npx convex run` is cheaper and more auditable than a
+ * dedicated approval UI would be to build right now.
+ */
+export const approveTranslationAndAudio = internalMutation({
+  args: { phraseKey: v.string(), languageCode: v.string() },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const phrase = await ctx.db
+      .query('phrases')
+      .withIndex('by_key', (q) => q.eq('phraseKey', args.phraseKey))
+      .first();
+    if (!phrase) {
+      throw new Error(`No phrase with key "${args.phraseKey}"`);
+    }
+
+    const translation = await ctx.db
+      .query('phraseTranslations')
+      .withIndex('by_phrase_language', (q) =>
+        q.eq('phraseId', phrase._id).eq('languageCode', args.languageCode),
+      )
+      .first();
+    if (!translation) {
+      throw new Error(`No "${args.languageCode}" translation for "${args.phraseKey}"`);
+    }
+    await ctx.db.patch(translation._id, { status: 'live' });
+
+    const audio = await ctx.db
+      .query('audioAssets')
+      .withIndex('by_phrase_language', (q) =>
+        q.eq('phraseId', phrase._id).eq('languageCode', args.languageCode),
+      )
+      .first();
+    if (!audio) {
+      throw new Error(`No "${args.languageCode}" audio for "${args.phraseKey}"`);
+    }
+    await ctx.db.patch(audio._id, { status: 'live' });
+
+    return null;
+  },
+});
