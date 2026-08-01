@@ -17,7 +17,7 @@
 | 1 | [Foundation](phase-1-foundation.md) | ✅ | Monorepo scaffold, Convex + Better Auth, Expo app shell, theming, i18n bootstrap, Bhashini TTS action |
 | 2 | [Navigation shell](phase-2-navigation-shell.md) | ✅ | Bottom tabs (Home/Learn/Tutor/Profile) gated on auth session, tab bar icons |
 | 3 | [Home/Learn/Profile MVP](phase-3-home-learn-profile-mvp.md) | ✅ | Full backend + screens for the three tabs; `greetings` category live in Hindi (5 phrases, text+audio, human-reviewed) |
-| 4 | [Expand pilot content](phase-4-expand-pilot-content.md) | ◻ | More categories, more of the 6 live languages, smoother review workflow than manual `convex run` |
+| 4 | [Expand pilot content](phase-4-expand-pilot-content.md) | 🚧 | Translating the 5 greetings phrases into the other 5 live languages. bn live; ta/te/kn generated, awaiting review; mr blocked on a Bhashini outage |
 | 5 | [Content pipeline & animation](phase-5-content-pipeline-animation.md) | ◻ | Character reference images, fal.ai image-to-video, replace the "coming soon" placeholder |
 | 6 | [AI Tutor](phase-6-ai-tutor.md) | ◻ | Gemini conversation, personas, Bhashini ASR voice loop, rate limiting |
 | 7 | [Monetization](phase-7-monetization.md) | ◻ | ₹50 Tutor Pack IAP, server-side receipt verification, paywall UI |
