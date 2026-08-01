@@ -11,8 +11,17 @@
 import type * as animations from "../animations.js";
 import type * as auth from "../auth.js";
 import type * as bhashini_tts from "../bhashini/tts.js";
+import type * as categories from "../categories.js";
+import type * as home from "../home.js";
 import type * as http from "../http.js";
+import type * as languages from "../languages.js";
+import type * as lib_currentUser from "../lib/currentUser.js";
+import type * as lib_liveContent from "../lib/liveContent.js";
+import type * as phrases from "../phrases.js";
+import type * as progress from "../progress.js";
 import type * as review from "../review.js";
+import type * as seed from "../seed.js";
+import type * as users from "../users.js";
 
 import type {
   ApiFromModules,
@@ -24,8 +33,17 @@ declare const fullApi: ApiFromModules<{
   animations: typeof animations;
   auth: typeof auth;
   "bhashini/tts": typeof bhashini_tts;
+  categories: typeof categories;
+  home: typeof home;
   http: typeof http;
+  languages: typeof languages;
+  "lib/currentUser": typeof lib_currentUser;
+  "lib/liveContent": typeof lib_liveContent;
+  phrases: typeof phrases;
+  progress: typeof progress;
   review: typeof review;
+  seed: typeof seed;
+  users: typeof users;
 }>;
 
 /**

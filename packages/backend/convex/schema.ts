@@ -17,8 +17,13 @@ import { v } from 'convex/values';
  *      A check in one function and a call in another is not a limit.
  */
 
-/** Content lifecycle. Client-facing queries return ONLY `live`. */
-const contentStatus = v.union(
+/**
+ * Content lifecycle. Client-facing queries return ONLY `live`.
+ * Exported so query/mutation return validators elsewhere can reuse the same
+ * union instead of redeclaring it (Rule 10: unions for status fields, never
+ * a bare string).
+ */
+export const contentStatus = v.union(
   v.literal('draft'),
   v.literal('review'),
   v.literal('live'),
@@ -40,8 +45,14 @@ export default defineSchema({
 
     /** ISO 639-1. Any of the 22 — independent of targetLanguage. */
     uiLanguage: v.string(),
-    /** ISO 639-1. Must be a language whose status is `live`. */
-    targetLanguage: v.string(),
+    /**
+     * ISO 639-1. Must be a language whose status is `live`.
+     * `undefined` is a REAL state, not a missing-data bug: a brand-new user
+     * has not chosen one yet. The client renders a "choose your language"
+     * empty state rather than treating this as an error. Set exactly once
+     * via `users.setTargetLanguage`, which enforces the `live` constraint.
+     */
+    targetLanguage: v.optional(v.string()),
 
     /**
      * `unknown` BLOCKS the tutor entirely until birth year is collected.

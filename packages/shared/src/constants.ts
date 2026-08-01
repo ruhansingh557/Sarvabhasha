@@ -59,3 +59,19 @@ export function toDayKey(date: Date = new Date()): string {
   const d = String(date.getDate()).padStart(2, '0');
   return `${y}-${m}-${d}`;
 }
+
+/**
+ * Whole calendar days between two `toDayKey()` strings, `b - a`. Negative
+ * when `b` is earlier than `a`. Parsed as UTC noon (not midnight) so DST
+ * transitions in either the user's or the server's zone can never round a
+ * one-day gap down to zero or up to two.
+ *
+ * Used for both the streak-continuation check (gap === 1 → increment,
+ * gap > 1 → reset) and the server's ±1 day clamp on a client-supplied
+ * `dayKey` in `progress.recordViewed`.
+ */
+export function daysBetween(a: string, b: string): number {
+  const toUtcNoon = (key: string) => new Date(`${key}T12:00:00Z`).getTime();
+  const msPerDay = 24 * 60 * 60 * 1000;
+  return Math.round((toUtcNoon(b) - toUtcNoon(a)) / msPerDay);
+}
