@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ActivityIndicator, Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from 'convex/react';
+import { useMutation, useQuery } from 'convex/react';
 import { api } from '@backend/_generated/api';
 import { Box, Text, useTheme } from '@theme';
 import { authClient } from '@core/auth/authClient';
@@ -13,17 +13,27 @@ import { LanguagePicker } from '@shared/components/molecules/LanguagePicker';
  * Profile tab. Sign-out logic/markup is unchanged from the placeholder — the
  * one functional bit that already worked. Everything else is new: account
  * email, current target language (with an inline `LanguagePicker` to change
- * it, same molecule Home's empty state uses), and streak stats.
+ * it, same molecule Home's empty state uses), display (UI) language, and
+ * streak stats.
  */
 export function ProfileScreen() {
   const { t } = useTranslation();
   const theme = useTheme();
   const user = useQuery(api.users.getCurrentUser);
-  const languages = useQuery(api.languages.listLiveLanguages);
+  const targetLanguages = useQuery(api.languages.listLiveLanguages);
+  const allLanguages = useQuery(api.languages.listAllLanguages);
   const streak = useQuery(api.progress.getStreak);
+  const setTargetLanguage = useMutation(api.users.setTargetLanguage);
+  const setUiLanguage = useMutation(api.users.setUiLanguage);
   const [showLanguagePicker, setShowLanguagePicker] = useState(false);
+  const [showUiLanguagePicker, setShowUiLanguagePicker] = useState(false);
 
-  if (user === undefined || languages === undefined || streak === undefined) {
+  if (
+    user === undefined ||
+    targetLanguages === undefined ||
+    allLanguages === undefined ||
+    streak === undefined
+  ) {
     return (
       <Box flex={1} backgroundColor="background" alignItems="center" justifyContent="center">
         <ActivityIndicator color={theme.colors.primary} />
@@ -32,8 +42,11 @@ export function ProfileScreen() {
   }
 
   const targetLanguageName = user?.targetLanguage
-    ? (languages.find((l) => l.code === user.targetLanguage)?.nativeName ?? user.targetLanguage)
+    ? (targetLanguages.find((l) => l.code === user.targetLanguage)?.nativeName ?? user.targetLanguage)
     : null;
+
+  const uiLanguageName =
+    allLanguages.find((l) => l.code === user?.uiLanguage)?.nativeName ?? user?.uiLanguage;
 
   return (
     <Screen scroll>
@@ -57,6 +70,29 @@ export function ProfileScreen() {
 
       <Box backgroundColor="surface" borderRadius="l" padding="l" marginBottom="l">
         <Text variant="label" marginBottom="xs">
+          {t('Profile.UI_LANGUAGE_LABEL')}
+        </Text>
+        <Text variant="body" marginBottom="m">
+          {uiLanguageName}
+        </Text>
+        <Button variant="secondary" onPress={() => setShowUiLanguagePicker((v) => !v)}>
+          {showUiLanguagePicker
+            ? t('Profile.HIDE_UI_LANGUAGE_PICKER')
+            : t('Profile.CHANGE_UI_LANGUAGE_BUTTON')}
+        </Button>
+        {showUiLanguagePicker ? (
+          <Box marginTop="m">
+            <LanguagePicker
+              languages={allLanguages}
+              onSelect={(code) => setUiLanguage({ languageCode: code })}
+              onSelected={() => setShowUiLanguagePicker(false)}
+            />
+          </Box>
+        ) : null}
+      </Box>
+
+      <Box backgroundColor="surface" borderRadius="l" padding="l" marginBottom="l">
+        <Text variant="label" marginBottom="xs">
           {t('Profile.TARGET_LANGUAGE_LABEL')}
         </Text>
         <Text variant="body" marginBottom="m">
@@ -67,7 +103,11 @@ export function ProfileScreen() {
         </Button>
         {showLanguagePicker ? (
           <Box marginTop="m">
-            <LanguagePicker onSelected={() => setShowLanguagePicker(false)} />
+            <LanguagePicker
+              languages={targetLanguages}
+              onSelect={(code) => setTargetLanguage({ languageCode: code })}
+              onSelected={() => setShowLanguagePicker(false)}
+            />
           </Box>
         ) : null}
       </Box>

@@ -1,27 +1,44 @@
 import { useState } from 'react';
 import { ActivityIndicator } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { useMutation, useQuery } from 'convex/react';
-import { api } from '@backend/_generated/api';
 import { Box, Text, useTheme } from '@theme';
 import { ListCard } from './ListCard';
 
+export interface LanguageOption {
+  code: string;
+  nativeName: string;
+  englishName: string;
+  script: string;
+}
+
 interface LanguagePickerProps {
-  /** Called after `setTargetLanguage` succeeds — e.g. to dismiss an inline picker. */
+  /**
+   * The language list to render — e.g. `api.languages.listLiveLanguages` for
+   * target-language selection or `api.languages.listAllLanguages` for
+   * UI-language selection. `undefined` renders the loading state, matching
+   * the raw `useQuery` result so callers can pass it straight through.
+   */
+  languages: LanguageOption[] | undefined;
+  /**
+   * Called with the tapped language's code. The caller owns which mutation
+   * this maps to (`setTargetLanguage`, `setUiLanguage`, …) — this component
+   * only knows how to render a list and report a tap.
+   */
+  onSelect: (languageCode: string) => unknown;
+  /** Called after `onSelect` resolves — e.g. to dismiss an inline picker. */
   onSelected?: (languageCode: string) => void;
 }
 
 /**
- * Renders `api.languages.listLiveLanguages` as tappable rows and calls
- * `api.users.setTargetLanguage` on tap. Used inline (not a separate nav
- * route) by both Home's "choose your language" empty state and Profile's
- * "change language" section — shared rather than duplicated (CLAUDE.md rule 3).
+ * Renders a language list as tappable rows and reports taps via `onSelect`.
+ * Deliberately data-agnostic: used inline (not a separate nav route) by
+ * Home's "choose your language" empty state, Learn's "needs target language"
+ * state, and Profile's target-language AND display-language sections — one
+ * shared component instead of near-duplicates (CLAUDE.md rule 3).
  */
-export function LanguagePicker({ onSelected }: LanguagePickerProps) {
+export function LanguagePicker({ languages, onSelect, onSelected }: LanguagePickerProps) {
   const { t } = useTranslation();
   const theme = useTheme();
-  const languages = useQuery(api.languages.listLiveLanguages);
-  const setTargetLanguage = useMutation(api.users.setTargetLanguage);
   const [pendingCode, setPendingCode] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -29,7 +46,7 @@ export function LanguagePicker({ onSelected }: LanguagePickerProps) {
     setError(null);
     setPendingCode(code);
     try {
-      await setTargetLanguage({ languageCode: code });
+      await onSelect(code);
       onSelected?.(code);
     } catch {
       setError(t('LanguagePicker.ERROR'));

@@ -111,3 +111,31 @@ export const setTargetLanguage = mutation({
     return null;
   },
 });
+
+/**
+ * Sets the learner's UI (interface-chrome) language. Deliberately does NOT
+ * enforce `status === 'live'` the way `setTargetLanguage` does: `uiLanguage`
+ * is not a claim about lesson-content availability, just which language the
+ * interface text renders in, and all 22 `@sarvabhasha/shared` languages are
+ * legitimate choices regardless of launch status (see the `uiLanguage`
+ * schema comment — "ISO 639-1, any of the 22"). Still validated against the
+ * `languages` table so a typo'd/unknown code can't be stored.
+ */
+export const setUiLanguage = mutation({
+  args: { languageCode: v.string() },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const user = await requireCurrentUserDoc(ctx);
+
+    const language = await ctx.db
+      .query('languages')
+      .withIndex('by_code', (q) => q.eq('code', args.languageCode))
+      .unique();
+    if (!language) {
+      throw new Error(`Unknown language code "${args.languageCode}"`);
+    }
+
+    await ctx.db.patch(user._id, { uiLanguage: args.languageCode });
+    return null;
+  },
+});

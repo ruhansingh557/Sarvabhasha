@@ -1,6 +1,6 @@
 import { ActivityIndicator } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from 'convex/react';
+import { useMutation, useQuery } from 'convex/react';
 import { api } from '@backend/_generated/api';
 import type { Id } from '@backend/_generated/dataModel';
 import { getCategory } from '@sarvabhasha/shared';
@@ -27,6 +27,8 @@ export function PhraseListContent({ categorySlug, onSelectPhrase }: PhraseListCo
   const { t } = useTranslation();
   const theme = useTheme();
   const result = useQuery(api.phrases.listByCategory, { categorySlug });
+  const targetLanguages = useQuery(api.languages.listLiveLanguages);
+  const setTargetLanguage = useMutation(api.users.setTargetLanguage);
   const categoryDef = getCategory(categorySlug);
   const title = categoryDef ? t(categoryDef.i18nKey) : categorySlug;
 
@@ -47,7 +49,10 @@ export function PhraseListContent({ categorySlug, onSelectPhrase }: PhraseListCo
         <Text variant="body" color="textSecondary" marginBottom="l">
           {t('Learn.NEEDS_TARGET_LANGUAGE_BODY')}
         </Text>
-        <LanguagePicker />
+        <LanguagePicker
+          languages={targetLanguages}
+          onSelect={(code) => setTargetLanguage({ languageCode: code })}
+        />
       </Box>
     );
   }

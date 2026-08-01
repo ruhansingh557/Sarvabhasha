@@ -1,7 +1,7 @@
 import { ActivityIndicator } from 'react-native';
 import { useNavigation, type NavigationProp } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from 'convex/react';
+import { useMutation, useQuery } from 'convex/react';
 import { api } from '@backend/_generated/api';
 import { Box, Text, useTheme } from '@theme';
 import { Screen } from '@shared/components/atoms/Screen';
@@ -21,6 +21,8 @@ export function HomeScreen() {
   const theme = useTheme();
   const navigation = useNavigation<NavigationProp<MainTabParamList>>();
   const summary = useQuery(api.home.getHomeSummary);
+  const targetLanguages = useQuery(api.languages.listLiveLanguages);
+  const setTargetLanguage = useMutation(api.users.setTargetLanguage);
 
   if (summary === undefined) {
     return (
@@ -40,7 +42,10 @@ export function HomeScreen() {
           <Text variant="body" color="textSecondary" marginBottom="l">
             {t('Home.CHOOSE_LANGUAGE_BODY')}
           </Text>
-          <LanguagePicker />
+          <LanguagePicker
+            languages={targetLanguages}
+            onSelect={(code) => setTargetLanguage({ languageCode: code })}
+          />
         </Box>
       </Screen>
     );
