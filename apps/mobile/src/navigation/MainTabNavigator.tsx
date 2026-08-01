@@ -1,4 +1,5 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@theme';
 import { HomeStack } from './stacks/HomeStack';
@@ -14,9 +15,13 @@ const Tab = createBottomTabNavigator<MainTabParamList>();
  * native stack (CLAUDE.md: "bottom tabs + per-tab native stacks") even
  * though every stack is a single placeholder screen today.
  *
- * Text-only labels for this pass — no icon set is installed yet. Adding
- * @expo/vector-icons is a reasonable follow-up, not required to ship a
- * working tab bar.
+ * Icons: Ionicons, outline↔filled swap on focus. Ionicons' rounded, slightly
+ * bold glyphs match the brand's warm/playful "not pastel, not muted" register
+ * (specs/branding-and-voice.md) better than a hairline icon set. Color always
+ * comes from the `color` prop React Navigation passes in (resolved from
+ * `tabBarActiveTintColor`/`tabBarInactiveTintColor` above) — never hardcoded,
+ * so dark mode is automatic. Size always comes from the `size` prop — never
+ * a hardcoded pixel value.
  */
 export function MainTabNavigator() {
   const { t } = useTranslation();
@@ -37,22 +42,50 @@ export function MainTabNavigator() {
       <Tab.Screen
         name="HomeTab"
         component={HomeStack}
-        options={{ tabBarLabel: t('Navigation.HOME_TAB') }}
+        options={{
+          tabBarLabel: t('Navigation.HOME_TAB'),
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons name={focused ? 'home' : 'home-outline'} color={color} size={size} />
+          ),
+        }}
       />
       <Tab.Screen
         name="LearnTab"
         component={LearnStack}
-        options={{ tabBarLabel: t('Navigation.LEARN_TAB') }}
+        options={{
+          tabBarLabel: t('Navigation.LEARN_TAB'),
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons name={focused ? 'book' : 'book-outline'} color={color} size={size} />
+          ),
+        }}
       />
       <Tab.Screen
         name="TutorTab"
         component={TutorStack}
-        options={{ tabBarLabel: t('Navigation.TUTOR_TAB') }}
+        options={{
+          tabBarLabel: t('Navigation.TUTOR_TAB'),
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons
+              name={focused ? 'chatbubble-ellipses' : 'chatbubble-ellipses-outline'}
+              color={color}
+              size={size}
+            />
+          ),
+        }}
       />
       <Tab.Screen
         name="ProfileTab"
         component={ProfileStack}
-        options={{ tabBarLabel: t('Navigation.PROFILE_TAB') }}
+        options={{
+          tabBarLabel: t('Navigation.PROFILE_TAB'),
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons
+              name={focused ? 'person-circle' : 'person-circle-outline'}
+              color={color}
+              size={size}
+            />
+          ),
+        }}
       />
     </Tab.Navigator>
   );
