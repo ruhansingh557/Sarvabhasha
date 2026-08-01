@@ -44,6 +44,7 @@ apps/admin/           Vite + React content console (approval gate, phrase curati
 packages/backend/     convex/ — schema, auth, bhashini, tutor, content pipeline
 packages/shared/      language codes, category taxonomy, shared Zod schemas
 specs/                knowledge base — read specs/_index.md first
+plans/                build sequence & status — read plans/_index.md first
 ```
 
 ## Knowledge Base — read first
@@ -52,6 +53,11 @@ specs/                knowledge base — read specs/_index.md first
 - Before working on a feature, read `_index.md`, then only the spec files its **Cross-Cutting Lookup** table lists for your task.
 - Specs are the source of truth for product intent; verify details against the referenced code, since line numbers drift.
 - When your change alters documented behaviour, **update the spec in the same commit**.
+
+## Development Plan — read second, especially after a context reset
+
+- **[`plans/_index.md`](plans/_index.md)** tracks the build *sequence*: which phase we're in, what's done, what's next, and the decisions/gotchas that made each phase take the shape it did. `specs/` says what the product does; `plans/` says what order we're building it in and how far we've gotten.
+- When you finish meaningful work, update the relevant phase file (or add a new one) and this index's status table **in the same commit** — this is what lets a future session (yours or another agent's) pick up cleanly without replaying this conversation.
 
 ## Hard rules
 
