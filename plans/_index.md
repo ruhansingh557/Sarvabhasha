@@ -17,7 +17,7 @@
 | 1 | [Foundation](phase-1-foundation.md) | ✅ | Monorepo scaffold, Convex + Better Auth, Expo app shell, theming, i18n bootstrap, Bhashini TTS action |
 | 2 | [Navigation shell](phase-2-navigation-shell.md) | ✅ | Bottom tabs (Home/Learn/Tutor/Profile) gated on auth session, tab bar icons |
 | 3 | [Home/Learn/Profile MVP](phase-3-home-learn-profile-mvp.md) | ✅ | Full backend + screens for the three tabs; `greetings` category live in Hindi (5 phrases, text+audio, human-reviewed) |
-| 4 | [Expand pilot content](phase-4-expand-pilot-content.md) | 🚧 | 5 of 6 live languages done for the greetings phrases (hi/bn/ta/te/kn); mr blocked on a sustained Bhashini outage for that language |
+| 4 | [Expand pilot content](phase-4-expand-pilot-content.md) | ✅ | All 6 live languages (hi/bn/ta/te/kn/mr) done for the 5 greetings phrases; mr closed via a new Google Cloud TTS fallback after a sustained Bhashini outage for that language |
 | 5 | [Content pipeline & animation](phase-5-content-pipeline-animation.md) | 🚧 | All 5 greetings phrases have a real, approved fal.ai clip and play in the app (verified live in Simulator), re-encoded to ~1MB each. Parent/Kid character references generated and approved; no phrases/animations for them yet, other categories not started |
 | 6 | [AI Tutor](phase-6-ai-tutor.md) | ◻ | Gemini conversation, personas, Bhashini ASR voice loop, rate limiting |
 | 7 | [Monetization](phase-7-monetization.md) | ◻ | ₹50 Tutor Pack IAP, server-side receipt verification, paywall UI |
@@ -28,7 +28,7 @@
 
 ## Current state, in one paragraph
 
-Auth, navigation, and a real (if narrow) Home/Learn/Profile experience are live and verified in the iOS Simulator. Exactly one category (`greetings`) has real content, in exactly one language (Hindi), with no animation yet (a placeholder covers that slot). Everything downstream of that — more content, video, the tutor, money, other languages, an admin UI — is unstarted but scoped. The immediate real bottleneck for *content* breadth is human review capacity (translations and audio both need a listen-through before going live); the immediate bottleneck for *video* is that fal.ai character references don't exist yet, which is its own first task, not a quick add.
+Auth, navigation, and a real Home/Learn/Profile experience are live and verified in the iOS Simulator. One category (`greetings`, 5 phrases) is fully live across all 6 launch languages, each with reviewed native-script text, transliteration, and audio (Bhashini for five, Google Cloud TTS as a proven fallback for Marathi). All 5 phrases also have real, approved fal.ai animation clips playing in the app, re-encoded to ~1MB each. All four cast members (Dadi, Neighbour, Parent, Kid) have approved character references, though only Dadi/Neighbour have any content built on top of them yet. Everything downstream — a second category, the tutor, money, an admin UI — is unstarted but scoped. The immediate bottleneck for *content* breadth is human review capacity (translations and audio both need a listen-through before going live); the immediate bottleneck for *more video* is simply that no second category's phrases/beats have been authored yet, not a technical blocker.
 
 ## Cross-references
 
