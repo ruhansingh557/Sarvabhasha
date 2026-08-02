@@ -18,7 +18,7 @@
 | 2 | [Navigation shell](phase-2-navigation-shell.md) | ✅ | Bottom tabs (Home/Learn/Tutor/Profile) gated on auth session, tab bar icons |
 | 3 | [Home/Learn/Profile MVP](phase-3-home-learn-profile-mvp.md) | ✅ | Full backend + screens for the three tabs; `greetings` category live in Hindi (5 phrases, text+audio, human-reviewed) |
 | 4 | [Expand pilot content](phase-4-expand-pilot-content.md) | 🚧 | 5 of 6 live languages done for the greetings phrases (hi/bn/ta/te/kn); mr blocked on a sustained Bhashini outage for that language |
-| 5 | [Content pipeline & animation](phase-5-content-pipeline-animation.md) | 🚧 | All 5 greetings phrases have a real, approved fal.ai clip and play in the app (verified live in Simulator). Parent/Kid refs + other categories not started |
+| 5 | [Content pipeline & animation](phase-5-content-pipeline-animation.md) | 🚧 | All 5 greetings phrases have a real, approved fal.ai clip and play in the app (verified live in Simulator), re-encoded to ~1MB each. Parent/Kid refs + other categories not started |
 | 6 | [AI Tutor](phase-6-ai-tutor.md) | ◻ | Gemini conversation, personas, Bhashini ASR voice loop, rate limiting |
 | 7 | [Monetization](phase-7-monetization.md) | ◻ | ₹50 Tutor Pack IAP, server-side receipt verification, paywall UI |
 | 8 | [Onboarding & age-gating](phase-8-onboarding-age-gating.md) | ◻ | Birth year / age band, DPDP parental consent (currently the tutor is fully blocked pending this) |

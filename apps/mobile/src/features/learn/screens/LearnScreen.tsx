@@ -6,7 +6,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQuery } from 'convex/react';
 import { api } from '@backend/_generated/api';
 import { getCategory } from '@sarvabhasha/shared';
-import { Box, Text, useTheme } from '@theme';
+import { Box, Text, useTheme, MAX_CONTENT_WIDTH } from '@theme';
 import { Screen } from '@shared/components/atoms/Screen';
 import { ListCard } from '@shared/components/molecules/ListCard';
 import { PhraseListContent } from '../components/PhraseListContent';
@@ -103,16 +103,27 @@ export function LearnScreen() {
       </Box>
       <Box flex={1}>
         <ScrollView contentContainerStyle={{ padding: theme.spacing.xl, flexGrow: 1 }}>
-          {activeSlug ? (
-            <PhraseListContent
-              categorySlug={activeSlug}
-              onSelectPhrase={(phraseId) => navigation.navigate('PhraseDetail', { phraseId })}
-            />
-          ) : (
-            <Text variant="body" color="textMuted">
-              {t('Learn.SELECT_CATEGORY_PROMPT')}
-            </Text>
-          )}
+          {/*
+            Cap the pane's own content width (CLAUDE.md rule 16 — full-bleed
+            content gets a maxWidth). The sidebar/pane split itself is the
+            intentional "genuinely different" tablet layout, but on a very
+            wide iPad or unfolded foldable the *right pane alone* can still
+            exceed a sane reading/row width, stretching each ListCard's
+            title/trailing-text gap absurdly wide. Left-aligned, not centred,
+            since this pane already sits to the right of the fixed sidebar.
+          */}
+          <Box width="100%" maxWidth={MAX_CONTENT_WIDTH}>
+            {activeSlug ? (
+              <PhraseListContent
+                categorySlug={activeSlug}
+                onSelectPhrase={(phraseId) => navigation.navigate('PhraseDetail', { phraseId })}
+              />
+            ) : (
+              <Text variant="body" color="textMuted">
+                {t('Learn.SELECT_CATEGORY_PROMPT')}
+              </Text>
+            )}
+          </Box>
         </ScrollView>
       </Box>
     </Box>

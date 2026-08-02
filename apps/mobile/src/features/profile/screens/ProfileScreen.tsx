@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ActivityIndicator, Pressable } from 'react-native';
+import { ActivityIndicator } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery } from 'convex/react';
 import { api } from '@backend/_generated/api';
@@ -10,11 +10,10 @@ import { Button } from '@shared/components/atoms/Button';
 import { LanguagePicker } from '@shared/components/molecules/LanguagePicker';
 
 /**
- * Profile tab. Sign-out logic/markup is unchanged from the placeholder — the
- * one functional bit that already worked. Everything else is new: account
- * email, current target language (with an inline `LanguagePicker` to change
- * it, same molecule Home's empty state uses), display (UI) language, and
- * streak stats.
+ * Profile tab. Account email, current target language (with an inline
+ * `LanguagePicker` to change it, same molecule Home's empty state uses),
+ * display (UI) language, streak stats, and sign-out via the shared `Button`
+ * atom.
  */
 export function ProfileScreen() {
   const { t } = useTranslation();
@@ -61,11 +60,7 @@ export function ProfileScreen() {
         <Text variant="body" marginBottom="m">
           {user?.email ?? ''}
         </Text>
-        <Pressable onPress={() => authClient.signOut()}>
-          <Box backgroundColor="primary" paddingVertical="s" alignItems="center" borderRadius="m">
-            <Text variant="button">{t('Profile.SIGN_OUT_BUTTON')}</Text>
-          </Box>
-        </Pressable>
+        <Button onPress={() => authClient.signOut()}>{t('Profile.SIGN_OUT_BUTTON')}</Button>
       </Box>
 
       <Box backgroundColor="surface" borderRadius="l" padding="l" marginBottom="l">

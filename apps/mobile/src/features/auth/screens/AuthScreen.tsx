@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import { Box, Text, useTheme, MAX_CONTENT_WIDTH } from '@theme';
 import { authClient } from '@core/auth/authClient';
+import { Button } from '@shared/components/atoms/Button';
 import { authFormSchema, type AuthFormValues } from '../schemas/authSchema';
 
 /**
@@ -64,11 +65,9 @@ export function AuthScreen() {
         <Text variant="h2" marginBottom="s">
           {t('Auth.SIGNED_IN_AS', { email: session.user.email })}
         </Text>
-        <Pressable onPress={() => authClient.signOut()}>
-          <Box backgroundColor="primary" paddingVertical="s" paddingHorizontal="l" borderRadius="m" marginTop="m">
-            <Text variant="button">{t('Auth.SIGN_OUT_BUTTON')}</Text>
-          </Box>
-        </Pressable>
+        <Box marginTop="m">
+          <Button onPress={() => authClient.signOut()}>{t('Auth.SIGN_OUT_BUTTON')}</Button>
+        </Box>
       </Box>
     );
   }
@@ -140,23 +139,11 @@ export function AuthScreen() {
           </Text>
         )}
 
-        <Pressable onPress={handleSubmit(onSubmit)} disabled={isSubmitting}>
-          <Box
-            backgroundColor="primary"
-            paddingVertical="s"
-            alignItems="center"
-            borderRadius="m"
-            marginTop="l"
-          >
-            {isSubmitting ? (
-              <ActivityIndicator color={theme.colors.textInverse} />
-            ) : (
-              <Text variant="button">
-                {t(mode === 'signUp' ? 'Auth.SIGN_UP_BUTTON' : 'Auth.SIGN_IN_BUTTON')}
-              </Text>
-            )}
-          </Box>
-        </Pressable>
+        <Box marginTop="l">
+          <Button onPress={handleSubmit(onSubmit)} loading={isSubmitting}>
+            {t(mode === 'signUp' ? 'Auth.SIGN_UP_BUTTON' : 'Auth.SIGN_IN_BUTTON')}
+          </Button>
+        </Box>
 
         <Pressable onPress={() => setMode(mode === 'signUp' ? 'signIn' : 'signUp')}>
           <Text variant="link" textAlign="center" marginTop="m">

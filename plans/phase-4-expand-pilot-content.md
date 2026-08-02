@@ -25,7 +25,7 @@ Translations drafted (by Claude, native-script + transliteration, respecting Dad
 
 ## What's left in this phase
 
-1. **Resolve Marathi** — retry `bhashini/tts:generateAudioForPhrase` for `mr` again later. If it keeps failing across multiple days, that's worth flagging as a genuine gap rather than assumed-transient flakiness (Bhashini has no alternative TTS provider in this codebase to fall back to).
+1. **Resolve Marathi** — retry `bhashini/tts:generateAudioForPhrase` for `mr` again later. If it keeps failing across multiple days, that's worth flagging as a genuine gap rather than assumed-transient flakiness (Bhashini has no alternative TTS provider in this codebase to fall back to). **Re-checked 2026-08-02**: still a `504 Gateway Time-out` on a single-phrase retry (`namaste-hello`). Now failing across two separate days — worth treating as a standing gap rather than transient flakiness; no further retries planned until there's a reason to think something changed.
 2. Everything else (more phrases, a second category) is explicitly deferred — see below.
 
 ## Deferred within this phase (not done, not currently planned this pass)

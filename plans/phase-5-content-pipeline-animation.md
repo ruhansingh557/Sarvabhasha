@@ -1,6 +1,6 @@
 # Phase 5 — Content pipeline & animation (fal.ai)
 
-**Status:** 🚧 in progress — pilot complete for the 5 greetings phrases (Dadi + Neighbour only); Parent/Kid and other categories not started
+**Status:** 🚧 in progress — pilot complete for the 5 greetings phrases (Dadi + Neighbour only), re-encoded down to demo-friendly file sizes; Parent/Kid and other categories not started
 
 ## What shipped (2026-08-02 pilot)
 
@@ -38,12 +38,17 @@ Of the 9 animation generations: 5 are the live, usable clips ($3.90). 4 were was
 
 `phrases.getDetail` now resolves each phrase's live animation to a signed URL (`animationUrl: string | null`) via a new `getLiveAnimation` helper in `lib/liveContent.ts` — independent of the per-language translation/audio gate, since animation is `phraseId`-keyed. `PhraseDetailScreen` has a real `expo-video` player (`features/learn/components/PhraseAnimationPlayer.tsx`, first use of `expo-video` in the app): loops, muted, pauses on nav-away, themed loading spinner while the clip fetches, falls back to the existing placeholder when `animationUrl` is null (still most phrases). **Verified live in the iOS Simulator** — confirmed actually animating (not a frozen frame) by comparing two screenshots taken a few seconds apart.
 
+## What shipped (2026-08-02, clip re-encode)
+
+All 5 live clips re-encoded (720p, H.264 `libx264`, CRF 26, `scale=720:-2` to preserve the original ~0.54 aspect ratio, `-an` since the clips never had an audio track, `+faststart`) and re-uploaded via `scripts/upload-animation.ts` with a manifest built directly from the existing `animations` table rows (model/rate/duration/prompt read back via `convex data animations --format jsonArray`, not hand-transcribed, to avoid corrupting the reproducibility metadata). Each new draft was approved via `animations:approveAnimation`, which archived the corresponding oversized original per phrase — one live row per phrase, as before. Sizes: 10–15MB → 0.6–1.2MB per clip (roughly 90%+ smaller). Verified both by direct frame-extraction comparison against the original (visually indistinguishable at delivery resolution) and by reloading a phrase in the iOS Simulator to confirm the new signed URL actually fetches and plays.
+
+No new fal.ai generation spend — this re-encoded existing footage rather than regenerating it. (`scripts/upload-animation.ts` prints an "estimated generation spend" line based on `rate × duration × attempt` regardless of whether fal.ai was actually called, which read as $3.50 for this batch — that number is an artifact of the script assuming its caller always just generated the clip; ignore it here.)
+
 ## What's left in this phase
 
-1. **Clip file size** — not yet addressed (these clips run ~11-13MB/10s, above the manual-upload script's own 8MB bandwidth warning). Re-encode (720p, H.264, CRF ~26) before real learners see them at scale — fine for now at 5 clips.
-2. **Parent and Kid character references** — needed before any category besides `greetings` can get animations (Family, Food & Market, Numbers/Money, School & Work, Daily Routine all use one or both).
-3. **`generationJobs` table remains unused** — this pilot wrote results directly via `recordAnimation`, no job-queue tracking. Fine at this volume; revisit if/when batches get large enough that a queryable job-status table (vs. reading Convex logs) actually matters.
-4. Two `TODO(auth)` markers in `animations.ts` (`generateUploadUrl` unrestricted, `approveAnimation`'s `approvedBy` is a raw client arg) are still unresolved — not exploitable today since only the project owner has Convex CLI access, but must be fixed before `apps/admin` (phase 10) exposes any of this to other users.
+1. **Parent and Kid character references** — needed before any category besides `greetings` can get animations (Family, Food & Market, Numbers/Money, School & Work, Daily Routine all use one or both).
+2. **`generationJobs` table remains unused** — this pilot wrote results directly via `recordAnimation`, no job-queue tracking. Fine at this volume; revisit if/when batches get large enough that a queryable job-status table (vs. reading Convex logs) actually matters.
+3. Two `TODO(auth)` markers in `animations.ts` (`generateUploadUrl` unrestricted, `approveAnimation`'s `approvedBy` is a raw client arg) are still unresolved — not exploitable today since only the project owner has Convex CLI access, but must be fixed before `apps/admin` (phase 10) exposes any of this to other users.
 
 ## Open decision, not yet made
 

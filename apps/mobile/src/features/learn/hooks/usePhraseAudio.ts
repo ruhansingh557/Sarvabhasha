@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { setAudioModeAsync, useAudioPlayer, useAudioPlayerStatus, type AudioSource } from 'expo-audio';
 
 /**
@@ -22,6 +23,31 @@ export function usePhraseAudio(audioUrl: string | null | undefined) {
     // mount of this hook.
     ensureAudioModeConfigured();
   }, []);
+
+  // Pause when the screen loses focus (back navigation, backgrounding the
+  // app) so pronunciation audio never keeps playing behind the learner's
+  // back — audio is meant to be global/exclusive (only one thing plays at a
+  // time), and this is the same class of native-resource cleanup as
+  // PhraseAnimationPlayer's video player's useFocusEffect. Wrapped in
+  // try/catch for the same reason as that player: `useAudioPlayer` releases
+  // its native shared object on unmount, and that release can race ahead of
+  // this cleanup (e.g. rapid back-and-forth navigation), throwing if we call
+  // a method on an already-released player — harmless, since a
+  // released/unmounted player is already stopped.
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        try {
+          if (player.isLoaded) {
+            player.pause();
+          }
+        } catch {
+          // Native player already released — nothing to do.
+        }
+      };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [player]),
+  );
 
   const toggle = () => {
     if (!player.isLoaded) return;
