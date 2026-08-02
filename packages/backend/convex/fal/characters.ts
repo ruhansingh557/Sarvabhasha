@@ -53,7 +53,12 @@ const FRONT_BACKGROUND =
 
 type CharacterSlug = 'dadi' | 'neighbour';
 
-const CHARACTER_BIBLE: Record<CharacterSlug, { displayName: string; description: string }> = {
+// Exported so fal/animations.ts can build reference-image labels that name
+// each character explicitly by their distinguishing traits — see that
+// file's keyframePrompt for why (a real cross-reference trait-bleed bug:
+// Dadi picked up Neighbour's moustache when the two reference images went
+// into flux-pro/kontext/max/multi with nothing pinning image-to-name).
+export const CHARACTER_BIBLE: Record<CharacterSlug, { displayName: string; description: string }> = {
   dadi: {
     displayName: 'Dadi',
     description:
