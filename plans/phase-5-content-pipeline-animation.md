@@ -1,6 +1,6 @@
 # Phase 5 — Content pipeline & animation (fal.ai)
 
-**Status:** 🚧 in progress — pilot complete for the 5 greetings phrases (Dadi + Neighbour only), re-encoded down to demo-friendly file sizes; Parent/Kid and other categories not started
+**Status:** 🚧 in progress — pilot complete for the 5 greetings phrases (Dadi + Neighbour only), re-encoded down to demo-friendly file sizes; Parent/Kid character references now exist and are approved, other categories not started
 
 ## What shipped (2026-08-02 pilot)
 
@@ -44,11 +44,22 @@ All 5 live clips re-encoded (720p, H.264 `libx264`, CRF 26, `scale=720:-2` to pr
 
 No new fal.ai generation spend — this re-encoded existing footage rather than regenerating it. (`scripts/upload-animation.ts` prints an "estimated generation spend" line based on `rate × duration × attempt` regardless of whether fal.ai was actually called, which read as $3.50 for this batch — that number is an artifact of the script assuming its caller always just generated the clip; ignore it here.)
 
+## What shipped (2026-08-02, Parent and Kid character references)
+
+`CHARACTER_BIBLE` and `CharacterSlug` widened to include `parent` and `kid`, both authored fresh (the cast table in `specs/branding-and-voice.md` only had role/personality, no physical description) at the same level of detail as Dadi/Neighbour, grounded in the `STYLE_ANCHOR` and the existing two characters' register. Parent is written as Dadi's daughter — a mother, chosen over a father so the cast doesn't end up with three men's-register designs against Dadi alone on the women's side (documented as a code comment in `characters.ts` alongside the entry). Kid reads as a ~9-year-old boy, deliberately smaller/rounder-proportioned than both adults so scale alone signals "child."
+
+**Real bug found and fixed**: Kid's FRONT image (the anchor `flux/dev` text-to-image generation) came back soft/out-of-focus across **4 consecutive full-batch regenerations** — every other character's front, and both of Kid's own Kontext-edited angles (three-quarter, profile, sourced from that same soft front each time), came out sharp every time. This ruled out random flakiness: something about `flux/dev`'s text-to-image pass specifically mis-rendered this prompt, while Kontext's image-*edit* pass (re-rendering from a source image + instructions, not literally sharpening) did not inherit the blur even when editing the blurry front. Two things changed: (1) `FRONT_BACKGROUND`'s "even **soft** daylight lighting" was reworded to "bright even daylight lighting, sharp focus throughout... no depth-of-field blur" — a plausible trigger word, though this alone did not fix a subsequent attempt; (2) added `regenerateFrontFromAngle`, a new `internalAction` that Kontext-edits an existing sharp angle image (e.g. three-quarter) back to a front-facing pose instead of re-rolling the full `flux/dev` + 2×Kontext generation — one $0.04 call instead of $0.105, and it reuses the two already-good images rather than gambling on all three again. This is now the documented repair path for this specific failure mode, not a one-off hack.
+
+Every image (Parent's 3 angles, Kid's 3 angles post-repair) was independently downloaded and visually reviewed — same discipline as the animation pilot — before being treated as approved. Nothing downstream (no phrases, no keyframes, no animations) consumes Parent or Kid yet.
+
+**Cost**: Parent $0.105 (first attempt, no issues). Kid: 4 full-batch attempts at $0.105 each ($0.42, all discarded except the sharp three-quarter/profile pair from the 4th) + one $0.04 targeted front repair = $0.46. **Total this pass: $0.565** — well over the ~$0.21 "clean" estimate quoted going in, consistent with this phase's established "budget 1.5-2x for iteration" lesson, though this particular overrun (4 identical soft-front attempts before trying a structurally different fix) is worth reading as "stop re-rolling after 2 identical failures and change approach" rather than just "iteration costs more."
+
 ## What's left in this phase
 
-1. **Parent and Kid character references** — needed before any category besides `greetings` can get animations (Family, Food & Market, Numbers/Money, School & Work, Daily Routine all use one or both).
+1. **No phrases or animations exist yet for Parent/Kid** — the character references are pure setup. Building `Family`, `Food & Market`, or another category on top of them (translations, audio, `PHRASE_BEATS`, keyframes, clips) is a separate, not-yet-started pass, deliberately deferred again this round in favor of closing out tooling/stability work.
 2. **`generationJobs` table remains unused** — this pilot wrote results directly via `recordAnimation`, no job-queue tracking. Fine at this volume; revisit if/when batches get large enough that a queryable job-status table (vs. reading Convex logs) actually matters.
-3. Two `TODO(auth)` markers in `animations.ts` (`generateUploadUrl` unrestricted, `approveAnimation`'s `approvedBy` is a raw client arg) are still unresolved — not exploitable today since only the project owner has Convex CLI access, but must be fixed before `apps/admin` (phase 10) exposes any of this to other users.
+3. `animations.ts`'s two `TODO(auth)` markers are now resolved — `generateUploadUrl` requires an authenticated app user, `approveAnimation` derives the approver from the caller's identity. Role-based (admin-only) restriction is still deferred to phase 10 / `apps/admin`, which doesn't exist yet. Closing this broke `scripts/upload-animation.ts`'s and this session's own CLI-driven approval workflow (both acted as an unauthenticated/deploy-key caller with no app-user session); fixed by adding `generateUploadUrlInternal`/`approveAnimationInternal` — `internalMutation`s reachable only via `convex run`/the scheduler, never any client — as the trusted ops path, and pointing the upload script's upload-url step at `convex run` instead of the public mutation.
+4. `STYLE_ANCHOR` in `characters.ts` still describes the original flat-outline look, contradicting the soft-shaded direction the spec actually locked in (see the Art Direction revision note in `specs/branding-and-voice.md`). Deliberately left as-is — it's baked into all four characters' already-approved production references, and changing the prompt text doesn't change what the model outputs anyway (confirmed earlier this phase). Worth a dedicated pass if it ever needs revisiting, not a blocker.
 
 ## Open decision, not yet made
 
