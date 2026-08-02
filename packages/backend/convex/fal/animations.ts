@@ -555,12 +555,21 @@ const PHRASE_BEATS: Record<
     reaction: 'The Neighbour nods quickly and dials again, his expression turning serious.',
   },
   'chinta-mat-karo-dont-worry': {
+    // Two attempts both hallucinated a THIRD person kneeling in the frame —
+    // likely because the original beat described the Neighbour "kneeling"
+    // in SETUP but reaching toward her shoulder in PHRASE, a pose a single
+    // person can't hold at two different heights at once; the model may
+    // have resolved that contradiction by inventing a second kneeling
+    // figure. Reworded so the Neighbour stays at ONE consistent kneeling
+    // height throughout — exactly two people in the scene, explicitly.
     other: 'parent',
     setting: 'the same residential street, warm daylight',
-    setup: 'The Neighbour kneels beside Parent, phone call finished, staying close to her.',
+    setup:
+      'The Neighbour kneels down on the ground right beside Parent, at her level, phone ' +
+      'call just finished. Exactly two people in this scene — no one else present.',
     phrase:
-      "The Neighbour holds a hand near her shoulder at a respectful distance, not touching, " +
-      'smiling gently to calm her.',
+      'Still kneeling at her level, the Neighbour holds one hand near her shoulder at a ' +
+      'respectful distance, not touching, smiling gently to calm her.',
     reaction: 'Parent takes a breath and manages a small, relieved smile.',
   },
 

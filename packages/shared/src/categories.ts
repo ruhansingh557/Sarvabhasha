@@ -118,7 +118,7 @@ export const CATEGORIES: readonly CategoryDef[] = [
     i18nKey: 'Category.EMERGENCY',
     iconKey: 'alert',
     sortOrder: 8,
-    launchStatus: 'draft',
+    launchStatus: 'live',
     cast: ['parent', 'neighbour'],
   },
   {
@@ -126,7 +126,7 @@ export const CATEGORIES: readonly CategoryDef[] = [
     i18nKey: 'Category.SCHOOL_WORK',
     iconKey: 'book',
     sortOrder: 9,
-    launchStatus: 'draft',
+    launchStatus: 'live',
     cast: ['kid', 'parent'],
   },
 ] as const;
