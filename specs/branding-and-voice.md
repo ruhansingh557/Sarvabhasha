@@ -1,6 +1,6 @@
 # Branding, Voice & Character Bible
 
-> Status: ✅ written — decisions locked 2026-07-18. Changes here invalidate generated clips; treat edits as breaking.
+> Status: ✅ written — decisions locked 2026-07-18, art direction revised 2026-08-02 after the first real fal.ai pilot (see Art direction below). Changes here invalidate generated clips; treat edits as breaking.
 
 ## Purpose and scope
 
@@ -18,10 +18,12 @@ Practical consequence: the cast appears on the splash screen, as the AI tutor's 
 
 ## Art direction
 
-**Stylized 2D cartoon.**
+**Stylized cartoon — soft-shaded, not flat.**
 
-Chosen over 3D, photoreal, and folk-art styles because it solves three problems at once:
-1. **Character consistency** is far more achievable in a flat, stylized register than in photoreal faces, where small drifts read as uncanny.
+> **Revision note (2026-08-02):** the original plan called for a *flat*, two-tone, visible-outline 2D style. The first real pilot (fal.ai FLUX + Kontext for references, Kling for video) consistently produced a softly-shaded, semi-dimensional look instead — gradient shading, no hard outline — regardless of prompting toward flat/cel-shaded rendering. Rather than fight the model or invest in a custom style LoRA before the pilot category even had one full pass, the decision was to accept what the pipeline naturally produces well and lock *that* as the style, since it independently satisfies all three reasons flat-2D was chosen (below). Revisit only if a LoRA investment becomes worthwhile for other reasons (e.g. multi-character scene composition), not to chase the originally-planned line-art look for its own sake.
+
+Chosen over photoreal and folk-art styles because it solves three problems at once:
+1. **Character consistency** is far more achievable in a stylized register than in photoreal faces, where small drifts read as uncanny. Confirmed in the pilot: the same character stayed recognizable across front/three-quarter/profile references and into the animated clip.
 2. **Lip-sync tolerance** — cartoon mouth movement is forgiving. Photoreal mouths that don't match Tamil audio are actively distracting. (We are avoiding talking-head framing regardless — see below — but the tolerance is a useful safety margin.)
 3. **Comedy register** — "funny and playful" is native to the style. Photoreal comedy is hard; cartoon comedy is the default.
 
@@ -29,8 +31,8 @@ Style anchors to hold constant across every generation:
 
 | Attribute | Locked value |
 |---|---|
-| Line | Clean, moderate weight, visible outline |
-| Shading | Flat to two-tone; no gradient rendering |
+| Line | No hard outline — soft-shaded, gently dimensional rendering (what FLUX/Kontext produce natively) |
+| Shading | Smooth gradient shading, not flat/cel-shaded — this is the actual pilot output, not a stylistic reach |
 | Palette | Warm, saturated, Indian daylight — not pastel, not muted |
 | Proportion | Slightly stylized heads, expressive faces, readable at phone size |
 | Backgrounds | Simplified but specific — a real Indian street, not generic |
@@ -103,9 +105,10 @@ Meaning survives the mute test: someone is asking a price, and the price is too 
 
 ## Known gaps
 
-- Reference image sets for the four characters are **not yet generated**. This is the first pipeline task — the bible is unusable until they exist, and they must be produced and approved before any category batch.
-- Whether a style LoRA is needed (as in `chitrakatha`) or FLUX reference conditioning is sufficient is unresolved. Decide during the Greetings pilot.
+- Reference image sets exist for **Dadi and Neighbour only** (generated 2026-08-02, see `characters` table). Parent and Kid are still ungenerated — produce and approve before any category needing them (Food & Market, Numbers/Money, Family, School & Work, Daily Routine).
+- **Resolved 2026-08-02:** no style LoRA — FLUX (`flux/dev` for the front reference, `flux-pro/kontext` for angle-locked edits, `flux-pro/kontext/max/multi` for multi-character scene keyframes) plus Kling (`kling-video/v2.5-turbo/pro/image-to-video`) reference conditioning alone produces consistent, on-brand characters. See the Art direction revision note above — the achievable style differs from the original flat-2D plan, and the plan was changed to match reality rather than adding LoRA-training scope to hit the original look.
 - Regional visual variation across 22 languages (a Tamil street vs a Bengali one) is undecided. Default for launch: keep backgrounds regionally neutral, revisit if learners report it feels generic.
+- Clip file size ran large in the pilot (~11.5MB for a 10s clip) — above the manual-upload script's own 8MB bandwidth-conscious warning threshold. Re-encoding (720p, H.264, CRF ~26, per that script's existing comment) before clips reach real learners is an open task, not yet automated into the generation pipeline.
 
 ## Cross-references
 
