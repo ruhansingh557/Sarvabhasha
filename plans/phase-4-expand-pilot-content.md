@@ -1,37 +1,39 @@
 # Phase 4 — Expand pilot content
 
-**Status:** 🚧 in progress — direction chosen: more languages for the existing 5 greetings phrases, not more phrases or a second category (yet)
+**Status:** 🚧 in progress — 5 of 6 live languages done for the existing 5 greetings phrases; Marathi blocked
 
 ## Goal
 
 Grow content breadth within the existing (no-animation) content model before or in parallel with phase 5's video work. Scoped down (deliberately, by the project owner) to: translate the 5 existing `greetings` phrases into the remaining 5 live languages first, before adding phrase count or a second category.
 
-## Progress as of this session
+## Progress
 
-Translations drafted (by Claude, native-script + transliteration, respecting Dadi-as-elder/familiar vs. Neighbour-as-respectful-to-elder register where the target language marks that distinction) and reviewed by the project owner one language at a time:
+Translations drafted (by Claude, native-script + transliteration, respecting Dadi-as-elder/familiar vs. Neighbour-as-respectful-to-elder register where the target language marks that distinction), reviewed by the project owner, and approved live:
 
 | Language | Translations seeded | Audio generated | Status |
 |---|:--:|:--:|---|
 | Hindi (hi) | ✅ | ✅ | ✅ **live** (phase 3) |
-| Bengali (bn) | ✅ | ✅ | ✅ **live** — reviewed and approved this session |
-| Tamil (ta) | ✅ | ✅ | 🚧 `draft` — audio generated, **awaiting the project owner's listen-through** |
-| Telugu (te) | ✅ | ✅ | 🚧 `draft` — same, awaiting review |
-| Kannada (kn) | ✅ | ✅ | 🚧 `draft` — same, awaiting review |
-| Marathi (mr) | ✅ (text seeded) | ❌ **blocked** | Bhashini's TTS endpoint returned a sustained `504 Gateway Time-out` for `mr` specifically during this session — confirmed NOT gender-specific (both the female/Dadi and male/Neighbour voice pipelines failed identically), confirmed NOT a general Bhashini outage (hi/bn/ta/te/kn all succeeded in the same session). A background retry loop (`/tmp/mr_retry.sh`, 5 phrases × 5 attempts × 15s spacing) was left running — check its result before re-attempting manually. If still failing, this is worth a fresh look another day rather than more immediate retries; Bhashini is documented as "free, but slow and flaky" and per-language outages aren't unprecedented. |
+| Bengali (bn) | ✅ | ✅ | ✅ **live** |
+| Tamil (ta) | ✅ | ✅ | ✅ **live** |
+| Telugu (te) | ✅ | ✅ | ✅ **live** |
+| Kannada (kn) | ✅ | ✅ | ✅ **live** |
+| Marathi (mr) | ✅ (text seeded) | ❌ **blocked** | Bhashini's TTS endpoint returned a sustained `504 Gateway Time-out` for `mr` specifically — confirmed NOT gender-specific (both female/Dadi and male/Neighbour voice pipelines failed identically), confirmed NOT a general Bhashini outage (the other 5 languages all succeeded in the same session). A 25-attempt background retry (5 phrases × 5 attempts × 15s spacing) ran to completion with **zero** successes. This needs a fresh attempt on a later day, not more immediate retries — Bhashini is documented as "free, but slow and flaky," but this was an unusually sustained, language-specific failure, worth a quick recheck of Bhashini's status before assuming it's just flakiness again. |
 
-**Verified structurally correct** (not just "seeded without error"): confirmed via `review:getPhraseAcrossLanguages` that live-status gating works correctly per language (hi/bn show `live`, ta/te/kn correctly still `draft`, mr correctly has no audio row at all). **Verified end-to-end in the running app**: switched the test account's target language to Bengali via the Profile UI and confirmed all 5 phrases render with correct Bengali text/transliteration in the Learn tab phrase list — proves the multi-language path works generically, not just for Hindi.
+**Review process used**: for each language, Claude drafted translations, the project owner said "looks right" (or, for Bengali, corrected one detail before approving), Claude generated Bhashini audio, the project owner listened to signed storage URLs and confirmed quality, then Claude ran `seed:approveTranslationAndAudio` per (phraseKey, languageCode) to flip both translation and audio live together. For Tamil/Telugu/Kannada specifically, the project owner approved based on audio clarity without personally verifying the translations' semantic correctness (doesn't speak those languages) — flagging this so it's an explicit, known tradeoff rather than an invisible one. See "Open questions" below.
 
-## What's actually needed to finish this pass
+**Verified end-to-end in the running app** (not just via the review query): switched the test account's target language to Bengali, then separately to Kannada, via the Profile UI, and confirmed in both cases that the Learn tab's Greetings category renders all 5 phrases with correct native-script text and transliteration, and that progress resets to a fresh `0/5` per language (confirms `progress` is correctly scoped per (user, phrase, language), not global). Test account's target language was reset to Hindi afterward.
 
-1. **Project owner reviews ta/te/kn audio** — same process as hi/bn: listen to each clip via its signed storage URL, confirm pronunciation/naturalness, then run `seed:approveTranslationAndAudio` per (phraseKey, languageCode) to flip live. Do NOT flip these live without that review — this is the one deliberate human gate in the whole pipeline.
-2. **Resolve Marathi** — check `/tmp/mr_retry.sh`'s outcome (the log lives at `/tmp/mr_retry.log`), and if still failing, retry `bhashini/tts:generateAudioForPhrase` for `mr` again later rather than assuming it's permanently broken.
+## What's left in this phase
+
+1. **Resolve Marathi** — retry `bhashini/tts:generateAudioForPhrase` for `mr` again later. If it keeps failing across multiple days, that's worth flagging as a genuine gap rather than assumed-transient flakiness (Bhashini has no alternative TTS provider in this codebase to fall back to).
+2. Everything else (more phrases, a second category) is explicitly deferred — see below.
 
 ## Deferred within this phase (not done, not currently planned this pass)
 
 - More phrases in `greetings` beyond the original 5 (target is eventually `PHRASES_PER_CATEGORY = 20` per `packages/shared`).
 - A second category (`numbers-money`/`food-market` candidates) — explicitly deferred in favor of language breadth first, per the project owner's direction this session.
 
-## Open questions (unchanged from before this session)
+## Open questions
 
-- Who reviews translations in languages the project owner doesn't personally speak, going forward? Bengali/Tamil/Telugu/Kannada were drafted by Claude and are pending the owner's own review — same pattern as Hindi. Whether that's sufficient for languages the owner is less fluent in, or whether a native-speaker reviewer is needed, isn't settled.
+- **Review rigor for languages the project owner doesn't speak.** Tamil/Telugu/Kannada were approved on audio-clarity grounds, not semantic verification by a speaker of those languages. This may be an acceptable risk for simple, common greeting phrases (low ambiguity, easy to get right even via careful drafting) — but it's a real gap that would matter more for phase 4's next round (more phrases, more nuance) or phase 6 (tutor conversation, higher stakes). Worth deciding explicitly whether to bring in native-speaker review before scaling this pattern further, rather than let it become the default by inertia.
 - Does category #2 (whenever it happens) reuse the same 4-character cast, or does it need a 5th character? Still unresolved, still check `specs/branding-and-voice.md`'s cast table before assuming reuse.
