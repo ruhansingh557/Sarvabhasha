@@ -37,7 +37,19 @@ export function PhraseAnimationPlayer({ animationUrl }: PhraseAnimationPlayerPro
     useCallback(() => {
       player.play();
       return () => {
-        player.pause();
+        // Best-effort: expo-video's player auto-releases its native shared
+        // object on unmount, and that release can race ahead of this cleanup
+        // (e.g. navigating back unmounts the screen before this runs). Calling
+        // a method on an already-released player throws
+        // NativeSharedObjectNotFoundException — harmless here, since an
+        // unmounted/released player is already stopped, so there's nothing
+        // left to pause. Same "best-effort cleanup" pattern as
+        // usePhraseAudio.ts's setAudioModeAsync call.
+        try {
+          player.pause();
+        } catch {
+          // Native player already released — nothing to do.
+        }
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [player]),
