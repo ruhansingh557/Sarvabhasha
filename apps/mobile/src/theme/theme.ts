@@ -119,6 +119,14 @@ export const lightTheme = createTheme({
     textSecondary: palette.ink500,
     textMuted: palette.ink300,
     textInverse: palette.white,
+    /**
+     * Text drawn on top of `overlay`. Distinct from `textInverse`: that token
+     * tracks `primary`, which flips brightness per theme (so its ideal
+     * contrasting text flips too). `overlay` is a dark scrim in BOTH themes
+     * (see below), so its text stays light in both — using `textInverse`
+     * here would resolve to near-black in dark mode, on a near-black scrim.
+     */
+    overlayText: palette.white,
 
     error: palette.red500,
     success: palette.green500,
@@ -151,6 +159,7 @@ export const darkTheme: Theme = {
     textSecondary: palette.ink200,
     textMuted: palette.ink300,
     textInverse: palette.ink900,
+    overlayText: palette.white,
 
     error: palette.red400,
     success: palette.green400,

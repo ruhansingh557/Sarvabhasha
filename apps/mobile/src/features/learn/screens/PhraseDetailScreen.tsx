@@ -84,7 +84,11 @@ export function PhraseDetailScreen() {
       </Box>
 
       {detail.animationUrl ? (
-        <PhraseAnimationPlayer key={detail.phraseId} animationUrl={detail.animationUrl} />
+        <PhraseAnimationPlayer
+          key={detail.phraseId}
+          animationUrl={detail.animationUrl}
+          overlayText={detail.text}
+        />
       ) : (
         <Box
           backgroundColor="surface"
