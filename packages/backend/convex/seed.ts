@@ -246,6 +246,69 @@ export const seedNumbersMoneyPhrases = internalMutation({
 });
 
 /**
+ * Generic version of seedGreetingsPhrases/seedNumbersMoneyPhrases, for every
+ * category after the second — by the third repetition, hardcoding a new
+ * PHRASES array + seedXPhrases mutation per category is pure duplication,
+ * not the reviewable-artifact benefit that justified it the first two times.
+ * Phrase text is still hand-authored (same "status: 'live' from the start"
+ * reasoning as the two hardcoded versions above — this is English structural
+ * metadata, not machine-translated content), just supplied as an argument
+ * instead of a file-local constant; the hand-authored record lives in
+ * plans/phase-5-content-pipeline-animation.md's phrase tables instead of in
+ * this file's source.
+ */
+export const seedCategoryPhrases = internalMutation({
+  args: {
+    categorySlug: v.string(),
+    phrases: v.array(
+      v.object({
+        phraseKey: v.string(),
+        sourceText: v.string(),
+        situation: v.string(),
+        speakerCharacter: v.union(
+          v.literal('dadi'),
+          v.literal('parent'),
+          v.literal('kid'),
+          v.literal('neighbour'),
+        ),
+        difficulty: v.number(),
+        sortOrder: v.number(),
+      }),
+    ),
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const category = await ctx.db
+      .query('categories')
+      .withIndex('by_slug', (q) => q.eq('slug', args.categorySlug))
+      .first();
+    if (!category) {
+      throw new Error(`Category "${args.categorySlug}" not found — run seedCategories first.`);
+    }
+
+    for (const phrase of args.phrases) {
+      const existing = await ctx.db
+        .query('phrases')
+        .withIndex('by_key', (q) => q.eq('phraseKey', phrase.phraseKey))
+        .first();
+      if (existing) continue; // safe to re-run
+
+      await ctx.db.insert('phrases', {
+        categoryId: category._id,
+        phraseKey: phrase.phraseKey,
+        sourceText: phrase.sourceText,
+        situation: phrase.situation,
+        speakerCharacter: phrase.speakerCharacter,
+        difficulty: phrase.difficulty,
+        sortOrder: phrase.sortOrder,
+        status: 'live',
+      });
+    }
+    return null;
+  },
+});
+
+/**
  * Stores ONE (phrase, language) translation. Text is supplied by the caller
  * — this function has no opinion on what any language's translation says.
  *

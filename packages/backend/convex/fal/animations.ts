@@ -67,7 +67,7 @@ import { STYLE_ANCHOR, CHARACTER_BIBLE } from './characters';
  */
 const TRAIT_ANCHORS: Record<'dadi' | 'parent' | 'kid' | 'neighbour', string> = {
   dadi: 'an elderly woman with silver-grey hair in a low bun, a red bindi, and NO facial hair of any kind — completely smooth face, no moustache, no beard',
-  neighbour: 'an adult man with short black hair and a trim black moustache — the moustache belongs ONLY to him',
+  neighbour: 'an adult man with short black hair and a trim black moustache ONLY — NO beard, NO goatee, NO stubble or facial hair anywhere on the cheeks, jaw, or chin, completely clean-shaven except for the moustache; wearing a light-blue and white checked short-sleeved shirt — the moustache and the checked shirt both belong ONLY to him',
   parent: 'an adult woman, medium build, with black hair pulled back into a low braid, wearing a teal-green kurta, NO bindi and NO facial hair — deliberately plainer than Dadi',
   kid: 'a small 9-year-old boy with small, rounded child proportions — a noticeably bigger head-to-body ratio and shorter limbs than any adult in the scene — messy short black hair and a bright orange-red t-shirt; he must read as visibly shorter and less filled-out than every adult character, never adult-proportioned',
 };
@@ -262,6 +262,353 @@ const PHRASE_BEATS: Record<
       "Parent's shoulders drop slightly in mild exasperation, then breaks into a resigned, " +
       'understanding smile, patting their own pockets to see if they have smaller-denomination ' +
       'cash instead.',
+  },
+
+  // --------------------------------------------------------- food-market
+
+  'aapko-kya-chahiye-what-do-you-need': {
+    other: 'parent',
+    setting: 'a simplified but specific Indian street-market fruit and vegetable stall, warm daylight',
+    setup: "Parent walks up to the Neighbour's fruit and vegetable stall, looking over the produce.",
+    phrase:
+      'The Neighbour looks up with a welcoming smile and open palms, asking what she needs.',
+    reaction:
+      'Parent smiles back and starts pointing at a basket of vegetables.',
+  },
+  'ek-kilo-aalu-one-kilo-potatoes': {
+    other: 'neighbour',
+    setting: 'the same fruit and vegetable stall, warm daylight',
+    setup: 'Parent points to a pile of potatoes at the stall.',
+    phrase:
+      'Parent holds up one finger and gestures at the potatoes, indicating the quantity she wants.',
+    reaction: 'The Neighbour nods and starts scooping potatoes onto a hanging scale.',
+  },
+  'kya-yeh-taaze-hain-are-these-fresh': {
+    other: 'neighbour',
+    setting: 'the same fruit and vegetable stall, warm daylight',
+    setup: 'Parent picks up a tomato from the stall and examines it closely.',
+    phrase:
+      'Parent holds the tomato toward the Neighbour with a questioning look, checking its freshness.',
+    reaction: 'The Neighbour puffs up proudly, gesturing at the produce with confidence.',
+  },
+  'haan-bahut-taaze-hain-yes-very-fresh': {
+    other: 'parent',
+    setting: 'the same fruit and vegetable stall, warm daylight',
+    setup:
+      'The Neighbour picks up another tomato and holds it up next to the scale, still confident.',
+    phrase: 'The Neighbour nods enthusiastically, giving a thumbs-up about the freshness.',
+    reaction:
+      'Parent smiles, satisfied, and starts placing items into a basket.',
+  },
+  'ek-thaila-dijiye-give-me-a-bag': {
+    other: 'neighbour',
+    setting: 'the same fruit and vegetable stall, warm daylight',
+    setup: 'Parent has finished selecting her vegetables, now piled on the counter.',
+    phrase:
+      'Parent gestures toward the vegetables and mimes holding open a bag, asking for one.',
+    reaction: 'The Neighbour reaches under the stall and hands her a cloth bag with a smile.',
+  },
+
+  // ----------------------------------------------------- travel-directions
+
+  'rasta-bhool-gaya-i-am-lost': {
+    // speakerCharacter is 'parent'; the Neighbour appears as a passerby she
+    // is about to approach, not yet in conversation with her during SETUP —
+    // still a valid two-character scene per the speaker !== other rule.
+    other: 'neighbour',
+    setting: 'a simplified but specific Indian street corner with shopfronts, warm daylight',
+    setup:
+      'Parent stands at a street corner, looking around uncertainly at the unfamiliar ' +
+      'buildings, a phone in hand.',
+    phrase:
+      "Parent sighs and rubs her forehead, looking around, realizing she doesn't recognize " +
+      'where she is.',
+    reaction:
+      'The Neighbour, passing by, notices her confusion and slows down, looking at her with ' +
+      'concern.',
+  },
+  'bus-stop-kahan-hai-where-is-bus-stop': {
+    other: 'neighbour',
+    setting: 'the same street corner, warm daylight',
+    setup: 'The Neighbour has stopped near Parent, ready to help.',
+    phrase: 'Parent turns to him and asks, pointing questioningly down the street.',
+    reaction: 'The Neighbour nods and points confidently in a specific direction.',
+  },
+  'seedhe-jaiye-go-straight-turn-left': {
+    other: 'parent',
+    setting: 'the same street corner, warm daylight',
+    setup: 'The Neighbour gestures down the street, orienting himself to explain the route.',
+    phrase:
+      'The Neighbour points straight ahead, then makes a sweeping motion to the left, ' +
+      'explaining the turn.',
+    reaction:
+      'Parent nods, following his hand movements, mentally noting the directions.',
+  },
+  'kitni-door-hai-how-far-is-it': {
+    other: 'neighbour',
+    setting: 'the same street corner, warm daylight',
+    setup: 'Parent looks down the street in the direction the Neighbour pointed.',
+    phrase:
+      'Parent turns back to him with a slightly worried expression, asking about the distance.',
+    reaction:
+      'The Neighbour smiles reassuringly and holds up a hand in a "not much" gesture.',
+  },
+  'paanch-minute-just-five-minutes': {
+    other: 'parent',
+    setting: 'the same street corner, warm daylight',
+    setup: 'The Neighbour taps his wrist where a watch would be, thinking about the time.',
+    phrase:
+      'The Neighbour holds up five fingers and gestures toward the walking direction.',
+    reaction:
+      'Parent looks relieved, smiles, and waves goodbye as she starts walking.',
+  },
+
+  // -------------------------------------------------------------- family
+
+  'dadi-mujhe-bhookh-lagi-hai-im-hungry': {
+    // First attempt read as an affectionate hug on inspection — the mute
+    // test failed (a learner couldn't infer "hungry" from it). Reworded to
+    // an explicit, hard-to-misread hungry-complaint pose with a direct
+    // negative constraint against the hug/affection reading it drifted to.
+    other: 'dadi',
+    setting: 'a simplified but specific Indian home kitchen, warm daylight',
+    setup: "Kid runs into the kitchen where Dadi is cooking, tugging urgently at her saree.",
+    phrase:
+      'Kid clutches both hands over his own belly, rubbing it, eyebrows furrowed and mouth ' +
+      'open in an urgent hungry complaint — a whiny "I\'m starving" expression, body ' +
+      'slightly hunched forward. This is a hungry complaint, NOT a hug or an affectionate ' +
+      'moment — Kid does not embrace Dadi here.',
+    reaction:
+      'Dadi looks down at him with a fond, amused smile, wiping her hands on her apron.',
+  },
+  'thoda-ruko-beta-wait-a-little': {
+    other: 'kid',
+    setting: 'the same home kitchen, warm daylight',
+    setup: 'Dadi continues stirring something on the stove, Kid still waiting beside her.',
+    phrase:
+      'Dadi holds up a hand in a "wait" gesture, glancing at Kid warmly without stopping her work.',
+    reaction:
+      'Kid sighs dramatically and slumps his shoulders, but nods, resigned to waiting.',
+  },
+  'mummy-kahan-hai-where-is-mumma': {
+    other: 'dadi',
+    setting: 'a simplified but specific Indian home living room, warm daylight',
+    setup: 'Kid looks around the room, not seeing his mother anywhere.',
+    phrase:
+      'Kid tugs Dadi\'s sleeve and looks up at her questioningly, shrugging his shoulders.',
+    reaction: 'Dadi smiles and points toward the door, about to explain.',
+  },
+  'woh-bazaar-gayi-hai-she-went-to-market': {
+    other: 'kid',
+    setting: 'the same home living room, warm daylight',
+    setup: 'Dadi points toward the door where Parent recently left.',
+    phrase: 'Dadi gestures outward with an open palm, explaining calmly to Kid.',
+    reaction: 'Kid nods, satisfied with the answer, and goes back to playing.',
+  },
+  'main-aapse-pyaar-karta-hoon-i-love-you': {
+    other: 'dadi',
+    setting: 'the same home living room, warm daylight',
+    setup: 'Kid runs up to Dadi, who is sitting on a chair, and wraps his arms around her.',
+    phrase: 'Kid hugs Dadi tightly, resting his head on her shoulder.',
+    reaction:
+      "Dadi's eyes soften, she wraps her arms around him and pats his back warmly.",
+  },
+
+  // -------------------------------------------------------- daily-routine
+
+  'jaag-jao-subah-ho-gayi-wake-up': {
+    // First attempt showed Kid already standing, fully dressed, and alert —
+    // the mute test failed (didn't read as "waking up" at all). Reworded so
+    // Kid stays lying down / in-bed through the whole clip, with an explicit
+    // negative constraint against standing up or getting dressed.
+    other: 'kid',
+    setting: 'a simplified but specific Indian home bedroom, soft morning light',
+    setup:
+      'Morning light streams into a small bedroom where Kid is lying down in bed, eyes ' +
+      'closed, blanket pulled up to his chest, clearly still fast asleep.',
+    phrase:
+      "Dadi sits on the edge of the bed and gently shakes Kid's shoulder while he is still " +
+      'lying down, smiling as she wakes him. Kid remains lying in bed throughout — NOT ' +
+      'standing, NOT out of bed, NOT dressed.',
+    reaction:
+      'Kid slowly opens his eyes and stretches while still lying in bed, hair messy, one ' +
+      'hand rubbing his eyes, clearly groggy — still under the blanket, not yet out of bed.',
+  },
+  'pehle-daant-saaf-karo-brush-your-teeth': {
+    other: 'kid',
+    setting: 'a simplified but specific Indian home hallway near a bathroom door, morning light',
+    setup: 'Kid, now out of bed, starts to wander toward the door still in his pajamas.',
+    phrase:
+      'Dadi points firmly toward the bathroom, holding up an imaginary toothbrush gesture.',
+    reaction: 'Kid makes a reluctant face but turns toward the bathroom.',
+  },
+  'mujhe-daant-saaf-nahi-karne-dont-want-to-brush': {
+    other: 'dadi',
+    setting: 'the same hallway near the bathroom door, morning light',
+    setup: 'Kid stands at the bathroom doorway, arms crossed, refusing to go further.',
+    phrase: 'Kid shakes his head firmly, crossing his arms with a stubborn pout.',
+    reaction: 'Dadi puts her hands on her hips, giving him a mock-stern look.',
+  },
+  'jaldi-nashta-karo-eat-breakfast-quickly': {
+    other: 'kid',
+    setting: 'a simplified but specific Indian home kitchen table set for breakfast, morning light',
+    setup: 'Kid now sits at the table with a bowl in front of him, dawdling.',
+    phrase:
+      'Dadi taps the table and gestures for him to hurry, glancing at an imaginary clock.',
+    reaction: 'Kid quickly picks up his spoon and starts eating.',
+  },
+  'main-school-ke-liye-taiyaar-hoon-ready-for-school': {
+    other: 'dadi',
+    setting: 'a simplified but specific Indian home front door, morning light',
+    setup: 'Kid now stands by the door in his school uniform, backpack on.',
+    phrase: 'Kid strikes a proud pose, gesturing at himself, fully ready.',
+    reaction: 'Dadi claps her hands together, beaming with pride.',
+  },
+
+  // ---------------------------------------------------------- health-body
+
+  'mere-pet-mein-dard-hai-stomach-hurts': {
+    other: 'dadi',
+    setting: 'a simplified but specific Indian home living room, warm daylight',
+    setup: 'Kid stands in the living room clutching his stomach, wincing.',
+    phrase:
+      'Kid presses both hands to his belly, doubled over slightly, face scrunched in ' +
+      'discomfort.',
+    reaction: 'Dadi rushes over, concern etched on her face, reaching out to him.',
+  },
+  'kahan-dard-hai-where-does-it-hurt': {
+    // First attempt read as generic affection with no questioning gesture —
+    // mute test failed for this QUESTION phrase (a learner couldn't tell
+    // Dadi was asking anything, let alone where it hurts). Reworded with an
+    // explicit, unmistakable pointing/searching gesture on both sides.
+    other: 'kid',
+    setting: 'the same home living room, warm daylight',
+    setup:
+      "Dadi kneels down in front of Kid, still holding his belly, her face full of concern.",
+    phrase:
+      "Dadi holds both palms open and moves them searchingly along Kid's torso without " +
+      'touching him, eyebrows raised high, mouth open mid-question, clearly asking "where" ' +
+      '— an unmistakable questioning gesture, not a hug or an embrace.',
+    reaction:
+      'Kid points with one finger directly at his own belly, wincing, giving her a clear answer.',
+  },
+  'mujhe-bukhaar-hai-i-have-a-fever': {
+    other: 'dadi',
+    setting: 'the same home living room, warm daylight',
+    setup: "Dadi presses the back of her hand to Kid's forehead to check his temperature.",
+    phrase:
+      'Kid looks up at her, cheeks flushed pink, feeling warm and unwell.',
+    reaction:
+      "Dadi's eyes widen slightly with concern, and she immediately guides him toward the " +
+      'bedroom.',
+  },
+  'aaram-karo-take-rest': {
+    other: 'kid',
+    setting: 'a simplified but specific Indian home bedroom, soft warm light',
+    setup: 'Dadi tucks Kid into bed, pulling a blanket over him.',
+    phrase: 'Dadi pats the blanket gently and gestures for him to lie back and rest.',
+    reaction: 'Kid nods obediently and settles into the pillow, closing his eyes.',
+  },
+  'ab-mujhe-accha-lag-raha-hai-feeling-better': {
+    other: 'dadi',
+    setting: 'the same home bedroom, soft warm light',
+    setup:
+      'Some time has passed; Kid sits up in bed, looking brighter and more energetic.',
+    phrase: 'Kid smiles widely and gives a thumbs-up, sitting up on his own.',
+    reaction:
+      "Dadi claps her hands together with relief and joy, delighted to see him well again.",
+  },
+
+  // ------------------------------------------------------------ emergency
+  // Tone note: unlike the other categories, this one is not played for
+  // comedy — warm and reassuring throughout, per the pipeline's own rule
+  // against ever mocking anyone (here, someone hurt/in distress).
+
+  'madad-karo-help': {
+    other: 'neighbour',
+    setting: 'a simplified but specific Indian residential street, warm daylight',
+    setup: 'Parent walks along the street and trips on an uneven paving stone, stumbling.',
+    phrase:
+      'Parent falls to the ground, one hand raised, calling out with an alarmed expression.',
+    reaction: 'The Neighbour, nearby, spins around immediately and rushes toward her.',
+  },
+  'mujhe-chot-lagi-hai-i-am-injured': {
+    other: 'neighbour',
+    setting: 'the same residential street, warm daylight',
+    setup: 'The Neighbour crouches down beside Parent, who is still sitting on the ground.',
+    phrase: 'Parent holds her ankle, wincing, showing him where she is hurt.',
+    reaction: "The Neighbour's face fills with concern as he looks at her ankle.",
+  },
+  'main-doctor-ko-bulata-hoon-ill-call-a-doctor': {
+    other: 'parent',
+    setting: 'the same residential street, warm daylight',
+    setup: 'The Neighbour reaches into his pocket and pulls out his phone.',
+    phrase: 'The Neighbour holds the phone to his ear, nodding reassuringly at Parent.',
+    reaction: 'Parent nods back gratefully, still holding her ankle.',
+  },
+  'ambulance-bulaiye-call-an-ambulance': {
+    other: 'neighbour',
+    setting: 'the same residential street, warm daylight',
+    setup: 'Parent, still in pain, looks up at the Neighbour urgently.',
+    phrase:
+      'Parent gestures with an open palm toward his phone, asking urgently for more help.',
+    reaction: 'The Neighbour nods quickly and dials again, his expression turning serious.',
+  },
+  'chinta-mat-karo-dont-worry': {
+    other: 'parent',
+    setting: 'the same residential street, warm daylight',
+    setup: 'The Neighbour kneels beside Parent, phone call finished, staying close to her.',
+    phrase:
+      "The Neighbour holds a hand near her shoulder at a respectful distance, not touching, " +
+      'smiling gently to calm her.',
+    reaction: 'Parent takes a breath and manages a small, relieved smile.',
+  },
+
+  // ----------------------------------------------------------- school-work
+
+  'homework-kar-liya-have-you-done-homework': {
+    other: 'kid',
+    setting: 'a simplified but specific Indian home living room, warm daylight',
+    setup: 'Parent walks into the living room where Kid is playing with a toy on the floor.',
+    phrase:
+      'Parent crosses her arms and raises an eyebrow, gesturing toward a school bag in the ' +
+      'corner, asking about homework.',
+    reaction: 'Kid freezes mid-play, looking up sheepishly.',
+  },
+  'abhi-nahi-main-khel-raha-hoon-not-yet-playing': {
+    other: 'parent',
+    setting: 'the same home living room, warm daylight',
+    setup: 'Kid, still holding his toy, glances at Parent.',
+    phrase:
+      'Kid shrugs and holds up his toy, gesturing that he is busy playing, an innocent ' +
+      'evasive smile.',
+    reaction: "Parent's eyebrow rises further, unconvinced, hands now on her hips.",
+  },
+  'abhi-jaakar-padho-go-study-now': {
+    other: 'kid',
+    setting: 'the same home living room with a small study desk visible, warm daylight',
+    setup: 'Parent points firmly toward a small study desk in the corner of the room.',
+    phrase:
+      'Parent gestures decisively toward the desk and chair, a no-nonsense expression.',
+    reaction: 'Kid sighs, sets down his toy, and shuffles toward the desk.',
+  },
+  'kal-mera-exam-hai-i-have-an-exam-tomorrow': {
+    other: 'parent',
+    setting: 'the same study desk corner, warm daylight',
+    setup:
+      'Kid, now sitting at the desk with a book open, suddenly sits up straight.',
+    phrase:
+      "Kid's eyes go wide, one hand slapping his forehead, suddenly remembering and looking " +
+      'worried.',
+    reaction:
+      'Parent, nearby, gives him a knowing, sympathetic look and nods toward the book.',
+  },
+  'maine-homework-poora-kar-liya-finished-homework': {
+    other: 'parent',
+    setting: 'the same study desk corner, warm daylight',
+    setup: 'Some time later, Kid closes his notebook and jumps up from the desk.',
+    phrase: 'Kid holds up his notebook proudly toward Parent, beaming.',
+    reaction: 'Parent takes the notebook, checks it, and smiles warmly, ruffling his hair.',
   },
 };
 

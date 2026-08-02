@@ -78,7 +78,7 @@ export const CATEGORIES: readonly CategoryDef[] = [
     i18nKey: 'Category.FOOD_MARKET',
     iconKey: 'basket',
     sortOrder: 3,
-    launchStatus: 'draft',
+    launchStatus: 'live',
     cast: ['parent', 'neighbour'],
   },
   {
@@ -86,7 +86,7 @@ export const CATEGORIES: readonly CategoryDef[] = [
     i18nKey: 'Category.TRAVEL_DIRECTIONS',
     iconKey: 'signpost',
     sortOrder: 4,
-    launchStatus: 'draft',
+    launchStatus: 'live',
     cast: ['parent', 'neighbour'],
   },
   {
@@ -94,7 +94,7 @@ export const CATEGORIES: readonly CategoryDef[] = [
     i18nKey: 'Category.FAMILY',
     iconKey: 'people',
     sortOrder: 5,
-    launchStatus: 'draft',
+    launchStatus: 'live',
     cast: ['dadi', 'parent', 'kid'],
   },
   {
@@ -102,7 +102,7 @@ export const CATEGORIES: readonly CategoryDef[] = [
     i18nKey: 'Category.DAILY_ROUTINE',
     iconKey: 'sun-clock',
     sortOrder: 6,
-    launchStatus: 'draft',
+    launchStatus: 'live',
     cast: ['dadi', 'kid'],
   },
   {
@@ -110,7 +110,7 @@ export const CATEGORIES: readonly CategoryDef[] = [
     i18nKey: 'Category.HEALTH_BODY',
     iconKey: 'heart-pulse',
     sortOrder: 7,
-    launchStatus: 'draft',
+    launchStatus: 'live',
     cast: ['dadi', 'kid'],
   },
   {

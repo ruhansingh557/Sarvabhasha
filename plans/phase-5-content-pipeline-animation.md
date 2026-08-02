@@ -1,6 +1,22 @@
 # Phase 5 — Content pipeline & animation (fal.ai)
 
-**Status:** ✅ done for two categories — `greetings` (5 phrases, Dadi + Neighbour) and `numbers-money` (5 phrases, Parent + Neighbour + Kid) are both fully live end to end (text, audio, animation, re-encoded). All four cast members are in production use. Remaining categories (Food & Market, Travel & Directions, Family, Daily Routine, Health & Body, Emergency, School & Work) not started
+**Status:** 🚧 7 of 9 categories fully live end to end (text, audio, animation, re-encoded): `greetings`, `numbers-money`, `food-market`, `travel-directions`, `family`, `daily-routine`, `health-body` — 35 phrases total. `emergency` and `school-work` have text+audio fully live but are **blocked on animation** — fal.ai returned `403 User is locked. Reason: Exhausted balance` partway through health-body's last fix. See "BLOCKED — fal.ai balance exhausted" below for exact resume steps; both categories' `PHRASE_BEATS` are already authored and waiting, this is a pure balance top-up + two `generateAnimationsForPhrases` calls away from done.
+
+## BLOCKED — fal.ai balance exhausted (2026-08-02)
+
+While regenerating `health-body`'s `kahan-dard-hai-where-does-it-hurt` clip, `fal-ai/flux-pro/kontext/max/multi` returned:
+```
+403 — {"detail":"User is locked. Reason: Exhausted balance. Top up your balance at fal.ai/dashboard/billing."}
+```
+This is a hard stop, not a retry-able error — confirmed by a second attempt failing identically. **Top up the fal.ai account balance at fal.ai/dashboard/billing before doing anything else in this phase.**
+
+Once topped up, resume in this exact order:
+1. `health-body`'s `kahan-dard-hai-where-does-it-hurt` is currently **live using its first-attempt clip** (approved as a judgment call — reads as generic caring affection rather than clearly "asking where it hurts," a soft mute-test miss, not a hard rule violation, accepted rather than leaving the whole category blocked on one soft imperfection while fal.ai was down). Its `PHRASE_BEATS` entry has already been strengthened with an explicit pointing/questioning-gesture description. Optional: `bunx convex run fal/animations:generateAnimationForPhrase '{"phraseId":"k575adn6w1r0hqzkgj90zsz6dn8bqb7c","attempt":2}'` to try again with the improved prompt, review the result, and if better, re-encode + `approveAnimationInternal` + supersede the current live one (same pattern as every other clip this session).
+2. `emergency` — phrase text/audio are live (5 phrases, all 6 languages, `seed:approveTranslationAndAudio` already run). `PHRASE_BEATS` already added to `fal/animations.ts`. Run `generateAnimationsForPhrases` with its 5 phraseIds (see `plans/_index.md`'s phrase-key list or query `phrases` by `categoryId` for the `emergency` category), review every clip frame-by-frame before approving (this session's established discipline — it caught real bugs on every single category so far), re-encode, approve, then flip `packages/shared/src/categories.ts`'s `emergency` entry from `launchStatus: 'draft'` to `'live'` and re-run `seed:seedCategories`.
+3. `school-work` — same as emergency: text/audio live, `PHRASE_BEATS` already written, just needs animation generation → review → re-encode → approve → flip `launchStatus` to `'live'` → re-run `seed:seedCategories`.
+4. Verify both end-to-end in the Simulator (Learn tab shows them as real categories, not "Coming soon") the same way every other category this session was verified.
+
+**Cost so far this session** (the 7 completed categories' animation spend, approximate — not independently cross-checked against fal.ai's own billing dashboard): `food-market` + `travel-directions` generated as one 10-clip batch, $7.80 clean + 3 re-rolls (2 beard/shirt-drift regenerations, 1 the same "note read as literal text" class of fix is NOT what happened here — see per-category notes below) ≈ $10.14. `family` + `daily-routine` as another 10-clip batch, $7.80 clean + 3 re-rolls (2 mute-test content fixes, 1 extra re-roll when a regenerated clip introduced a NEW trait-bleed bug) ≈ $10.14. `health-body`, 5 clips, $3.90 clean, no completed re-rolls (the one attempted re-roll is the one that hit the balance wall). **Total ≈ $24.18** for 7 categories' animations this session, on top of whatever `greetings`/`numbers-money`/character-reference spend preceded it (documented earlier in this file).
 
 ## What shipped (2026-08-02 pilot)
 
@@ -92,6 +108,66 @@ Phrases 1/2/3/5 are directly grounded in real phrasebook/dictionary usage (य�
 9. ✅ **Flip the `numbers-money` category to live** — found a real gotcha: the category's `status` is derived from `launchStatus` in `packages/shared/src/categories.ts`'s `CATEGORIES` array, not just a DB field. Patching the DB row directly would have been silently reverted the next time `seedCategories` re-runs (it's designed to be idempotent/re-runnable). Fixed the actual source (`launchStatus: 'draft'` → `'live'`) and re-ran `seedCategories`, which is the durable fix.
 10. ✅ **Verified end-to-end in the Simulator** — Home tab's progress counter picked up the new phrases automatically (4 of 10, reactive Convex query, no restart needed); Learn tab shows "Numbers & Money" as a real tappable category, no longer "Coming soon"; opened `paanch-rupaye-five-rupees` and confirmed correct Hindi text/transliteration/situation, the sweet-stall clip autoplaying, the per-language subtitle overlay rendering (confirming it really is generic, not greetings-specific), and the combined play/pause icon correctly toggling.
 11. ✅ Docs updated (this file, `plans/_index.md`).
+
+## What shipped (2026-08-02, 5 more categories — food-market through health-body)
+
+Built with full autonomy per the project owner's explicit request ("finish all categories... I will be away for 3 hr... you have all my permission") — no per-step confirmation, self-directed review and approval throughout, same rigor as every prior category (every clip frame-extracted and personally inspected before approval, never trusted from the generation response alone).
+
+**`food-market`** (Parent/Neighbour, vegetable stall) — 5 phrases: asking what's needed, ordering by the kilo, checking freshness, reassurance, asking for a bag. Grounded in real Hindi phrasebook sources (kilo/taaza/thaila all dictionary-attested). **Real bug**: 3 of 5 first-attempt clips showed Neighbour with a full beard instead of his bible's trim-moustache-only, plus inconsistent shirt color — `TRAIT_ANCHORS.neighbour` strengthened with an explicit "NO beard, NO goatee... clean-shaven except for the moustache" negative constraint and the shirt color folded into the anchor text itself (previously only in the full character bible, not the short per-scene anchor). 2 of 3 regenerated clips still show a faint residual chin-shadow after the fix — accepted as a minor cosmetic imperfection (moustache correct, shirt correct, not a structural identity break) rather than a 4th iteration round.
+
+**`travel-directions`** (Parent/Neighbour, street corner) — 5 phrases: admitting being lost, asking for the bus stop, receiving directions, asking distance, reassurance on timing. All 5 first-attempt clips were clean — no bugs, no re-rolls.
+
+**`family`** (Dadi/Kid, home) — 5 phrases: hunger, being told to wait, asking where Mumma is, being told she's at the market, "I love you." **Real bug**: the first `dadi-mujhe-bhookh-lagi-hai` ("I'm hungry") clip failed the mute test — rendered as a warm hug, not a hunger complaint, despite the beat text describing stomach-patting. Reworded with an explicit negative constraint ("NOT a hug or an affectionate moment") and regenerated — the new version correctly showed a pained, belly-clutching complaint, but introduced a *new* bug: Dadi grew a moustache (a genuine trait-bleed, the same class of bug as `TRAIT_ANCHORS` exists to prevent, apparently not fully reliable when only one adult reference is in the multi-image edit). A third attempt with no further prompt changes came back clean — confirms this was stochastic, not systemic to the Dadi+Kid pairing (the *other* Dadi+Kid clip generated in the same batch, `jaag-jao`, never had this issue).
+
+**`daily-routine`** (Dadi/Kid, home) — 5 phrases: waking up, being told to brush teeth, refusing, breakfast urgency, ready for school. **Real bug**: `jaag-jao-subah-ho-gayi` ("wake up") failed the mute test on the first attempt — Kid was shown already standing, dressed, and alert, not remotely reading as "just woke up." Reworded with explicit "NOT standing, NOT out of bed, NOT dressed" constraints and regenerated — came back excellent (Kid genuinely lying in bed, eyes closed, groggy). The other 4 phrases were clean on the first attempt, including two standout clips: `pehle-daant-saaf-karo` shows Kid literally holding a toothbrush in a bathroom, `jaldi-nashta-karo` shows a literal alarm clock next to the breakfast plate — both unusually clear, almost too-literal prop choices that make the mute test trivial to pass.
+
+**`health-body`** (Dadi/Kid, home) — 5 phrases: stomach pain, asking where it hurts, fever, rest, feeling better. 4 of 5 clean on the first attempt (the fever-check clip, with Dadi's hand literally on Kid's forehead, is a standout). `kahan-dard-hai` ("where does it hurt?") read as generic affection with no questioning gesture on the first attempt — reworded with an explicit "searching hands, raised eyebrows, mid-question" description, but the regeneration attempt hit the fal.ai balance wall before it could run (see "BLOCKED" section above). Shipped live using the original clip as a judgment call, not a re-roll.
+
+### Phrase sets, for the record (researched, not invented — same discipline as `numbers-money`)
+
+| Category | # | Source text | Speaker |
+|---|---|---|---|
+| food-market | 1 | "What do you need?" | Neighbour |
+| food-market | 2 | "I need one kilo of potatoes" | Parent |
+| food-market | 3 | "Are these fresh?" | Parent |
+| food-market | 4 | "Yes, very fresh" | Neighbour |
+| food-market | 5 | "Please give me a bag" | Parent |
+| travel-directions | 1 | "I think I am lost" | Parent |
+| travel-directions | 2 | "Where is the bus stop?" | Parent |
+| travel-directions | 3 | "Go straight, then turn left" | Neighbour |
+| travel-directions | 4 | "How far is it?" | Parent |
+| travel-directions | 5 | "Just five minutes on foot" | Neighbour |
+| family | 1 | "Grandmother, I am hungry" | Kid |
+| family | 2 | "Wait a little, dear" | Dadi |
+| family | 3 | "Where is Mumma?" | Kid |
+| family | 4 | "She has gone to the market" | Dadi |
+| family | 5 | "I love you, Grandmother" | Kid |
+| daily-routine | 1 | "Wake up, it is morning!" | Dadi |
+| daily-routine | 2 | "Brush your teeth first" | Dadi |
+| daily-routine | 3 | "I do not want to brush" | Kid |
+| daily-routine | 4 | "Eat your breakfast quickly" | Dadi |
+| daily-routine | 5 | "I am ready for school" | Kid |
+| health-body | 1 | "My stomach hurts" | Kid |
+| health-body | 2 | "Where does it hurt?" | Dadi |
+| health-body | 3 | "I have a fever" | Kid |
+| health-body | 4 | "Take rest" | Dadi |
+| health-body | 5 | "I am feeling better now" | Kid |
+| emergency (text/audio live, animation blocked) | 1 | "Help!" | Parent |
+| emergency | 2 | "I am injured" | Parent |
+| emergency | 3 | "I will call a doctor" | Neighbour |
+| emergency | 4 | "Please call an ambulance" | Parent |
+| emergency | 5 | "Do not worry, I am here" | Neighbour |
+| school-work (text/audio live, animation blocked) | 1 | "Have you done your homework?" | Parent |
+| school-work | 2 | "Not yet, I am playing" | Kid |
+| school-work | 3 | "Go and study now" | Parent |
+| school-work | 4 | "I have an exam tomorrow" | Kid |
+| school-work | 5 | "I have finished my homework" | Kid |
+
+### Process notes worth keeping
+
+- Added `seed:seedCategoryPhrases`, a generic version of the hardcoded `seedGreetingsPhrases`/`seedNumbersMoneyPhrases` pattern — by the third category, a new hardcoded array + mutation per category was pure duplication. Phrase text is still hand-authored (same reasoning as the first two), just supplied as a mutation argument instead of a file-local constant; the phrase-set table above is now that "reviewable artifact" record instead of `seed.ts` source.
+- `packages/shared/src/categories.ts`'s `launchStatus` field is the actual source of truth `seedCategories` derives a category's DB `status` from — patching the DB row directly (rather than the source) gets silently reverted on the next idempotent reseed. Every category flip this session went through the source field + a `seedCategories` re-run, not a direct patch.
+- Marathi: Bhashini failed 100% of the time across all 5 new categories (25/25 `mr` calls, all `504`) — now a five-for-five pattern across every category built this session, in addition to the two prior days documented in `plans/phase-4`. `google/tts:generateAudioForPhraseGoogle` filled in every one successfully. This is no longer worth re-testing Bhashini for; treat Marathi TTS as permanently routed through Google until there's a specific reason to check again.
 
 ## Open decision, not yet made
 
