@@ -1,8 +1,10 @@
 import { useCallback } from 'react';
-import { ActivityIndicator, StyleSheet, useWindowDimensions } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, useWindowDimensions } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useFocusEffect } from '@react-navigation/native';
 import { useEvent } from 'expo';
 import { useVideoPlayer, VideoView } from 'expo-video';
+import { Ionicons } from '@expo/vector-icons';
 import { Box, Text, useTheme } from '@theme';
 
 interface PhraseAnimationPlayerProps {
@@ -20,19 +22,47 @@ interface PhraseAnimationPlayerProps {
    * a client-side overlay can be correct per-language.
    */
   overlayText: string;
+  /**
+   * Whether the phrase's pronunciation clip (Bhashini TTS, owned by
+   * `usePhraseAudio` in the screen) is currently playing. This component
+   * never imports that hook itself — it stays a generic video player and the
+   * screen wires audio into it via this prop plus `onToggleAudio`, so it has
+   * no direct Bhashini/audio dependency of its own.
+   */
+  audioPlaying: boolean;
+  /** Toggles the pronunciation audio. Invoked by the combined play/pause
+   * control below, alongside the video's own play/pause. */
+  onToggleAudio: () => void;
 }
 
 /**
  * The lesson's silent, ambient teaching clip (fal.ai image-to-video, 9:16
  * portrait, 8-10s). Meaning is carried entirely by gesture/posture — there is
- * no burned-in audio, lip-sync, or target-script text. This is deliberately
- * independent of `usePhraseAudio`'s Bhashini TTS "Play" button elsewhere on
- * this screen; the two are never synced against each other.
+ * no burned-in audio, lip-sync, or target-script text.
  *
- * Autoplays + loops muted while this screen is focused, and pauses when the
- * learner navigates away rather than continuing to play off-screen.
+ * A single overlaid play/pause icon (center-tap, YouTube/Instagram
+ * convention) controls this clip AND `usePhraseAudio`'s Bhashini TTS
+ * pronunciation clip together, per the project owner's explicit "one combined
+ * control" request. The video's own play/pause state (`playingChange`) is
+ * the primary signal the icon reflects — it loops continuously, while the
+ * audio is a short one-shot clip that naturally finishes on its own even
+ * while the video keeps looping. Pausing pauses the video always, and the
+ * audio only if it was actually mid-playback (never force-started just to
+ * immediately pause it); resuming plays the video always, and starts the
+ * audio only if it isn't already playing.
+ *
+ * The video autoplays + loops muted while this screen is focused (unchanged
+ * from before this control existed — the learner shouldn't have to tap to
+ * see the clip play the first time), and pauses when the learner navigates
+ * away rather than continuing to play off-screen.
  */
-export function PhraseAnimationPlayer({ animationUrl, overlayText }: PhraseAnimationPlayerProps) {
+export function PhraseAnimationPlayer({
+  animationUrl,
+  overlayText,
+  audioPlaying,
+  onToggleAudio,
+}: PhraseAnimationPlayerProps) {
+  const { t } = useTranslation();
   const theme = useTheme();
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
 
@@ -61,6 +91,29 @@ export function PhraseAnimationPlayer({ animationUrl, overlayText }: PhraseAnima
   // Reactive mirror of `player.status` — the property itself doesn't
   // re-render the component when it changes underneath us.
   const { status } = useEvent(player, 'statusChange', { status: player.status });
+  // Same reasoning for `player.playing`: this drives the combined icon below,
+  // so it needs to re-render on every play/pause, not just read once.
+  const { isPlaying: videoPlaying } = useEvent(player, 'playingChange', {
+    isPlaying: player.playing,
+  });
+
+  const handleToggle = useCallback(() => {
+    if (videoPlaying) {
+      player.pause();
+      // Only pause the audio if it was actually mid-playback — force-pausing
+      // an audio clip that was never started would be a no-op but a
+      // misleading one to reason about, and `usePhraseAudio.toggle` would
+      // instead START it if called while stopped.
+      if (audioPlaying) {
+        onToggleAudio();
+      }
+    } else {
+      player.play();
+      if (!audioPlaying) {
+        onToggleAudio();
+      }
+    }
+  }, [videoPlaying, audioPlaying, onToggleAudio, player]);
 
   useFocusEffect(
     useCallback(() => {
@@ -114,6 +167,32 @@ export function PhraseAnimationPlayer({ animationUrl, overlayText }: PhraseAnima
           <ActivityIndicator color={theme.colors.primary} />
         </Box>
       ) : null}
+      {/*
+        Combined play/pause control — center-tap, the YouTube/Instagram
+        convention for a primary video affordance. The `Pressable` covers the
+        whole clip (a bigger, more forgiving tap target than the icon alone;
+        the icon's own padding-based circle already clears the 44pt minimum
+        on its own). Centered vertically keeps it well clear of the bottom
+        caption band below, so the two overlays never collide.
+      */}
+      <Pressable
+        onPress={handleToggle}
+        accessibilityRole="button"
+        accessibilityLabel={
+          videoPlaying ? t('Learn.PAUSE_BUTTON_LABEL') : t('Learn.PLAY_BUTTON_LABEL')
+        }
+        style={StyleSheet.absoluteFill}
+      >
+        <Box flex={1} alignItems="center" justifyContent="center">
+          <Box backgroundColor="overlay" borderRadius="round" padding="m">
+            <Ionicons
+              name={videoPlaying ? 'pause' : 'play'}
+              size={28}
+              color={theme.colors.overlayText}
+            />
+          </Box>
+        </Box>
+      </Pressable>
       {/*
         Persistent caption, like a lower-third — not word-by-word subtitles,
         since there's no word-level timing data and the clip has no real

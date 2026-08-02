@@ -1,13 +1,13 @@
 import { useCallback } from 'react';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useFocusEffect, useRoute, type RouteProp } from '@react-navigation/native';
 import { useMutation, useQuery } from 'convex/react';
+import { Ionicons } from '@expo/vector-icons';
 import { api } from '@backend/_generated/api';
 import { toDayKey } from '@sarvabhasha/shared';
 import { Box, Text, useTheme } from '@theme';
 import { Screen } from '@shared/components/atoms/Screen';
-import { Button } from '@shared/components/atoms/Button';
 import { usePhraseAudio } from '../hooks/usePhraseAudio';
 import { PhraseAnimationPlayer } from '../components/PhraseAnimationPlayer';
 import type { LearnStackParamList } from '@navigation/types';
@@ -77,19 +77,23 @@ export function PhraseDetailScreen() {
         {detail.transliteration}
       </Text>
 
-      <Box marginBottom="l">
-        <Button variant="secondary" onPress={audio.toggle} disabled={!audio.isLoaded}>
-          {audio.playing ? t('Learn.PAUSE_AUDIO_BUTTON') : t('Learn.PLAY_AUDIO_BUTTON')}
-        </Button>
-      </Box>
-
       {detail.animationUrl ? (
+        // The combined play/pause control lives inside the video overlay —
+        // see PhraseAnimationPlayer. It stays audio-agnostic; this screen
+        // wires `usePhraseAudio`'s state/toggle into it as plain props.
         <PhraseAnimationPlayer
           key={detail.phraseId}
           animationUrl={detail.animationUrl}
           overlayText={detail.text}
+          audioPlaying={audio.playing}
+          onToggleAudio={audio.toggle}
         />
       ) : (
+        // No animation clip yet for this phrase (the common case — most
+        // phrases don't have one). There's no video to overlay a combined
+        // control on, so this placeholder keeps its own compact play/pause
+        // icon wired directly to the pronunciation audio — otherwise a
+        // phrase without a clip would have no way to hear it at all.
         <Box
           backgroundColor="surface"
           borderRadius="l"
@@ -103,9 +107,26 @@ export function PhraseDetailScreen() {
           <Text variant="h1" marginBottom="s">
             {'\u{1F3AC}'}
           </Text>
-          <Text variant="caption" textAlign="center">
+          <Text variant="caption" textAlign="center" marginBottom="m">
             {t('Learn.ANIMATION_COMING_SOON')}
           </Text>
+          {audio.isLoaded ? (
+            <Pressable
+              onPress={audio.toggle}
+              accessibilityRole="button"
+              accessibilityLabel={
+                audio.playing ? t('Learn.PAUSE_BUTTON_LABEL') : t('Learn.PLAY_BUTTON_LABEL')
+              }
+            >
+              <Box backgroundColor="primary" borderRadius="round" padding="m">
+                <Ionicons
+                  name={audio.playing ? 'pause' : 'play'}
+                  size={24}
+                  color={theme.colors.textInverse}
+                />
+              </Box>
+            </Pressable>
+          ) : null}
         </Box>
       )}
 
