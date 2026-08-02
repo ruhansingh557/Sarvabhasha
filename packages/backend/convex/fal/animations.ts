@@ -65,9 +65,11 @@ import { STYLE_ANCHOR, CHARACTER_BIBLE } from './characters';
  * module doc comment — so if the prompt doesn't pin traits to a name, the
  * model can average features across the two input images).
  */
-const TRAIT_ANCHORS: Record<'dadi' | 'neighbour', string> = {
+const TRAIT_ANCHORS: Record<'dadi' | 'parent' | 'kid' | 'neighbour', string> = {
   dadi: 'an elderly woman with silver-grey hair in a low bun, a red bindi, and NO facial hair of any kind — completely smooth face, no moustache, no beard',
   neighbour: 'an adult man with short black hair and a trim black moustache — the moustache belongs ONLY to him',
+  parent: 'an adult woman, medium build, with black hair pulled back into a low braid, wearing a teal-green kurta, NO bindi and NO facial hair — deliberately plainer than Dadi',
+  kid: 'a small 9-year-old boy with small, rounded child proportions — a noticeably bigger head-to-body ratio and shorter limbs than any adult in the scene — messy short black hair and a bright orange-red t-shirt; he must read as visibly shorter and less filled-out than every adult character, never adult-proportioned',
 };
 
 // ------------------------------------------------------------------- rates
@@ -96,10 +98,17 @@ const NO_TALKING_HEADS =
  */
 const PHRASE_BEATS: Record<
   string,
-  { other: 'dadi' | 'neighbour'; setup: string; phrase: string; reaction: string }
+  {
+    other: 'dadi' | 'parent' | 'kid' | 'neighbour';
+    setting: string;
+    setup: string;
+    phrase: string;
+    reaction: string;
+  }
 > = {
   'namaste-hello': {
     other: 'neighbour',
+    setting: 'a simplified but specific Indian residential street in warm morning daylight',
     setup:
       'On a quiet morning street, the Neighbour walks up and raises a hand toward Dadi, ' +
       'who is standing near her gate.',
@@ -113,6 +122,7 @@ const PHRASE_BEATS: Record<
   },
   'dhanyavaad-thank-you': {
     other: 'neighbour',
+    setting: 'a simplified but specific Indian residential street in warm morning daylight',
     setup:
       'The Neighbour is carrying a heavy cloth shopping bag for Dadi as they walk toward ' +
       "her gate; he sets the bag down at Dadi's doorstep.",
@@ -132,6 +142,7 @@ const PHRASE_BEATS: Record<
     // Neighbour's URL and Dadi never appeared in the scene at all. Confirmed
     // by inspecting the two neighbour-speaker clips directly.
     other: 'dadi',
+    setting: 'a simplified but specific Indian residential street in warm morning daylight',
     setup:
       'The Neighbour spots Dadi sitting on her porch step in the morning and walks over, ' +
       'leaning in with open curiosity.',
@@ -145,6 +156,7 @@ const PHRASE_BEATS: Record<
   },
   'phir-milenge-goodbye': {
     other: 'neighbour',
+    setting: 'a simplified but specific Indian residential street in warm morning daylight',
     setup:
       'Dadi and the Neighbour are finishing a warm chat on the street; the Neighbour starts ' +
       'to turn to leave, glancing back over his shoulder.',
@@ -160,6 +172,7 @@ const PHRASE_BEATS: Record<
     // Same bug as kaise-ho-how-are-you above — speakerCharacter here is also
     // 'neighbour', so the OTHER character is Dadi, not another Neighbour.
     other: 'dadi',
+    setting: 'a simplified but specific Indian residential street in warm morning daylight',
     setup:
       'Early morning, soft golden light. Dadi steps out of her gate holding a small watering ' +
       'can for her plants. The Neighbour is passing by on the street.',
@@ -170,6 +183,85 @@ const PHRASE_BEATS: Record<
     reaction:
       'Dadi looks up, breaks into a pleased smile, sets down the watering can and waves back ' +
       'with both hands raised slightly, happy to be greeted.',
+  },
+  'kitne-ka-hai-how-much': {
+    other: 'neighbour',
+    setting: 'a simplified but specific Indian street-market vegetable cart, warm daylight',
+    setup:
+      "Parent walks up to the Neighbour's vegetable cart and picks up a bunch of coriander, " +
+      'looking it over.',
+    phrase:
+      'Parent turns to the Neighbour, holds up the coriander with a questioning open-palm ' +
+      'gesture toward it, eyebrows raised in a "what\'s the price" expression.',
+    reaction:
+      "The Neighbour smiles and holds up fingers indicating a price, watching Parent's face " +
+      'for a reaction.',
+  },
+  'bahut-mahanga-too-expensive': {
+    other: 'neighbour',
+    setting: 'the same street-market vegetable cart, warm daylight',
+    setup:
+      "The Neighbour has just named a price, holding up fingers to show the number; Parent " +
+      'is still holding the coriander.',
+    phrase:
+      "Parent's eyebrows shoot up in surprise, one hand goes to their chest in mock shock, " +
+      'the other hand gestures toward the vegetable as if to say "for this?"',
+    reaction:
+      "The Neighbour's confident grin falters slightly, scratching the back of his neck, " +
+      'half-expecting the reaction.',
+  },
+  'thoda-kam-karo-lower-price': {
+    other: 'neighbour',
+    setting: 'the same street-market vegetable cart, warm daylight',
+    setup:
+      'Parent and the Neighbour are mid-negotiation at the cart, Parent still holding the ' +
+      'coriander, a beat of standoff between them.',
+    phrase:
+      'Parent presses their palms together slightly, tilting their head with a ' +
+      'pleading-but-friendly expression, gesturing downward with one hand as if lowering an ' +
+      'invisible bar.',
+    reaction:
+      'The Neighbour sighs theatrically, shrugs, and gives a small relenting nod, starting to ' +
+      'recount the price.',
+  },
+  'paanch-rupaye-five-rupees': {
+    other: 'neighbour',
+    setting: 'a small street-side sweet stall with jars of candy visible, warm daylight',
+    setup:
+      "Kid stands on tiptoe at the Neighbour's sweet stall, carefully counting coins out of a " +
+      'small cloth pouch onto his open palm.',
+    phrase:
+      'Kid holds up his palm full of coins toward the Neighbour proudly, chest puffed out, a ' +
+      'big confident grin.',
+    reaction:
+      'The Neighbour leans down, inspects the coins with an amused smile, and gives Kid an ' +
+      'approving nod before reaching for the sweets.',
+  },
+  'chutta-nahi-hai-no-change': {
+    // speakerCharacter for this phrase is 'neighbour' (confirmed against
+    // seed.ts) — the OTHER character in the scene is Parent, not another
+    // Neighbour. Setting other: 'neighbour' here would trip the
+    // speaker === other guard below (the exact bug documented on
+    // kaise-ho-how-are-you / shubh-prabhat-good-morning above).
+    other: 'parent',
+    setting: 'the same street-market vegetable cart, warm daylight',
+    // "note" (banknote) read as a WRITTEN note in one generation — the model
+    // rendered Parent holding a piece of paper with actual handwritten text
+    // on it, violating the hard "no text baked into the frame" rule (that
+    // text would show, untranslated, in every one of the 22 languages this
+    // clip is reused across). Reworded to unambiguous currency/cash language
+    // throughout — no bare "note".
+    setup:
+      'Parent hands the Neighbour a large-denomination rupee banknote (a purple or pink bill, ' +
+      'no readable text or numbers on it) after a purchase; the Neighbour takes the cash and ' +
+      'starts checking his coin pouch.',
+    phrase:
+      "The Neighbour turns his coin pouch inside out with an apologetic shrug, showing " +
+      "Parent there's nothing there.",
+    reaction:
+      "Parent's shoulders drop slightly in mild exasperation, then breaks into a resigned, " +
+      'understanding smile, patting their own pockets to see if they have smaller-denomination ' +
+      'cash instead.',
   },
 };
 
@@ -223,7 +315,17 @@ export const generateAnimationForPhrase = internalAction({
       phraseId: args.phraseId,
     });
     if (!phrase) return { ok: false as const, reason: `No phrase ${args.phraseId}` };
-    if (phrase.speakerCharacter !== 'dadi' && phrase.speakerCharacter !== 'neighbour') {
+    // All four cast members' bible entries and reference images exist now
+    // (dadi/neighbour from the greetings pilot, parent/kid generated ahead of
+    // numbers-money). This guard's job is only to reject a genuinely
+    // unknown/future character slug early and cheaply — actual
+    // reference-existence is checked below via getCharacterRefUrl.
+    if (
+      phrase.speakerCharacter !== 'dadi' &&
+      phrase.speakerCharacter !== 'parent' &&
+      phrase.speakerCharacter !== 'kid' &&
+      phrase.speakerCharacter !== 'neighbour'
+    ) {
       return {
         ok: false as const,
         reason: `Character bible entry for "${phrase.speakerCharacter}" not built in this pass`,
@@ -283,8 +385,7 @@ export const generateAnimationForPhrase = internalAction({
       `${TRAIT_ANCHORS[other]}. Keep each character's face, hairstyle, clothing, and colors ` +
       `EXACTLY as in their own reference image — do not blend or share traits between the two ` +
       `characters, especially facial hair, which must stay only on whichever of them has it in ` +
-      `their own reference. Setting: a simplified but specific Indian residential street in warm ` +
-      `morning daylight. Composition, capturing this exact moment: ${beats.phrase} ` +
+      `their own reference. Setting: ${beats.setting}. Composition, capturing this exact moment: ${beats.phrase} ` +
       `${NO_TALKING_HEADS} Camera: mid shot, wide enough to show both characters and their body ` +
       `language clearly.`;
 

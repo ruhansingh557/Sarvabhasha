@@ -161,6 +161,91 @@ export const seedGreetingsPhrases = internalMutation({
 });
 
 /**
+ * The second category. Same "hand-authored English structural metadata,
+ * status: 'live' from the start" reasoning as GREETINGS_PHRASES above — see
+ * plans/phase-5-content-pipeline-animation.md's "Plan: numbers-money" section
+ * for how this phrase set was chosen (cross-checked against real Hindi
+ * phrasebook/dictionary sources, not invented) and why Neighbour plays "the
+ * vendor" across all five, giving the category a small coherent narrative.
+ */
+const NUMBERS_MONEY_PHRASES = [
+  {
+    phraseKey: 'kitne-ka-hai-how-much',
+    sourceText: 'How much is this?',
+    situation: 'Parent picks up vegetables at the Neighbour’s cart and asks the price.',
+    speakerCharacter: 'parent' as const,
+    difficulty: 1,
+    sortOrder: 1,
+  },
+  {
+    phraseKey: 'bahut-mahanga-too-expensive',
+    sourceText: 'That’s too expensive',
+    situation: 'The Neighbour names a price; Parent reacts, unimpressed.',
+    speakerCharacter: 'parent' as const,
+    difficulty: 1,
+    sortOrder: 2,
+  },
+  {
+    phraseKey: 'thoda-kam-karo-lower-price',
+    sourceText: 'Can you lower the price a little?',
+    situation: 'Parent tries to talk the price down before buying.',
+    speakerCharacter: 'parent' as const,
+    difficulty: 1,
+    sortOrder: 3,
+  },
+  {
+    phraseKey: 'paanch-rupaye-five-rupees',
+    sourceText: 'I have five rupees',
+    situation: 'Kid counts his coins at the Neighbour’s sweet stall, proud of the exact amount.',
+    speakerCharacter: 'kid' as const,
+    difficulty: 1,
+    sortOrder: 4,
+  },
+  {
+    phraseKey: 'chutta-nahi-hai-no-change',
+    sourceText: 'I don’t have change',
+    situation: 'The Neighbour can’t break Parent’s large note.',
+    speakerCharacter: 'neighbour' as const,
+    difficulty: 1,
+    sortOrder: 5,
+  },
+];
+
+export const seedNumbersMoneyPhrases = internalMutation({
+  args: {},
+  returns: v.null(),
+  handler: async (ctx) => {
+    const category = await ctx.db
+      .query('categories')
+      .withIndex('by_slug', (q) => q.eq('slug', 'numbers-money'))
+      .first();
+    if (!category) {
+      throw new Error('Category "numbers-money" not found — run seedCategories first.');
+    }
+
+    for (const phrase of NUMBERS_MONEY_PHRASES) {
+      const existing = await ctx.db
+        .query('phrases')
+        .withIndex('by_key', (q) => q.eq('phraseKey', phrase.phraseKey))
+        .first();
+      if (existing) continue; // safe to re-run
+
+      await ctx.db.insert('phrases', {
+        categoryId: category._id,
+        phraseKey: phrase.phraseKey,
+        sourceText: phrase.sourceText,
+        situation: phrase.situation,
+        speakerCharacter: phrase.speakerCharacter,
+        difficulty: phrase.difficulty,
+        sortOrder: phrase.sortOrder,
+        status: 'live',
+      });
+    }
+    return null;
+  },
+});
+
+/**
  * Stores ONE (phrase, language) translation. Text is supplied by the caller
  * — this function has no opinion on what any language's translation says.
  *

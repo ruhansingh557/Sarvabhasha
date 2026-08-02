@@ -70,7 +70,7 @@ export const CATEGORIES: readonly CategoryDef[] = [
     i18nKey: 'Category.NUMBERS_MONEY',
     iconKey: 'coins',
     sortOrder: 2,
-    launchStatus: 'draft',
+    launchStatus: 'live',
     cast: ['parent', 'neighbour', 'kid'],
   },
   {
