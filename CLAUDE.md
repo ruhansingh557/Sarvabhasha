@@ -87,6 +87,7 @@ This app has three metered dependencies. Treat any change that touches them as a
 | Gemini 3.1 Flash-Lite | $0.25 / $1.50 per M tokens in/out | ~$0.0004 per tutor turn. Trim history, cache the system prompt (cache reads are 10% of base input), template the greetings. |
 | fal.ai video | $0.05–$0.20 per second | 8–10s clips. Never text-to-video — always image-to-video from a FLUX keyframe built on a locked character reference. Animation is language-independent: generate once, fan out voice per language. Full 180-clip catalog ≈ $250–800 depending on model tier. |
 | Bhashini | Free | Free, but slow and flaky. Never on the runtime path for lesson content. |
+| Google Cloud Text-to-Speech | Chirp 3: HD voices, $30 per 1M characters billed (1M characters/month free) | **Fallback only**, not primary — `packages/backend/convex/google/tts.ts`, invoked manually via `convex run` when Bhashini fails for a specific (phrase, language), same as every other TTS call in this pipeline. Expected volume is near-zero: a handful of one-off clips, not a batch job. At ~15–40 characters per lesson phrase, the free monthly allowance covers the entire pilot catalog many times over. |
 
 ## Sub-agents (`.claude/agents/`)
 

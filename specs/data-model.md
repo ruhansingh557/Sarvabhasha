@@ -141,7 +141,7 @@ audioAssets: defineTable({
   storageId: v.id("_storage"),
   voiceGender: v.union(v.literal("male"), v.literal("female")),
   durationMs: v.number(),
-  source: v.string(),              // "bhashini"
+  source: /* v.union(v.literal("bhashini"), v.literal("google-tts")) */
   status: /* lifecycle union */,
 }).index("by_phrase_language", ["phraseId", "languageCode"])
 
@@ -181,6 +181,10 @@ The learner still hears both registers across the catalogue — which is the act
 Per-language fallback: female voices are generally better trained in Bhashini. If a male voice is rough in a given language, pass `genderOverride: "female"` for that language. A mismatched gender is a smaller problem than an unintelligible clip.
 
 User-selectable voice gender is a possible v2 feature — generated on demand for phrases people actually replay, never 1,080 clips up front.
+
+### TTS provider fallback
+
+Bhashini (`convex/bhashini/tts.ts`) is the primary — and default — TTS provider: free, and it covers all 22 target languages. Google Cloud Text-to-Speech (`convex/google/tts.ts`, `generateAudioForPhraseGoogle`) exists as a **manually-invoked** fallback for when Bhashini fails for a specific (phrase, language) — first used to unblock Marathi (`mr`) after a sustained, language-specific `504` from Bhashini. It is not wired into `generateAudioForPhrase` and nothing calls it automatically: there is no live traffic in this pipeline to route, every TTS call is a one-off authoring-time `convex run` invocation, and a human decides per clip which provider to use. `audioAssets.source` records which provider produced a row. Google Cloud TTS is metered (see root `CLAUDE.md`'s cost-discipline table) — expected volume is near-zero.
 
 ### Progress
 

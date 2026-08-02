@@ -30,6 +30,15 @@ export const contentStatus = v.union(
   v.literal('archived'),
 );
 
+/**
+ * Which TTS provider generated an `audioAssets` row. Bhashini is primary
+ * (free, 22-language coverage); `google-tts` is a manually-invoked fallback
+ * for when Bhashini fails for a given (phrase, language) — see
+ * `convex/google/tts.ts`. A union, not a bare string, so a typo'd provider
+ * name fails at the schema boundary instead of silently landing in the DB.
+ */
+export const audioSource = v.union(v.literal('bhashini'), v.literal('google-tts'));
+
 export default defineSchema({
   // ---------------------------------------------------------------- identity
 
@@ -157,7 +166,7 @@ export default defineSchema({
     storageId: v.id('_storage'),
     voiceGender: v.union(v.literal('male'), v.literal('female')),
     durationMs: v.number(),
-    source: v.string(), // "bhashini"
+    source: audioSource,
     status: contentStatus,
   }).index('by_phrase_language', ['phraseId', 'languageCode']),
 

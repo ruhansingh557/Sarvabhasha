@@ -20,7 +20,7 @@
  */
 
 import { v } from 'convex/values';
-import { internalAction, internalMutation, internalQuery } from '../_generated/server';
+import { internalAction, internalQuery } from '../_generated/server';
 import { internal } from '../_generated/api';
 import type { Doc, Id } from '../_generated/dataModel';
 import { voiceForCharacter } from '@sarvabhasha/shared';
@@ -116,17 +116,10 @@ async function synthesize(
 }
 
 // ---------------------------------------------------------------- internals
-
-export const findExistingAudio = internalQuery({
-  args: { phraseId: v.id('phrases'), languageCode: v.string() },
-  handler: async (ctx, args) =>
-    await ctx.db
-      .query('audioAssets')
-      .withIndex('by_phrase_language', (q) =>
-        q.eq('phraseId', args.phraseId).eq('languageCode', args.languageCode),
-      )
-      .first(),
-});
+//
+// `findExistingAudio` (the idempotency check) and `insertAudioAsset` (the
+// write path) live in `../lib/audioAssets.ts` — they're provider-agnostic
+// and `google/tts.ts` reuses them as-is rather than duplicating them here.
 
 export const getPhrase = internalQuery({
   args: { phraseId: v.id('phrases') },
@@ -142,25 +135,6 @@ export const getTranslation = internalQuery({
         q.eq('phraseId', args.phraseId).eq('languageCode', args.languageCode),
       )
       .first(),
-});
-
-export const insertAudioAsset = internalMutation({
-  args: {
-    phraseId: v.id('phrases'),
-    languageCode: v.string(),
-    storageId: v.id('_storage'),
-    voiceGender: v.union(v.literal('male'), v.literal('female')),
-    durationMs: v.number(),
-  },
-  returns: v.id('audioAssets'),
-  handler: async (ctx, args) =>
-    await ctx.db.insert('audioAssets', {
-      ...args,
-      source: 'bhashini',
-      // Lands as draft. A human listens before it reaches a learner —
-      // machine TTS mispronounces, and only a speaker of the language knows.
-      status: 'draft',
-    }),
 });
 
 // ------------------------------------------------------------------ actions
@@ -208,7 +182,7 @@ export const generateAudioForPhrase = internalAction({
 
     if (!args.force) {
       const existing: Doc<'audioAssets'> | null = await ctx.runQuery(
-        internal.bhashini.tts.findExistingAudio,
+        internal.lib.audioAssets.findExistingAudio,
         { phraseId: args.phraseId, languageCode: args.languageCode },
       );
       if (existing) return { ok: true as const, skipped: true, audioId: existing._id };
@@ -237,13 +211,14 @@ export const generateAudioForPhrase = internalAction({
       const durationMs = Math.round((bytes.length / (22050 * 2)) * 1000);
 
       const audioId: Id<'audioAssets'> = await ctx.runMutation(
-        internal.bhashini.tts.insertAudioAsset,
+        internal.lib.audioAssets.insertAudioAsset,
         {
           phraseId: args.phraseId,
           languageCode: args.languageCode,
           storageId,
           voiceGender: gender,
           durationMs,
+          source: 'bhashini',
         },
       );
 
