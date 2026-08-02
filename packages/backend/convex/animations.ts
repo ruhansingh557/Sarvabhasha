@@ -129,6 +129,27 @@ export const approveAnimation = mutation({
   },
 });
 
+/**
+ * Resolve a single animation's storage blobs to signed URLs, regardless of
+ * status. `listPendingReview` only surfaces `draft` rows by design (it's the
+ * review queue) — this is for verifying a specific row (e.g. one already
+ * `live`) directly, by id, from tooling.
+ */
+export const getSignedUrls = query({
+  args: { animationId: v.id('animations') },
+  handler: async (ctx, args) => {
+    const animation = await ctx.db.get(args.animationId);
+    if (!animation) return null;
+    return {
+      status: animation.status,
+      videoUrl: await ctx.storage.getUrl(animation.storageId),
+      keyframeUrls: await Promise.all(
+        animation.keyframeStorageIds.map((id) => ctx.storage.getUrl(id)),
+      ),
+    };
+  },
+});
+
 /** Admin review queue. Returns non-live clips — never exposed to the app. */
 export const listPendingReview = query({
   args: {},

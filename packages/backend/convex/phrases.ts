@@ -2,16 +2,21 @@ import { v } from 'convex/values';
 import { query } from './_generated/server';
 import { contentStatus } from './schema';
 import { getCurrentUserDoc } from './lib/currentUser';
-import { getLiveTranslationAndAudio, getLivePhrasesForCategory } from './lib/liveContent';
+import {
+  getLiveTranslationAndAudio,
+  getLivePhrasesForCategory,
+  getLiveAnimation,
+} from './lib/liveContent';
 
 /**
  * Phrase content for the Learn tab. Every query here applies the live-gate
  * from `lib/liveContent.ts`: a phrase counts only when it AND its
  * translation AND its audio are all `live` for the caller's target language.
  *
- * Deliberately does NOT touch the `animations` table (no fal.ai/animation
- * this pass — see specs/content-pipeline.md and the planning note for this
- * change). Add that join when animation ships, not before.
+ * `getDetail` additionally joins the phrase's `live` animation, if any —
+ * animation is language-INDEPENDENT (`animations.phraseId`, not a
+ * translation id — see schema.ts's structural decision 1), so it is not
+ * part of the per-language translation+audio gate above.
  */
 
 const speakerCharacter = v.union(
@@ -132,6 +137,12 @@ const phraseDetail = v.object({
   durationMs: v.number(),
   masteryLevel: v.number(),
   timesViewed: v.number(),
+  /**
+   * Playable URL for the phrase's `live` animation, or `null` when the
+   * phrase has none yet (the normal case — most phrases in this app still
+   * don't have an approved clip). Language-independent — see file header.
+   */
+  animationUrl: v.union(v.string(), v.null()),
 });
 
 /**
@@ -140,7 +151,8 @@ const phraseDetail = v.object({
  * no target language, phrase not live, translation/audio not live) — the
  * client shows one "not available" state rather than distinguishing why.
  *
- * NOTE: does not query `animations` — see file header.
+ * Additionally resolves the phrase's `live` animation (language-independent,
+ * so it is looked up by `phraseId` alone, outside the per-language gate).
  */
 export const getDetail = query({
   args: { phraseId: v.id('phrases') },
@@ -163,6 +175,8 @@ export const getDetail = query({
       )
       .first();
 
+    const liveAnimation = await getLiveAnimation(ctx, phrase._id);
+
     return {
       phraseId: phrase._id,
       phraseKey: phrase.phraseKey,
@@ -176,6 +190,7 @@ export const getDetail = query({
       durationMs: gated.audio.durationMs,
       masteryLevel: progress?.masteryLevel ?? 0,
       timesViewed: progress?.timesViewed ?? 0,
+      animationUrl: liveAnimation ? await ctx.storage.getUrl(liveAnimation.storageId) : null,
     };
   },
 });

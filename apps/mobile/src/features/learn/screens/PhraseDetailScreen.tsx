@@ -9,14 +9,18 @@ import { Box, Text, useTheme } from '@theme';
 import { Screen } from '@shared/components/atoms/Screen';
 import { Button } from '@shared/components/atoms/Button';
 import { usePhraseAudio } from '../hooks/usePhraseAudio';
+import { PhraseAnimationPlayer } from '../components/PhraseAnimationPlayer';
 import type { LearnStackParamList } from '@navigation/types';
 
 /**
- * The phrase detail / "player" screen. No `expo-video` this pass — the
- * animation slot is a themed static placeholder (see the already-decided
- * scope note). `text`/`transliteration` are this app's `phrase`/
- * `transliteration` text variants' first real use: deliberately large
- * target-script text, Latin transliteration underneath.
+ * The phrase detail / "player" screen. `text`/`transliteration` are this
+ * app's `phrase`/`transliteration` text variants' first real use:
+ * deliberately large target-script text, Latin transliteration underneath.
+ *
+ * The animation slot renders a real `expo-video` player when
+ * `detail.animationUrl` is a live fal.ai clip, and falls back to the themed
+ * static placeholder otherwise — most phrases won't have a clip yet, and
+ * that's the normal/expected state, not an error.
  */
 export function PhraseDetailScreen() {
   const { t } = useTranslation();
@@ -79,23 +83,27 @@ export function PhraseDetailScreen() {
         </Button>
       </Box>
 
-      <Box
-        backgroundColor="surface"
-        borderRadius="l"
-        padding="xl"
-        alignItems="center"
-        justifyContent="center"
-        marginBottom="l"
-        width="100%"
-        aspectRatio={16 / 9}
-      >
-        <Text variant="h1" marginBottom="s">
-          {'\u{1F3AC}'}
-        </Text>
-        <Text variant="caption" textAlign="center">
-          {t('Learn.ANIMATION_COMING_SOON')}
-        </Text>
-      </Box>
+      {detail.animationUrl ? (
+        <PhraseAnimationPlayer key={detail.phraseId} animationUrl={detail.animationUrl} />
+      ) : (
+        <Box
+          backgroundColor="surface"
+          borderRadius="l"
+          padding="xl"
+          alignItems="center"
+          justifyContent="center"
+          marginBottom="l"
+          width="100%"
+          aspectRatio={16 / 9}
+        >
+          <Text variant="h1" marginBottom="s">
+            {'\u{1F3AC}'}
+          </Text>
+          <Text variant="caption" textAlign="center">
+            {t('Learn.ANIMATION_COMING_SOON')}
+          </Text>
+        </Box>
+      )}
 
       {detail.literalGloss ? (
         <Box marginBottom="l">
