@@ -34,13 +34,16 @@ Every clip was independently downloaded and visually reviewed frame-by-frame (no
 
 Of the 9 animation generations: 5 are the live, usable clips ($3.90). 4 were wasted — 2 from the missing-character bug (kaise-ho, shubh-prabhat, first attempts), 1 from the moustache-bleed bug (kaise-ho attempt 2), and 1 from an unnecessary diagnostic duplicate on phir-milenge-goodbye ($3.12 total). Character-ref spend was all usable except one accidental duplicate generation. **Takeaway for future batches**: budget roughly 1.5-2x the "clean" per-clip cost to account for iteration — this pilot's real bugs (not flakiness) each cost a genuine retry.
 
+## What shipped (2026-08-02, mobile wiring)
+
+`phrases.getDetail` now resolves each phrase's live animation to a signed URL (`animationUrl: string | null`) via a new `getLiveAnimation` helper in `lib/liveContent.ts` — independent of the per-language translation/audio gate, since animation is `phraseId`-keyed. `PhraseDetailScreen` has a real `expo-video` player (`features/learn/components/PhraseAnimationPlayer.tsx`, first use of `expo-video` in the app): loops, muted, pauses on nav-away, themed loading spinner while the clip fetches, falls back to the existing placeholder when `animationUrl` is null (still most phrases). **Verified live in the iOS Simulator** — confirmed actually animating (not a frozen frame) by comparing two screenshots taken a few seconds apart.
+
 ## What's left in this phase
 
-1. **Wire the mobile app to actually show these clips.** `phrases.getDetail` deliberately does NOT query `animations` yet (phase 3's scope cut) — extend it to include the live animation's signed URL, then swap `PhraseDetailScreen`'s static "coming soon" placeholder for a real `expo-video` player. This is the highest-value next step — the content exists but nothing serves it to a learner yet.
-2. **Clip file size** — not yet checked for these 5 (phase 3-era clips ran ~11.5MB/10s, above the manual-upload script's own 8MB bandwidth warning). Check and re-encode (720p, H.264, CRF ~26) before real learners see them.
-3. **Parent and Kid character references** — needed before any category besides `greetings` can get animations (Family, Food & Market, Numbers/Money, School & Work, Daily Routine all use one or both).
-4. **`generationJobs` table remains unused** — this pilot wrote results directly via `recordAnimation`, no job-queue tracking. Fine at this volume; revisit if/when batches get large enough that a queryable job-status table (vs. reading Convex logs) actually matters.
-5. Two `TODO(auth)` markers in `animations.ts` (`generateUploadUrl` unrestricted, `approveAnimation`'s `approvedBy` is a raw client arg) are still unresolved — not exploitable today since only the project owner has Convex CLI access, but must be fixed before `apps/admin` (phase 10) exposes any of this to other users.
+1. **Clip file size** — not yet addressed (these clips run ~11-13MB/10s, above the manual-upload script's own 8MB bandwidth warning). Re-encode (720p, H.264, CRF ~26) before real learners see them at scale — fine for now at 5 clips.
+2. **Parent and Kid character references** — needed before any category besides `greetings` can get animations (Family, Food & Market, Numbers/Money, School & Work, Daily Routine all use one or both).
+3. **`generationJobs` table remains unused** — this pilot wrote results directly via `recordAnimation`, no job-queue tracking. Fine at this volume; revisit if/when batches get large enough that a queryable job-status table (vs. reading Convex logs) actually matters.
+4. Two `TODO(auth)` markers in `animations.ts` (`generateUploadUrl` unrestricted, `approveAnimation`'s `approvedBy` is a raw client arg) are still unresolved — not exploitable today since only the project owner has Convex CLI access, but must be fixed before `apps/admin` (phase 10) exposes any of this to other users.
 
 ## Open decision, not yet made
 
