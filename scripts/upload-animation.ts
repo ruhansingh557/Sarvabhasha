@@ -23,13 +23,39 @@
  * Manifest format: an array of the same fields, with `file` relative to the
  * manifest's own directory.
  *
- * Requires CONVEX_URL in the environment (from `bunx convex dev`).
+ * Requires CONVEX_URL in the environment (from `bunx convex dev`), and the
+ * `convex` CLI to be authenticated (same login `bunx convex dev` uses) —
+ * the upload-url step below shells out to `convex run` for an
+ * `internalMutation`, which a plain `ConvexHttpClient` cannot call (the
+ * platform does not expose `internal.*` functions to any client, public or
+ * otherwise). See `generateUploadUrlInternal`'s doc comment in
+ * `packages/backend/convex/animations.ts` for why this step needs that
+ * instead of the public `generateUploadUrl` mutation this script used to
+ * call directly: that mutation now requires an authenticated app-user
+ * session, which this script — a one-off local CLI tool, not a signed-in
+ * app screen — doesn't have.
  */
 
 import { ConvexHttpClient } from 'convex/browser';
+import { execFileSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import { basename, dirname, resolve } from 'node:path';
 import { api } from '../packages/backend/convex/_generated/api';
+
+/**
+ * `convex run` prints the function's return value as a JSON literal (here, a
+ * JSON string, i.e. wrapped in quotes) to stdout. Runs from
+ * `packages/backend/` so the CLI picks up that package's `convex.json`
+ * without needing an explicit `--url`/`--admin-key` flag.
+ */
+function runConvexInternalMutation(functionPath: string, args: Record<string, unknown>): string {
+  const stdout = execFileSync(
+    'bun',
+    ['x', 'convex', 'run', functionPath, JSON.stringify(args)],
+    { cwd: resolve(__dirname, '../packages/backend'), encoding: 'utf8' },
+  );
+  return JSON.parse(stdout.trim()) as string;
+}
 
 interface ClipSpec {
   file: string;
@@ -91,7 +117,7 @@ async function uploadOne(client: ConvexHttpClient, spec: ClipSpec, baseDir: stri
   const phrase = await client.query(api.phrases.getByKey, { phraseKey: spec.phraseKey });
   if (!phrase) throw new Error(`No phrase with key "${spec.phraseKey}"`);
 
-  const uploadUrl = await client.mutation(api.animations.generateUploadUrl, {});
+  const uploadUrl = runConvexInternalMutation('animations:generateUploadUrlInternal', {});
   const res = await fetch(uploadUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'video/mp4' },

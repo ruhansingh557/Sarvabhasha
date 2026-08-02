@@ -1,5 +1,6 @@
 import { v } from 'convex/values';
-import { mutation, query } from './_generated/server';
+import { internalMutation, mutation, query } from './_generated/server';
+import { requireCurrentUserDoc } from './lib/currentUser';
 
 /**
  * Animation upload + recording.
@@ -29,8 +30,32 @@ export const generateUploadUrl = mutation({
   args: {},
   returns: v.string(),
   handler: async (ctx) => {
-    // TODO(auth): restrict to admin identities before this is reachable in
-    // any deployed environment. Currently open — dev seeding only.
+    // Requires an authenticated, onboarded app user — rejects anonymous
+    // calls. This is NOT an admin-role gate: any signed-in user can reach
+    // this today. Role-based restriction (admin-only) is deferred to phase
+    // 10 / apps/admin, which does not exist yet — there is no role concept
+    // anywhere in schema.ts to gate on. Tighten this once that lands.
+    await requireCurrentUserDoc(ctx);
+    return await ctx.storage.generateUploadUrl();
+  },
+});
+
+/**
+ * Same as `generateUploadUrl`, for the trusted CLI/ops path only.
+ *
+ * `internalMutation`s are unreachable from any client (no spoofing surface —
+ * the exact thing the auth check above guards against), only from
+ * `bunx convex run`, the scheduler, or another Convex function — so this is
+ * safe without an identity check. Exists because `scripts/upload-animation.ts`
+ * uses a bare `ConvexHttpClient` with no session (it's a one-off manual
+ * re-upload tool run by the project owner, not an app screen), and the
+ * platform does not let a public HTTP client call `internal.*` functions
+ * directly — the script shells out to `convex run` for this one step instead.
+ */
+export const generateUploadUrlInternal = internalMutation({
+  args: {},
+  returns: v.string(),
+  handler: async (ctx) => {
     return await ctx.storage.generateUploadUrl();
   },
 });
@@ -100,15 +125,55 @@ export const recordAnimation = mutation({
 export const approveAnimation = mutation({
   args: {
     animationId: v.id('animations'),
-    approvedBy: v.id('users'),
   },
   returns: v.null(),
   handler: async (ctx, args) => {
-    // TODO(auth): derive approver from the auth identity, never an argument.
+    // Approver is derived from the auth identity, never a client argument —
+    // approvedBy used to be a raw `v.id('users')` arg, trivially spoofable.
+    const approver = await requireCurrentUserDoc(ctx);
+
     const animation = await ctx.db.get(args.animationId);
     if (!animation) throw new Error(`No animation ${args.animationId}`);
 
     // Supersede any previously live clip for this phrase — one live clip each.
+    const existing = await ctx.db
+      .query('animations')
+      .withIndex('by_phrase', (q) => q.eq('phraseId', animation.phraseId))
+      .collect();
+
+    for (const a of existing) {
+      if (a._id !== args.animationId && a.status === 'live') {
+        await ctx.db.patch(a._id, { status: 'archived' });
+      }
+    }
+
+    await ctx.db.patch(args.animationId, {
+      status: 'live',
+      approvedBy: approver._id,
+      approvedAt: Date.now(),
+    });
+    return null;
+  },
+});
+
+/**
+ * Same approval logic, for the trusted CLI/ops path — see
+ * `generateUploadUrlInternal`'s doc comment for why this exists.
+ * `approvedBy` is an explicit arg here rather than derived from an identity
+ * because `bunx convex run` (deploy-key auth) has no app-user session to
+ * derive one from; unlike the public `approveAnimation`, this is safe
+ * because `internalMutation`s have no client-facing spoofing surface at all.
+ */
+export const approveAnimationInternal = internalMutation({
+  args: {
+    animationId: v.id('animations'),
+    approvedBy: v.id('users'),
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const animation = await ctx.db.get(args.animationId);
+    if (!animation) throw new Error(`No animation ${args.animationId}`);
+
     const existing = await ctx.db
       .query('animations')
       .withIndex('by_phrase', (q) => q.eq('phraseId', animation.phraseId))
