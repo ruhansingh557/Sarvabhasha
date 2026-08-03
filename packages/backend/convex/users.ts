@@ -113,6 +113,41 @@ export const setTargetLanguage = mutation({
 });
 
 /**
+ * Age-gates the tutor. Per specs/monetization-and-limits.md: birth year is
+ * self-declared during onboarding, before the tutor is reachable at all —
+ * `ageBand: 'unknown'` blocks it entirely (see `tutor.startSession` /
+ * `tutor.sendMessage`). This mutation is the ONLY writer of `ageBand`, and it
+ * always resolves to a real band — never leaves it `unknown` once called.
+ *
+ * `currentYear` comes from the SERVER's clock (`Date.now()`), not a
+ * client-supplied timestamp: the guidelines file's stance is that
+ * `Date.now()` is fine inside a mutation (unlike a query, which isn't rerun
+ * merely because time advances), and trusting the server's own clock here
+ * — rather than a client-passed `nowMs` — closes off a trivial way for a
+ * minor to shift the computed age by lying about "now" on top of already
+ * self-declaring `birthYear` (the latter is an accepted risk per the spec;
+ * the former isn't worth accepting for free).
+ */
+export const setBirthYear = mutation({
+  args: { birthYear: v.number() },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const user = await requireCurrentUserDoc(ctx);
+
+    const currentYear = new Date(Date.now()).getUTCFullYear();
+    if (!Number.isInteger(args.birthYear) || args.birthYear < 1900 || args.birthYear > currentYear) {
+      throw new Error(`Invalid birth year "${args.birthYear}".`);
+    }
+
+    const age = currentYear - args.birthYear;
+    const ageBand: 'minor' | 'adult' = age >= 18 ? 'adult' : 'minor';
+
+    await ctx.db.patch(user._id, { birthYear: args.birthYear, ageBand });
+    return null;
+  },
+});
+
+/**
  * Sets the learner's UI (interface-chrome) language. Deliberately does NOT
  * enforce `status === 'live'` the way `setTargetLanguage` does: `uiLanguage`
  * is not a claim about lesson-content availability, just which language the

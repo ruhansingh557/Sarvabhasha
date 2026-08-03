@@ -23,29 +23,17 @@ import { v } from 'convex/values';
 import { internalAction, internalQuery } from '../_generated/server';
 import { internal } from '../_generated/api';
 import type { Doc, Id } from '../_generated/dataModel';
-import { voiceForCharacter } from '@sarvabhasha/shared';
-
-const BHASHINI_PIPELINE_URL =
-  'https://meity-auth.ulcacontrib.org/ulca/apis/v0/model/getModelsPipeline';
-const BHASHINI_COMPUTE_URL = 'https://dhruva-api.bhashini.gov.in/services/inference/pipeline';
-const PIPELINE_ID = '64392f96daac500b55c543cd';
+import { voiceForCharacter, TTS_LANGUAGES } from '@sarvabhasha/shared';
+import { BHASHINI_COMPUTE_URL, BHASHINI_PIPELINE_URL, PIPELINE_ID, getBhashiniCredentials } from './lib';
 
 /**
- * Languages with a Bhashini TTS voice. Absence here is why `ttsQuality: 'none'`
- * exists in @sarvabhasha/shared — a language with no voice can never go live.
+ * TTS_LANGUAGES now lives in @sarvabhasha/shared (relocated from a local
+ * const here) so the mobile client can check TTS coverage without importing
+ * this server-only action module. Re-exported from here so
+ * `bhashini/tutorSpeech.ts` (the runtime tutor-reply synth path) keeps
+ * importing it from './tts' rather than needing its own import changed.
  */
-const TTS_LANGUAGES = new Set([
-  'hi', 'bn', 'te', 'mr', 'ta', 'ur', 'gu', 'kn',
-  'ml', 'pa', 'as', 'or', 'ne', 'sa', 'sd', 'en',
-]);
-
-function getCredentials(): { apiKey: string; userId: string } {
-  const apiKey = process.env.BHASHINI_API_KEY;
-  if (!apiKey) {
-    throw new Error('BHASHINI_API_KEY is not set. Add it to the Convex deployment env.');
-  }
-  return { apiKey, userId: process.env.BHASHINI_USER_ID ?? apiKey };
-}
+export { TTS_LANGUAGES };
 
 async function getPipelineConfig(
   language: string,
@@ -197,7 +185,7 @@ export const generateAudioForPhrase = internalAction({
     }
 
     try {
-      const creds = getCredentials();
+      const creds = getBhashiniCredentials();
       const config = await getPipelineConfig(args.languageCode, gender, creds);
       const base64 = await synthesize(translation.text, args.languageCode, gender, config, creds);
 

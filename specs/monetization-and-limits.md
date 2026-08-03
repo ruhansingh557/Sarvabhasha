@@ -16,10 +16,18 @@ Does not cover: tutor conversation behaviour (see [`ai-tutor.md`](ai-tutor.md));
 
 | | Price | What you get |
 |---|---|---|
-| **Free** | ₹0 | All content. 5 tutor turns per day, forever. |
+| **Free trial** | ₹0 | All content, forever. **10 tutor turns, once** — a one-time taste of the tutor, not a renewing allowance. |
 | **Tutor Pack** | **₹50** | 300 tutor turns. Non-expiring. |
 
 One paid product. Deliberately. Two options is a decision; four is a chore, and the whole point of ₹50 is that it sits below the threshold where anyone deliberates.
+
+### Why a one-time trial, not a recurring daily allowance
+
+The original design gave every user 5 free tutor turns *per day, forever*. At scale that's an unbounded recurring liability: even a modest 10% daily-active tutor-usage rate across 1M users is ~150,000 turns/day, forever — roughly $1,800/month in perpetuity, growing with the user base, with no purchase ever required to keep costing money.
+
+A one-time trial converts that into a bounded, one-time cost: 10 turns × 1M users, granted once, lazily, the first time each user actually opens the tutor (not at account creation — a user who never touches the tutor never costs anything), is ~$4,000 total at the outside — spent once, onboarding the *entire* eventual user base, not monthly. After the trial, the tutor is fully gated behind the pack. The trial's job is purely to let a new user experience the tutor once — enough to decide whether to buy — not to be a viable way to use it for free indefinitely.
+
+**Accepted risk, not solved:** a user can cycle through multiple free accounts to get repeated trials. This is the same class of risk as self-declared age (below) — documented and accepted, not engineered around. It isn't worth building device-fingerprinting or phone-verification to close a hole this small relative to the cost it would save.
 
 ### Why ₹50
 
@@ -41,12 +49,11 @@ The strategic argument matters as much as the margin: ₹50 is a pocket-money pr
 
 ```
 tutor turn requested
-  → free daily allowance remaining today?  → consume it
-  → else credits balance > 0?              → decrement credits
-  → else                                   → reject, show pack
+  → credits balance > 0?   → decrement credits
+  → else                   → reject, show pack
 ```
 
-**The free 5/day is always consumed first, even for users holding credits.** This is deliberate: a paid user's 300 turns stretch much further, which makes the pack feel generous rather than consumed. It costs ~$0.06/month per active user and is the single cheapest retention lever available.
+There is no daily allowance to check first — the trial and any purchased pack both live in the *same* `credits.balance`. A user has no `credits` row at all until they first send the tutor a message; at that point the row is created with balance 10 (the trial grant, applied once, lazily, at first tutor use — not at account creation — never reissued); buying a pack adds 300 more to the same balance. One number, one enforcement path, no separate "which bucket am I spending from" logic.
 
 Template responses (greeting, goodbye, encouragement — matched locally, zero tokens) **do not consume anything.** They never reach Gemini. See [`ai-tutor.md`](ai-tutor.md).
 
@@ -57,15 +64,18 @@ Enforcement is server-side and transactional. The client may *display* a paywall
 ```
 client → mutation:  resolve auth identity          (never a client-supplied userId)
                     check age gate / consent
-                    read usage(user, today, "tutor_turn")
-                    free allowance left?  → increment usage
-                    else read credits     → decrement balance
-                    neither               → throw, client shows pack
+                    read credits(user)
+                    balance > 0?  → decrement balance
+                    else          → throw, client shows pack
                     ─────────────────────── all in ONE transaction
         → action:   call Gemini
 ```
 
 A check in one function and a call in another is not a limit. **A missing or bypassable limit here is always a `high` finding** in [`_findings.md`](_findings.md) — it's the only path in the app that can run up an unbounded bill.
+
+### Safety-net rate limit (not an economic control)
+
+Independently of the credits balance, `usage(user, day, "tutor_turn")` still caps turns at a generous per-day ceiling (e.g. 200) even for a user sitting on a full 300-turn pack. This exists purely to bound the blast radius of a client bug or a scripted loop hammering the endpoint — it is not meant to ever bind a real conversation, and should not be tuned as a monetization lever.
 
 ### Grant idempotency
 
@@ -98,9 +108,9 @@ Design the consent flow to be **replaceable**. The verification mechanism DPDP u
 | Receipt verification fails after purchase | `purchases.status = pending`; no credits granted. Retry job; surface in admin. Never grant optimistically. |
 | Duplicate/replayed receipt | Unique index on transaction ID rejects it. Grant is idempotent. |
 | Refund issued | Mark `refunded`; deduct remaining granted credits, floored at zero. Never negative. |
-| User burns 300 turns in a day | Allowed. There is no daily cap on credits — they bought them. Cost is bounded by the pack. |
-| Credits exhausted mid-conversation | Turn is rejected before the Gemini call. Session and history are preserved; pack offered inline. |
-| Clock skew on the daily allowance | `day` computed from device timezone, server-clamped to ±1 day of its UTC date. |
+| User burns 300 turns in a day | Allowed up to the safety-net cap (~200/day) — a real conversation never gets near it. Cost is bounded by the pack either way. |
+| Credits exhausted (trial or paid) mid-conversation | Turn is rejected before the Gemini call. Session and history are preserved; pack offered inline. |
+| Clock skew on the safety-net daily cap | `day` computed from device timezone, server-clamped to ±1 day of its UTC date. |
 | Minor's consent revoked | Tutor access stops immediately; content and progress are retained. |
 | User declares 18+ falsely | Self-declaration is the practical ceiling. Documented as accepted risk, not solved. |
 
@@ -110,7 +120,8 @@ Design the consent flow to be **replaceable**. The verification mechanism DPDP u
 - **Verifiable parental consent mechanism** is undecided. DPDP's requirements aren't fully settled; scope the first implementation to be swappable.
 - **Refund webhooks** — handling for store-initiated refunds and chargebacks isn't designed.
 - **Pack sizing** — 300 turns is a reasoned guess, not a measured one. Instrument consumption from day one and revisit once real usage exists.
-- **Whether 5/day free is the right allowance** is untested. It's cheap enough to raise if conversion is weak.
+- **Trial size** — 10 turns is a reasoned guess, not a measured one. Cheap to raise (each extra turn across the whole eventual user base costs ~$0.0004 × user count, once) if it proves too stingy to convert; watch trial-to-purchase conversion once there's real data.
+- **Multi-account trial cycling** — accepted risk, see above. Revisit only if it shows up as a material share of cost in practice.
 
 ## Cross-references
 

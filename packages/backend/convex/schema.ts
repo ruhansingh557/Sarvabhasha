@@ -39,6 +39,22 @@ export const contentStatus = v.union(
  */
 export const audioSource = v.union(v.literal('bhashini'), v.literal('google-tts'));
 
+/**
+ * The four looping avatar-clip states a tutor turn can carry. Shared between
+ * `personaAnimations` (the language-independent avatar clip per
+ * character+expression) and `tutorMessages` (which expression a given
+ * Gemini-sourced assistant reply carries) so both tables draw from one
+ * definition instead of two copies drifting apart. `tutor.ts`'s `EXPRESSIONS`
+ * const is the same four values in array form, for Gemini's JSON response
+ * schema — that one can't be a Convex validator, so it stays separate.
+ */
+export const tutorExpression = v.union(
+  v.literal('neutral'),
+  v.literal('happy'),
+  v.literal('encouraging'),
+  v.literal('thinking'),
+);
+
 export default defineSchema({
   // ---------------------------------------------------------------- identity
 
@@ -205,6 +221,44 @@ export default defineSchema({
     referenceStorageIds: v.array(v.id('_storage')),
   }).index('by_slug', ['slug']),
 
+  /**
+   * AI-tutor avatar state loops. Conceptually distinct from `animations`
+   * (language-independent LESSON clips keyed by `phraseId`): these are
+   * PERSONA clips keyed by (character, expression) with no phrase or
+   * language at all — the tutor avatar loops the same "thinking" clip for
+   * Dadi regardless of what language the learner is studying or what she's
+   * saying. `tutor.ts`'s Gemini call returns one of these four expressions
+   * per turn (see its `EXPRESSIONS` const); the mobile client resolves the
+   * matching clip and loops it while that turn is on screen.
+   *
+   * Same reproducibility metadata and approval lifecycle as `animations` —
+   * a bad batch must be diagnosable and selectively regenerable, and nothing
+   * generative auto-publishes (CLAUDE.md rule 14).
+   */
+  personaAnimations: defineTable({
+    characterSlug: v.union(
+      v.literal('dadi'),
+      v.literal('parent'),
+      v.literal('kid'),
+      v.literal('neighbour'),
+    ),
+    expression: tutorExpression,
+    storageId: v.id('_storage'),
+    keyframeStorageIds: v.array(v.id('_storage')),
+    model: v.string(),
+    /** Rate at generation time, for cost audit. Rates drift. */
+    ratePerSecond: v.number(),
+    durationSec: v.number(),
+    seed: v.optional(v.number()),
+    prompt: v.string(),
+    attempt: v.number(),
+    status: contentStatus,
+    approvedBy: v.optional(v.id('users')),
+    approvedAt: v.optional(v.number()),
+  })
+    .index('by_character_expression', ['characterSlug', 'expression'])
+    .index('by_status', ['status']),
+
   // --------------------------------------------------------------- progress
 
   /** Per (user, phrase, language) — switching target starts a fresh track. */
@@ -251,6 +305,14 @@ export default defineSchema({
     model: v.optional(v.string()),
     tokensIn: v.optional(v.number()),
     tokensOut: v.optional(v.number()),
+    /**
+     * Which looping avatar clip the mobile client should play while this
+     * reply is being spoken aloud. Optional because only a Gemini-sourced
+     * assistant reply ever has one — user-role rows and `source: "template"`
+     * rows (both user- and assistant-side) never call Gemini, so they never
+     * get an expression.
+     */
+    expression: v.optional(tutorExpression),
     createdAt: v.number(),
   }).index('by_session', ['sessionId', 'createdAt']),
 
@@ -269,7 +331,11 @@ export default defineSchema({
 
   credits: defineTable({
     userId: v.id('users'),
-    /** Remaining tutor turns. Consumed only AFTER the free daily allowance. */
+    /**
+     * Remaining tutor turns. Holds BOTH the one-time trial grant (10, lazily
+     * inserted at first tutor use) and any purchased pack turns — one number,
+     * one enforcement path. See specs/monetization-and-limits.md.
+     */
     balance: v.number(),
     lifetimePurchased: v.number(),
     updatedAt: v.number(),

@@ -16,16 +16,36 @@ export type AgeBand = (typeof AGE_BANDS)[number];
  * Metering. These numbers are ENFORCED IN CONVEX, never on the client
  * (CLAUDE.md rule 13). They are exported here only so the UI can display
  * remaining balance and render the paywall — never to gate anything.
+ *
+ * See specs/monetization-and-limits.md — revised 2026-08 to a one-time trial
+ * credit replacing the original "5 free turns/day, forever" allowance (an
+ * unbounded recurring liability at scale). The trial IS the initial
+ * `credits.balance`, granted lazily at first tutor use, never reissued.
  */
 export const LIMITS = {
-  /** Free turns per day, every user, consumed before credits. */
-  FREE_TUTOR_TURNS_PER_DAY: 5,
+  /**
+   * One-time trial grant. Lazily applied to a user's `credits` row the
+   * first time they touch the tutor (not at account creation) — see
+   * `tutor.sendMessage`. Not a renewing daily allowance.
+   */
+  TRIAL_CREDITS: 10,
   /** Turns granted by the ₹50 pack. */
   TUTOR_PACK_CREDITS: 300,
+  /**
+   * Safety-net cap on `usage(user, day, 'tutor_turn')`. Bounds a client bug
+   * or scripted loop — NOT an economic control, since the credits balance
+   * already gates real usage. Should never bind a genuine conversation; do
+   * not tune this as a monetization lever.
+   */
+  SAFETY_NET_TUTOR_TURNS_PER_DAY: 200,
   /** ASR calls per day for users holding credits. Bhashini is free; this bounds abuse. */
   ASR_PER_DAY: 200,
-  /** Tutor history sent to Gemini: last N messages + rollingSummary. */
-  TUTOR_HISTORY_WINDOW: 8,
+  /**
+   * Tutor history sent to Gemini: last N messages + rollingSummary. Root
+   * CLAUDE.md rule 12 says "last 8 turns" — a turn is one user message +
+   * one assistant reply, so this is 16 messages, not 8.
+   */
+  TUTOR_HISTORY_WINDOW: 16,
 } as const;
 
 export const PRODUCTS = {
@@ -47,6 +67,36 @@ export const ANIMATION = {
   /** Realistic acceptance rate on stylized character animation. */
   EXPECTED_REROLL_FACTOR: 2.5,
 } as const;
+
+/**
+ * Bhashini provider coverage. These two sets are NOT identical — ASR and TTS
+ * pipeline availability on Bhashini are not guaranteed to match — so they are
+ * kept as two distinct sets, not merged/reconciled. Relocated here (from
+ * `packages/backend/convex/bhashini/asr.ts` and `.../tts.ts`) so both the
+ * Convex backend and the mobile client can check language coverage without
+ * the client importing server-only Convex runtime code
+ * (`action()`/`_generated/server`) into the Expo/Metro bundle.
+ */
+
+/**
+ * Languages with a Bhashini ASR pipeline. Mirrors `TTS_LANGUAGES` as a
+ * starting assumption — ASR and TTS coverage on Bhashini are not guaranteed
+ * identical, so VERIFY against live pipeline responses before relying on a
+ * language here that hasn't actually been exercised.
+ */
+export const ASR_LANGUAGES = new Set([
+  'hi', 'bn', 'te', 'mr', 'ta', 'ur', 'gu', 'kn',
+  'ml', 'pa', 'as', 'or', 'ne', 'sa', 'sd', 'en',
+]);
+
+/**
+ * Languages with a Bhashini TTS voice. Absence here is why `ttsQuality: 'none'`
+ * exists in @sarvabhasha/shared — a language with no voice can never go live.
+ */
+export const TTS_LANGUAGES = new Set([
+  'hi', 'bn', 'te', 'mr', 'ta', 'ur', 'gu', 'kn',
+  'ml', 'pa', 'as', 'or', 'ne', 'sa', 'sd', 'en',
+]);
 
 /**
  * Day key in the user's local timezone, e.g. "2026-07-19".

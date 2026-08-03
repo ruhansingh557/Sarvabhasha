@@ -26,13 +26,13 @@ Severity guide:
 
 | ID | Severity | Description | Reference | Owner |
 |----|:--------:|-------------|-----------|-------|
-| — | — | *No findings yet — codebase not written.* | — | — |
+| F-001 | med | `Screen.tsx`'s shared shell has no `useSafeAreaInsets` handling — every screen's top content can render under/behind the status bar. Patched locally in the two Tutor views (`VoiceTutor.tsx`, `TutorChat.tsx`) this session; the underlying app-wide gap (Home/Learn/Profile/Auth) is untouched. | `apps/mobile/src/shared/components/atoms/Screen.tsx` | — |
 
 ## Performance / cost opportunities
 
 | ID | Severity | Description | Reference | Owner |
 |----|:--------:|-------------|-----------|-------|
-| — | — | *No findings yet — codebase not written.* | — | — |
+| F-002 | low | Tutor ASR/TTS calls (`bhashini/asr.ts`, `bhashini/tutorSpeech.ts`) are unmetered — `usage.kind: 'asr'`/`'tts'` and `LIMITS.ASR_PER_DAY` are reserved in schema but no mutation checks/increments them. Bhashini is free so this isn't a billing risk, but it's an open abuse/rate-limit gap now that a real mobile voice UI calls both. | `packages/backend/convex/bhashini/asr.ts`, `bhashini/tutorSpeech.ts` | — |
 
 ## Content quality
 

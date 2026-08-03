@@ -4,6 +4,7 @@ import type { Doc, Id } from './_generated/dataModel';
 import type { QueryCtx } from './_generated/server';
 import { daysBetween } from '@sarvabhasha/shared';
 import { getCurrentUserDoc, requireCurrentUserDoc } from './lib/currentUser';
+import { assertDayKeyFresh } from './lib/dayKey';
 
 /**
  * Phrase progress and the daily streak. Both update in `recordViewed`
@@ -11,23 +12,11 @@ import { getCurrentUserDoc, requireCurrentUserDoc } from './lib/currentUser';
  * "a check in one function and a call in another is not a limit," and the
  * same reasoning applies to progress/streak coherence. Two mutations here
  * would let a crash between them leave a viewed phrase with no streak credit.
+ *
+ * The "device-local day, server-clamped" check itself lives in
+ * `lib/dayKey.ts` — `tutor.sendMessage`'s safety-net rate limit reuses the
+ * exact same pattern, so it's shared rather than duplicated.
  */
-
-/**
- * `dayKey` ("YYYY-MM-DD") is computed by the CLIENT via `toDayKey()` — only
- * the client knows the learner's local calendar day. That makes it
- * client-supplied data, which this function does not trust blindly: it is
- * rejected outright if it strays more than one day from the SERVER's own UTC
- * date. This turns data-model.md's previously-just-documented "±1 day clamp
- * is a proposal, not a verified-safe bound" into an actually-enforced check.
- */
-function serverUtcDayKey(now: number): string {
-  const d = new Date(now);
-  const y = d.getUTCFullYear();
-  const m = String(d.getUTCMonth() + 1).padStart(2, '0');
-  const day = String(d.getUTCDate()).padStart(2, '0');
-  return `${y}-${m}-${day}`;
-}
 
 /**
  * A placeholder heuristic, not tuned pedagogy: a phrase viewed at all is
@@ -55,14 +44,7 @@ export const recordViewed = mutation({
   args: { phraseId: v.id('phrases'), dayKey: v.string() },
   returns: v.null(),
   handler: async (ctx, args) => {
-    const serverDay = serverUtcDayKey(Date.now());
-    const drift = daysBetween(serverDay, args.dayKey); // args.dayKey - serverDay, in days
-    if (drift < -1 || drift > 1) {
-      throw new Error(
-        `dayKey "${args.dayKey}" is more than 1 day from the server's UTC date ` +
-          `"${serverDay}" — rejecting as an untrusted clock.`,
-      );
-    }
+    assertDayKeyFresh(args.dayKey);
 
     const user = await requireCurrentUserDoc(ctx);
     if (!user.targetLanguage) {

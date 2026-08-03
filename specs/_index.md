@@ -37,7 +37,7 @@ Status legend: ✅ written · ◻ planned (to be authored by the `doc-creator` a
 | [`auth.md`](auth.md) | ◻ | Better Auth + Convex, Expo secure-store session, social sign-in, route gating, onboarding | auth, identity |
 | [`home-and-dashboard.md`](home-and-dashboard.md) | ◻ | Home tab — streak, continue-learning, phrase of the day | home |
 | [`learn-and-categories.md`](learn-and-categories.md) | ◻ | Learn tab — category taxonomy, phrase lists, the phrase player (video + audio + text + transliteration) | learn, content |
-| [`ai-tutor.md`](ai-tutor.md) | ◻ | Gemini conversation, personas, intent templates, history trimming, voice loop via Bhashini, rate limits | ai, tutor |
+| [`ai-tutor.md`](ai-tutor.md) | ✅ | Gemini conversation engine (startSession/sendMessage/generateReply), cast-based personas, age-gate precondition, ASR-charity prompting, history+rolling-summary; mobile chat UI, voice wiring, avatar clips, and ASR metering all unbuilt | ai, tutor |
 | [`bhashini-speech.md`](bhashini-speech.md) | ◻ | Bhashini TTS at authoring time, ASR at runtime, pipeline configs, language coverage and quality tiers | speech, bhashini |
 | [`content-pipeline.md`](content-pipeline.md) | ◻ | Phrase → translate → TTS → fal.ai animation → human approval → publish. Convex workflow + job queue | content, pipeline, fal |
 | [`languages-and-rollout.md`](languages-and-rollout.md) | ◻ | The 6-live / 22-ready model, `status` flag, quality tiers, adding a language as data | i18n, content |

@@ -21,6 +21,10 @@ Phase 6 (AI Tutor) — there's nothing to sell credits *for* until the tutor con
 - **Refund handling** — webhook/callback design not started.
 - **Verify ₹50 is actually a selectable IAP tier on both App Store and Play Store for India before building UI around it** — the spec flags this as unconfirmed, not a safe assumption.
 
-## Consumption order (already decided, just needs implementing alongside phase 6's tutor mutation)
+## Consumption order (revised — one-time trial, not a recurring daily allowance)
 
-Free 5/day allowance consumed first, always — even for users holding credits — then credits balance, then reject with a paywall prompt. See `monetization-and-limits.md`'s full enforcement pseudocode before implementing; it's fully specified, not a design decision left to this phase.
+**2026-08-03 revision:** the free tier is no longer "5 turns/day, forever." It's a one-time grant of 10 credits at account creation, living in the *same* `credits.balance` a purchased pack tops up — no separate daily-allowance bucket. Consumption is just: `balance > 0 → decrement`, else reject with the pack. See `monetization-and-limits.md`'s full enforcement pseudocode before implementing; it's fully specified, not a design decision left to this phase.
+
+This was changed because the original recurring free tier is an unbounded liability at scale (~$1,800/month forever at 10% DAU across 1M users), whereas a one-time trial is a bounded one-time cost (~$4,000 total, once, to onboard the entire eventual user base). Phase 6's tutor mutation is what actually grants the trial (lazily, the first time a user's `credits` row is touched) and enforces the balance check — this phase only needs the *purchase* side: verifying receipts and incrementing that same `balance`/`lifetimePurchased`.
+
+A generous per-day safety-net cap (`usage` table, ~200/day) still exists independently, purely to bound a client bug or scripted abuse loop — it is not an economic lever and should not be tuned as one.

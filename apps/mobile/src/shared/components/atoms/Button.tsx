@@ -10,6 +10,10 @@ interface ButtonProps {
   loading?: boolean;
   disabled?: boolean;
   children: ReactNode;
+  /** Required for icon-only `children` (e.g. a send button) — string
+   * children already read as accessible text, but a custom node has nothing
+   * for a screen reader to announce without this. */
+  accessibilityLabel?: string;
 }
 
 /**
@@ -22,7 +26,14 @@ interface ButtonProps {
  * `children` may be a plain string (rendered as `Text variant="button"`) or
  * a custom node, for callers that need an icon alongside the label.
  */
-export function Button({ onPress, variant = 'primary', loading = false, disabled = false, children }: ButtonProps) {
+export function Button({
+  onPress,
+  variant = 'primary',
+  loading = false,
+  disabled = false,
+  children,
+  accessibilityLabel,
+}: ButtonProps) {
   const theme = useTheme();
   const isDisabled = disabled || loading;
   const isPrimary = variant === 'primary';
@@ -32,6 +43,7 @@ export function Button({ onPress, variant = 'primary', loading = false, disabled
       onPress={onPress}
       disabled={isDisabled}
       accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
       accessibilityState={{ disabled: isDisabled, busy: loading }}
     >
       <Box
