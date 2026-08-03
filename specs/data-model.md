@@ -260,6 +260,8 @@ Aksharmala is held to a **stricter review bar** than phrase or vocabulary conten
 
 There is no per-script "promote to live" mutation the way `vocabularyCategories`/`languages` have one — a script is a string field, not an entity with its own row. A script's readiness is simply the union of all its `scriptCharacters` rows being individually `live`.
 
+**`scriptCharacterAudio`'s TTS engine is chosen per SCRIPT, mirroring decision 187's per-language choice.** Bhashini (`convex/bhashini/aksharmalaTts.ts`) remains the default. Devanagari is the one exception, and is Google Chirp3-HD-primary (`convex/google/aksharmalaTts.ts`) as of 2026-08: an isolated single letter is an inherently hard TTS case, and after two rounds of Bhashini fixes (the `"<character> से <exampleWord>"` mnemonic phrasing, then a `speed: 0.6` pace slowdown — both still used verbatim by the Google path) some letters still read unclear, while a direct A/B trial confirmed Google's output has a cleaner noise floor at the same phrasing and pace. `scripts/phase13/run.ts`'s `gen-audio-characters` calls the Google module for Devanagari; a future script would default to calling the Bhashini one unless it hits the same clarity problem. Because `aksharmala.ts`'s `upsertScriptCharacterAudio` always patches the single `by_character` row in place (never inserts a competing row), switching a character's engine and re-promoting through the approval gate doesn't require an archive/supersede step the way `personaAnimations` needs one — there is structurally only ever one row per character.
+
 ### Progress
 
 ```ts

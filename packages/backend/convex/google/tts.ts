@@ -53,7 +53,7 @@ const GOOGLE_TTS_URL = 'https://texttospeech.googleapis.com/v1/text:synthesize';
  * `ssmlGender` is sent alongside `name` because the REST API requires the
  * field, but `name` is what actually selects the voice.
  */
-const GOOGLE_VOICES: Record<string, { male: string; female: string }> = {
+export const GOOGLE_VOICES: Record<string, { male: string; female: string }> = {
   hi: { female: 'hi-IN-Chirp3-HD-Kore', male: 'hi-IN-Chirp3-HD-Charon' },
   bn: { female: 'bn-IN-Chirp3-HD-Kore', male: 'bn-IN-Chirp3-HD-Charon' },
   ta: { female: 'ta-IN-Chirp3-HD-Kore', male: 'ta-IN-Chirp3-HD-Charon' },
@@ -69,7 +69,7 @@ const GOOGLE_VOICES: Record<string, { male: string; female: string }> = {
 };
 
 /** BCP-47 locale Google expects, keyed by our ISO 639-1 `languageCode`. */
-const GOOGLE_LOCALE: Record<string, string> = {
+export const GOOGLE_LOCALE: Record<string, string> = {
   hi: 'hi-IN',
   bn: 'bn-IN',
   ta: 'ta-IN',
@@ -80,7 +80,7 @@ const GOOGLE_LOCALE: Record<string, string> = {
   ur: 'ur-IN',
 };
 
-function getGoogleTtsKey(): string {
+export function getGoogleTtsKey(): string {
   const key = process.env.GOOGLE_CLOUD_TTS_API_KEY;
   if (!key) {
     throw new Error(
@@ -92,12 +92,26 @@ function getGoogleTtsKey(): string {
   return key;
 }
 
-/** Returns base64 `audioContent` (LINEAR16 WAV), or throws with the response body on failure. */
-async function synthesize(
+/**
+ * Returns base64 `audioContent` (LINEAR16 WAV), or throws with the response
+ * body on failure.
+ *
+ * `speakingRate` is OPTIONAL and omitted from the request entirely unless
+ * passed — every existing call site (`generateAudioForPhraseGoogle` below)
+ * doesn't pass it, so live phrase-fallback audio is byte-for-byte unaffected
+ * by this addition. It exists for `google/aksharmalaTtsTrial.ts`, which needs
+ * to slow Chirp3-HD's pace to compare against Bhashini's `speed: 0.6`
+ * Aksharmala clips. Google's REST API documents this as a genuine linear
+ * rate control in `[0.25, 4.0]` (1.0 = native speed), unlike Bhashini's
+ * reverse-engineered `speed` field — see that trial file for why 0.6 was
+ * chosen and how it was verified to actually take effect.
+ */
+export async function synthesize(
   text: string,
   languageCode: string,
   gender: 'male' | 'female',
   apiKey: string,
+  speakingRate?: number,
 ): Promise<string> {
   const locale = GOOGLE_LOCALE[languageCode];
   const voiceName = GOOGLE_VOICES[languageCode]?.[gender];
@@ -115,7 +129,10 @@ async function synthesize(
         name: voiceName,
         ssmlGender: gender === 'male' ? 'MALE' : 'FEMALE',
       },
-      audioConfig: { audioEncoding: 'LINEAR16' },
+      audioConfig: {
+        audioEncoding: 'LINEAR16',
+        ...(speakingRate !== undefined ? { speakingRate } : {}),
+      },
     }),
   });
   if (!res.ok) {

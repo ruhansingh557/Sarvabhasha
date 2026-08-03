@@ -211,10 +211,20 @@ async function genImages(categorySlug: 'numbers' | 'family') {
   console.log(`Done. Total spend so far: $${report.spendUsd.toFixed(3)}`);
 }
 
+/**
+ * Devanagari script-character audio is Google Chirp3-HD-primary as of
+ * 2026-08 (see `convex/google/aksharmalaTts.ts`'s header for the full
+ * reasoning: two rounds of Bhashini prompt/pace fixes still left isolated
+ * letters unclear, and the Chirp3-HD A/B trial confirmed a cleaner result at
+ * the same mnemonic phrasing and pace). This orchestrator therefore calls
+ * the Google module, not the Bhashini one — `bhashini/aksharmalaTts.ts`
+ * still exists and remains the default for any OTHER script's character
+ * audio.
+ */
 async function genAudioCharacters(force?: boolean) {
   const report = loadReport();
   console.log(`Generating audio for ${DEVANAGARI_CHARACTERS.length} Devanagari characters...`);
-  const r = runConvex('bhashini/aksharmalaTts:generateScriptCharacterAudioForScript', {
+  const r = runConvex('google/aksharmalaTts:generateScriptCharacterAudioForScript', {
     script: 'devanagari',
     characters: DEVANAGARI_CHARACTERS.map((c) => c.character),
     languageCode: 'hi',
@@ -233,7 +243,10 @@ async function genAudioCharacters(force?: boolean) {
     });
   }
   saveReport(report);
-  console.log(`Succeeded: ${r.succeeded}, Failed: ${r.failed}`);
+  console.log(
+    `Succeeded: ${r.succeeded}, Failed: ${r.failed}, chars sent: ${r.totalCharCount}, ` +
+      `estimated cost: $${r.estimatedCostUsd.toFixed(6)}`,
+  );
   if (r.failed > 0) console.log(JSON.stringify(r.results.filter((x: any) => !x.ok), null, 2));
 }
 

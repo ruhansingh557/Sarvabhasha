@@ -47,11 +47,20 @@ export function LearnScreen() {
 
   // ---- Common Phrases: "N categories · M phrases", both derived from the
   // same live-only query LearnScreen used to drive its own category list.
+  // Two independently-pluralizable quantities in one string means a single
+  // `count` can't drive i18next's plural selection for both halves at once
+  // (e.g. "1 category · 45 phrases" needs singular AND plural in the same
+  // sentence) — so each half is its own `_one`/`_other` key, and the outer
+  // template just joins the two already-resolved labels.
   const liveCategories = (phraseCategories ?? []).filter((c) => c.status === 'live');
   const commonPhrasesCount = phraseCategories
     ? t('Learn.COMMON_PHRASES_COUNT', {
-        categories: liveCategories.length,
-        phrases: liveCategories.reduce((sum, c) => sum + c.phraseCount, 0),
+        categoriesLabel: t('Learn.COMMON_PHRASES_CATEGORIES_COUNT', {
+          count: liveCategories.length,
+        }),
+        phrasesLabel: t('Learn.COMMON_PHRASES_PHRASES_COUNT', {
+          count: liveCategories.reduce((sum, c) => sum + c.phraseCount, 0),
+        }),
       })
     : undefined;
 
@@ -83,8 +92,8 @@ export function LearnScreen() {
       <Text variant="h1" marginBottom="l">
         {t('Learn.TITLE')}
       </Text>
-      <Box gap="m">
-        <Box flexDirection="row" gap="m">
+      <Box gap="s">
+        <Box flexDirection="row" gap="s">
           <Box flex={1}>
             <FoundationCard
               icon={<Ionicons name="chatbubbles-outline" size={26} color={theme.colors.primary} />}
@@ -96,7 +105,7 @@ export function LearnScreen() {
           <Box flex={1}>
             <FoundationCard
               icon={
-                <Text variant="hero" color="primary">
+                <Text variant="h2" color="primary">
                   {aksharmalaGlyph}
                 </Text>
               }
@@ -106,7 +115,7 @@ export function LearnScreen() {
             />
           </Box>
         </Box>
-        <Box flexDirection="row" gap="m">
+        <Box flexDirection="row" gap="s">
           <Box flex={1}>
             <FoundationCard
               icon={<Ionicons name="calculator-outline" size={26} color={theme.colors.primary} />}

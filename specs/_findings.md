@@ -28,6 +28,7 @@ Severity guide:
 |----|:--------:|-------------|-----------|-------|
 | F-003 | med | `AuthScreen` predates `Screen.tsx` (its own docstring says so) and never adopted it — it renders directly under `RootNavigator` with no navigator/header when there's no session, so its title/form can render under the status bar, same class of bug as the now-fixed F-001. | `apps/mobile/src/features/auth/screens/AuthScreen.tsx` | — |
 | F-004 | low | Home's "continue learning" CTA deep-links straight to `LearnTab > PhraseList`, skipping the new `PhraseCategories` route the Learn tab redesign introduced (Learn root is now 4 cards, "Common Phrases" pushes to `PhraseCategories` first). Back button from that deep link now lands on the 4-card root instead of the category list — a nav-stack ordering nuance, not a broken feature. | `apps/mobile/src/features/home/screens/HomeScreen.tsx` | — |
+| F-005 | med | `decodeBase64Audio` computes `durationMs` assuming 16-bit PCM (`bytes.length / (22050 * 2)`), but Bhashini's actual returned WAV is 32-bit float (`pcm_f32le`, confirmed via `ffprobe` on downloaded aksharmala clips) — every stored `durationMs` (on `scriptCharacterAudio` and presumably every other TTS table using this helper) is ~2x the clip's real audio duration. Doesn't affect relative comparisons (same constant-factor bug on every clip, so before/after ratios still hold), but any UI or logic reading `durationMs` as ground truth is off by 2x. | `packages/backend/convex/bhashini/lib.ts:124` | — |
 
 ## Performance / cost opportunities
 

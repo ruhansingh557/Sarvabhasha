@@ -4,13 +4,43 @@
  *
  * ONE clip per (script, character) — not per language, per
  * `aksharmala.ts`'s doc comment and schema.ts's `scriptCharacterAudio`
- * comment. The synthesized text is the character's own glyph (a single
- * letter/short syllable utterance, not a sentence) — `languageCode` is a
- * separate argument because Bhashini's TTS pipeline is keyed by language,
- * not script, and a script can serve several languages (see
- * `aksharmala.ts`'s header comment); the caller picks whichever live
- * language's TTS voice should read the glyph (`hi` for `devanagari` in this
- * pass).
+ * comment. `languageCode` is a separate argument because Bhashini's TTS
+ * pipeline is keyed by language, not script, and a script can serve several
+ * languages (see `aksharmala.ts`'s header comment); the caller picks
+ * whichever live language's TTS voice should read the clip (`hi` for
+ * `devanagari` in this pass).
+ *
+ * The synthesized text is NOT the bare glyph. A single isolated character
+ * (e.g. just "अ") is an inherently hard synthesis case — a TTS model trained
+ * on continuous natural speech, given ~0.3s of audio to produce, articulates
+ * it rushed and unclear (confirmed 2026-08 by downloading and ffprobe-ing
+ * actual generated clips: valid, non-corrupted WAV, just too short to be
+ * legible). `buildSynthesisText` below instead synthesizes the standard
+ * Hindi pedagogical mnemonic every primary school teaches with — "<character>
+ * से <exampleWord>" (e.g. "अ से अनार", "A, as in Anaar") — giving Bhashini a
+ * real, natural Hindi utterance instead of an isolated phone. This is also
+ * pedagogically correct on its own terms: a bare letter with no context
+ * teaches less than the standard mnemonic. See `MNEMONIC_CONNECTOR` for why
+ * this only applies to languages we have a confirmed "as in" convention for.
+ *
+ * Even with the mnemonic phrase, the owner reported the regenerated clips
+ * still sounded "hurried" for a teaching context — a learner needs each
+ * syllable clearly, not naturally-paced conversational speech. Investigated
+ * whether Bhashini's ULCA pipeline exposes a native speech-rate control
+ * before reaching for post-processing (see `TTS_SPEED` below): it does — an
+ * undocumented but real `speed` field in the `tts` task's `config` object,
+ * confirmed live (2026-08) against the `hi` pipeline's resolved service
+ * (`ai4bharat/indic-tts-coqui-indo_aryan-gpu--t4`) by comparing `speed: 0.7`
+ * against the default on identical input text: output duration scaled by
+ * ~1/0.7 as a genuine rate control would, while the estimated fundamental
+ * pitch held steady (190.1Hz → 186.9Hz, within measurement noise) and the
+ * WAV's own sample-rate header didn't change (22050Hz both) — i.e. the
+ * model is generating genuinely slower speech, not being resampled after the
+ * fact, so pitch doesn't drop into "chipmunk-in-reverse" territory the way
+ * naive resampling would. This is why `TTS_SPEED` is threaded through to
+ * `synthesizeTts` instead of an `ffmpeg atempo` pass — a real, model-level
+ * rate control is more reliable than reconstructing pace from audio we
+ * already generated.
  *
  * `internalAction` only, never a client-facing `action` — CLAUDE.md rule 10.
  */
@@ -50,6 +80,60 @@ export const findExistingScriptCharacterAudio = internalQuery({
       .first(),
 });
 
+/**
+ * The real, standard "letter, as in <word>" mnemonic word per language —
+ * NOT a generic translation of "as in", which would be a guess dressed up as
+ * a fact. Only add an entry here once the convention is actually confirmed
+ * for that language (same discipline as this project's phrase content:
+ * researched, not invented). Every language without an entry falls back to
+ * the bare glyph in `buildSynthesisText` — a known-mediocre-but-honest
+ * result is better than silently mixing in a Hindi word for a language
+ * that doesn't use it.
+ */
+const MNEMONIC_CONNECTOR: Record<string, string> = {
+  hi: 'से', // "se" — standard Hindi primary-school Aksharmala convention
+};
+
+/**
+ * Speaking-rate multiplier sent as Bhashini's native `speed` config field
+ * (see the file header for how this was discovered and verified). 1.0
+ * (baseline) was the reported "hurried" result; 0.85 was a marginal,
+ * easy-to-miss change; 0.75 (a ~30-40% duration increase in practice, since
+ * the model's own duration predictor doesn't scale perfectly linearly with
+ * the requested multiplier) read as clearly deliberate and
+ * syllable-by-syllable without sounding unnatural; 0.6 stretched duration
+ * ~1.65x and was technically clean (no clipping/distortion signature,
+ * astats peak/RMS/noise-floor healthy) but was flagged in that pass as
+ * subjectively "a slowed-recording parody, not pedagogy."
+ *
+ * Shipped at 0.75 first. The project owner then listened at 0.75 and asked
+ * to slow down further — that subjective call belongs to the owner, not to
+ * the earlier aesthetic reservation about 0.6, so this is now set to 0.6.
+ * astats/pitch checks at 0.6 were already confirmed healthy across vowel,
+ * consonant, and conjunct samples in the comparison pass; re-verify on the
+ * actual regenerated batch before promoting (a ~1.65x-vs-1.0x rate change
+ * generalizing cleanly across 3 sample characters isn't the same guarantee
+ * as it holding across all 49).
+ */
+export const TTS_SPEED = 0.6;
+
+/**
+ * Builds the text actually sent to Bhashini for one character's clip.
+ * Prefers "<character> <connector> <exampleWord>" (e.g. "अ से अनार") when
+ * both an example word and a confirmed mnemonic convention for `languageCode`
+ * exist; falls back to the bare glyph otherwise (no `exampleWord` seeded yet,
+ * or an unconfirmed language) rather than guessing at phrasing.
+ */
+export function buildSynthesisText(
+  character: string,
+  exampleWord: string | undefined,
+  languageCode: string,
+): string {
+  const connector = MNEMONIC_CONNECTOR[languageCode];
+  if (!exampleWord || !connector) return character;
+  return `${character} ${connector} ${exampleWord}`;
+}
+
 // ------------------------------------------------------------------ actions
 
 type GenerateScriptCharacterAudioResult =
@@ -64,6 +148,8 @@ type GenerateScriptCharacterAudioResult =
       storageId: Id<'_storage'>;
       /** Signed URL, returned purely so an authoring script can fetch the clip for review. */
       audioUrl: string | null;
+      /** What was actually sent to Bhashini — for reproducibility, not persisted on the row. */
+      synthesisText: string;
     };
 
 /**
@@ -111,7 +197,15 @@ export const generateScriptCharacterAudio = internalAction({
     try {
       const creds = getBhashiniCredentials();
       const config = await getTtsPipelineConfig(args.languageCode, gender, creds);
-      const base64 = await synthesizeTts(row.character, args.languageCode, gender, config, creds);
+      const synthesisText = buildSynthesisText(row.character, row.exampleWord, args.languageCode);
+      const base64 = await synthesizeTts(
+        synthesisText,
+        args.languageCode,
+        gender,
+        config,
+        creds,
+        TTS_SPEED,
+      );
       const { bytes, durationMs } = decodeBase64Audio(base64);
 
       const storageId = await ctx.storage.store(new Blob([bytes], { type: 'audio/wav' }));
@@ -133,6 +227,7 @@ export const generateScriptCharacterAudio = internalAction({
         gender,
         storageId,
         audioUrl,
+        synthesisText,
       };
     } catch (err) {
       return { ok: false as const, reason: (err as Error).message };
@@ -176,7 +271,7 @@ export const generateScriptCharacterAudioForScript = internalAction({
         detail: r.ok
           ? r.skipped
             ? 'already existed'
-            : `${r.gender}, ${r.durationMs}ms, ${(r.bytes! / 1024).toFixed(0)}KB`
+            : `${r.gender}, ${r.durationMs}ms, ${(r.bytes! / 1024).toFixed(0)}KB, text="${r.synthesisText}"`
           : r.reason,
         audioUrl: r.ok && !r.skipped ? r.audioUrl : null,
       });

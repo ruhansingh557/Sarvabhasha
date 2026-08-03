@@ -132,6 +132,18 @@ export const lightTheme = createTheme({
     success: palette.green500,
     warning: palette.amber500,
     info: palette.blue500,
+
+    /**
+     * Shadow color for elevated surfaces (e.g. `FoundationCard`). Baked-in
+     * alpha, not a plain hex — pass straight to `shadowColor` with
+     * `shadowOpacity: 1`. Unlike other tokens this deliberately does NOT
+     * mirror a palette color 1:1 between themes: a shadow is a physical
+     * darkening effect in both modes, so both values stay near-black: only
+     * the alpha (and the dark-mode elevation it needs to read against a
+     * dark `surface`) differs. See CLAUDE.md rule 2 / ui-guardian rule 2 —
+     * verified this still reads against `darkTheme`'s `surface`/`background`.
+     */
+    shadow: 'rgba(20, 17, 14, 0.16)',
   },
   spacing,
   borderRadii,
@@ -165,6 +177,10 @@ export const darkTheme: Theme = {
     success: palette.green400,
     warning: palette.amber400,
     info: palette.blue400,
+
+    // Near-black shadow, higher alpha than light mode — a dark surface
+    // needs a stronger shadow for the same perceived depth.
+    shadow: 'rgba(0, 0, 0, 0.45)',
   },
 };
 

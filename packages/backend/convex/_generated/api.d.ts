@@ -23,6 +23,8 @@ import type * as fal_characters from "../fal/characters.js";
 import type * as fal_lib from "../fal/lib.js";
 import type * as fal_personaAnimations from "../fal/personaAnimations.js";
 import type * as fal_vocabularyImages from "../fal/vocabularyImages.js";
+import type * as google_aksharmalaTts from "../google/aksharmalaTts.js";
+import type * as google_aksharmalaTtsTrial from "../google/aksharmalaTtsTrial.js";
 import type * as google_tts from "../google/tts.js";
 import type * as home from "../home.js";
 import type * as http from "../http.js";
@@ -62,6 +64,8 @@ declare const fullApi: ApiFromModules<{
   "fal/lib": typeof fal_lib;
   "fal/personaAnimations": typeof fal_personaAnimations;
   "fal/vocabularyImages": typeof fal_vocabularyImages;
+  "google/aksharmalaTts": typeof google_aksharmalaTts;
+  "google/aksharmalaTtsTrial": typeof google_aksharmalaTtsTrial;
   "google/tts": typeof google_tts;
   home: typeof home;
   http: typeof http;

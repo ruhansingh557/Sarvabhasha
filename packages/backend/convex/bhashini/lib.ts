@@ -53,13 +53,32 @@ export async function getTtsPipelineConfig(
   return await res.json();
 }
 
-/** Synthesize `text` and return base64-encoded audio. */
+/**
+ * Synthesize `text` and return base64-encoded audio.
+ *
+ * `speed` is an OPTIONAL native ULCA config field (confirmed live 2026-08
+ * against `ai4bharat/indic-tts-coqui-indo_aryan-gpu--t4`, the service this
+ * pipeline resolves to for `hi`): a multiplier on speaking rate, applied by
+ * the TTS model itself (duration control on its own acoustic output), not a
+ * post-hoc resample — verified by comparing `speed: 0.7` against baseline on
+ * the same input text: duration scaled by ~1/0.7 as expected while the
+ * estimated fundamental pitch stayed within measurement noise (190.1Hz vs
+ * 186.9Hz) and the WAV's own sample-rate header was unchanged (22050Hz both).
+ * This is why `aksharmalaTts.ts` uses this over an `ffmpeg atempo` pass —
+ * a real rate control beats time-stretching audio we already have.
+ *
+ * Omitted entirely (as every existing caller — `tts.ts`, `vocabularyTts.ts`
+ * — does) it is simply absent from the request body, which is exactly the
+ * request `tts.ts`/`vocabularyTts.ts` already sent before this parameter was
+ * discovered: zero behavior change for lesson-phrase or vocabulary audio.
+ */
 export async function synthesizeTts(
   text: string,
   language: string,
   gender: 'male' | 'female',
   pipelineConfig: any,
   creds: { apiKey: string; userId: string },
+  speed?: number,
 ): Promise<string> {
   const serviceId = pipelineConfig.pipelineResponseConfig?.[0]?.config?.[0]?.serviceId;
   const authToken = pipelineConfig.pipelineInferenceAPIEndPoint?.inferenceApiKey?.value;
@@ -80,7 +99,12 @@ export async function synthesizeTts(
       pipelineTasks: [
         {
           taskType: 'tts',
-          config: { language: { sourceLanguage: language }, serviceId, gender },
+          config: {
+            language: { sourceLanguage: language },
+            serviceId,
+            gender,
+            ...(speed !== undefined && { speed }),
+          },
         },
       ],
       inputData: { input: [{ source: text }] },
