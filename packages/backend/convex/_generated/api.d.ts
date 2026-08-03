@@ -26,6 +26,7 @@ import type * as fal_vocabularyImages from "../fal/vocabularyImages.js";
 import type * as google_aksharmalaTts from "../google/aksharmalaTts.js";
 import type * as google_aksharmalaTtsTrial from "../google/aksharmalaTtsTrial.js";
 import type * as google_tts from "../google/tts.js";
+import type * as google_vocabularyTts from "../google/vocabularyTts.js";
 import type * as home from "../home.js";
 import type * as http from "../http.js";
 import type * as languages from "../languages.js";
@@ -67,6 +68,7 @@ declare const fullApi: ApiFromModules<{
   "google/aksharmalaTts": typeof google_aksharmalaTts;
   "google/aksharmalaTtsTrial": typeof google_aksharmalaTtsTrial;
   "google/tts": typeof google_tts;
+  "google/vocabularyTts": typeof google_vocabularyTts;
   home: typeof home;
   http: typeof http;
   languages: typeof languages;

@@ -89,9 +89,23 @@ export const findExistingScriptCharacterAudio = internalQuery({
  * the bare glyph in `buildSynthesisText` — a known-mediocre-but-honest
  * result is better than silently mixing in a Hindi word for a language
  * that doesn't use it.
+ *
+ * `bn` added 2026-08-03 for the Bengali Aksharmala pass — the standard
+ * Bengali primer convention (traceable to Ishwar Chandra Vidyasagar's 1855
+ * "বর্ণপরিচয়", still the foundational reference) is "<character>-এ
+ * <exampleWord>" (locative "e", e.g. "অ-এ অজগর" — literally "O, as in
+ * Ajagar/python"), verified against bn.wikibooks.org's per-letter pages and
+ * cross-checked against independent sources for the consonant set. This
+ * template renders it as "<character> এ <exampleWord>" (a space, not the
+ * written hyphen) — the hyphen is a text-formatting convention, not a
+ * pronunciation difference, so reusing the SAME template shape as Hindi's
+ * "<character> <connector> <exampleWord>" (rather than forking
+ * `buildSynthesisText` for a hyphen that wouldn't change how it sounds) was
+ * the right call, per this pipeline's "reuse, don't duplicate" discipline.
  */
 const MNEMONIC_CONNECTOR: Record<string, string> = {
   hi: 'से', // "se" — standard Hindi primary-school Aksharmala convention
+  bn: 'এ', // "e" — standard Bengali primer convention (Vidyasagar's বর্ণপরিচয়)
 };
 
 /**

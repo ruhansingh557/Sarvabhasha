@@ -96,21 +96,25 @@ export function LearnScreen() {
         <Box flexDirection="row" gap="s">
           <Box flex={1}>
             <FoundationCard
-              icon={<Ionicons name="chatbubbles-outline" size={26} color={theme.colors.primary} />}
+              icon={
+                <Ionicons name="chatbubbles-outline" size={26} color={theme.colors.textInverse} />
+              }
               title={t('Learn.COMMON_PHRASES_CARD_TITLE')}
               countLabel={commonPhrasesCount}
+              badgeColor="primary"
               onPress={() => navigation.navigate('PhraseCategories')}
             />
           </Box>
           <Box flex={1}>
             <FoundationCard
               icon={
-                <Text variant="h2" color="primary">
+                <Text variant="h2" color="textInverse">
                   {aksharmalaGlyph}
                 </Text>
               }
               title={t('Learn.AKSHARMALA_CARD_TITLE')}
               countLabel={aksharmalaCount}
+              badgeColor="accent"
               onPress={() => navigation.navigate('Aksharmala')}
             />
           </Box>
@@ -118,17 +122,21 @@ export function LearnScreen() {
         <Box flexDirection="row" gap="s">
           <Box flex={1}>
             <FoundationCard
-              icon={<Ionicons name="calculator-outline" size={26} color={theme.colors.primary} />}
+              icon={
+                <Ionicons name="calculator-outline" size={26} color={theme.colors.textInverse} />
+              }
               title={t('Learn.NUMBERS_CARD_TITLE')}
               countLabel={numbersCount}
+              badgeColor="info"
               onPress={() => navigation.navigate('Numbers')}
             />
           </Box>
           <Box flex={1}>
             <FoundationCard
-              icon={<Ionicons name="images-outline" size={26} color={theme.colors.primary} />}
+              icon={<Ionicons name="images-outline" size={26} color={theme.colors.textInverse} />}
               title={t('Learn.VOCABULARY_CARD_TITLE')}
               countLabel={vocabularyCount}
+              badgeColor="success"
               onPress={() => navigation.navigate('Vocabulary')}
             />
           </Box>

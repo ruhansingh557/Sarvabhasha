@@ -43,3 +43,4 @@ yarn-error.*
 
 # Pipeline scratch — generated media, not source
 scratch/
+packages/backend/scripts/phase13/images/

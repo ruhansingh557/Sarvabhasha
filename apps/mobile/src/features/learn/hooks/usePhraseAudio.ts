@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { setAudioModeAsync, useAudioPlayer, useAudioPlayerStatus, type AudioSource } from 'expo-audio';
+import { useCachedAudioSource } from './useCachedAudioSource';
 
 /**
  * First `expo-audio` usage in the app. Wraps `useAudioPlayer` +
@@ -10,9 +11,20 @@ import { setAudioModeAsync, useAudioPlayer, useAudioPlayerStatus, type AudioSour
  * resolved yet, or a phrase legitimately has no live audio) — `useAudioPlayer`
  * is called with `null` in that case rather than skipping the hook, since
  * hooks can't be called conditionally.
+ *
+ * The remote `audioUrl` is resolved through `useCachedAudioSource` before it
+ * ever reaches `useAudioPlayer`: on first play it's downloaded once to
+ * `FileSystem.cacheDirectory`, and every play after — this session, next
+ * session, weeks later — is served from that local file with zero network
+ * traffic. See that hook's doc comment for the full cache design (key,
+ * concurrency, failure fallback). This is purely an internal swap: every
+ * existing caller of this hook (`PhraseDetailScreen`,
+ * `VocabularyCategoryContent`'s lifted-grid-player, `AksharmalaScreen`)
+ * keeps calling it exactly as before and gets caching for free.
  */
 export function usePhraseAudio(audioUrl: string | null | undefined) {
-  const source: AudioSource = audioUrl ? { uri: audioUrl } : null;
+  const cachedUri = useCachedAudioSource(audioUrl);
+  const source: AudioSource = cachedUri ? { uri: cachedUri } : null;
   const player = useAudioPlayer(source);
   const status = useAudioPlayerStatus(player);
 
