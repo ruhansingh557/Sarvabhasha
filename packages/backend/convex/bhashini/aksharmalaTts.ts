@@ -106,6 +106,13 @@ export const findExistingScriptCharacterAudio = internalQuery({
 const MNEMONIC_CONNECTOR: Record<string, string> = {
   hi: 'से', // "se" — standard Hindi primary-school Aksharmala convention
   bn: 'এ', // "e" — standard Bengali primer convention (Vidyasagar's বর্ণপরিচয়)
+  // `ta` deliberately has NO entry: no confirmed single-word Tamil equivalent
+  // of "से"/"এ" was found when Tamil was authored (2026-08-04) — see
+  // `data.ts`'s `TAMIL_CHARACTERS` header. `buildSynthesisText` below falls
+  // back to bare juxtaposition ("<character> <exampleWord>", no connector
+  // word) for any language missing here, which still gives the model two
+  // real words of context instead of an isolated glyph, without asserting a
+  // specific Tamil grammatical convention this project can't verify.
 };
 
 /**
@@ -132,20 +139,24 @@ const MNEMONIC_CONNECTOR: Record<string, string> = {
 export const TTS_SPEED = 0.6;
 
 /**
- * Builds the text actually sent to Bhashini for one character's clip.
+ * Builds the text actually sent to Bhashini/Google for one character's clip.
  * Prefers "<character> <connector> <exampleWord>" (e.g. "अ से अनार") when
  * both an example word and a confirmed mnemonic convention for `languageCode`
- * exist; falls back to the bare glyph otherwise (no `exampleWord` seeded yet,
- * or an unconfirmed language) rather than guessing at phrasing.
+ * exist. When an example word exists but no connector is confirmed for this
+ * language (e.g. `ta` — see `MNEMONIC_CONNECTOR`'s comment), falls back to
+ * bare "<character> <exampleWord>" juxtaposition rather than inventing a
+ * grammatical connector this project can't verify — still two real words of
+ * context, just not asserting a specific "as in" phrasing. Falls back to the
+ * bare glyph only when no `exampleWord` exists at all.
  */
 export function buildSynthesisText(
   character: string,
   exampleWord: string | undefined,
   languageCode: string,
 ): string {
+  if (!exampleWord) return character;
   const connector = MNEMONIC_CONNECTOR[languageCode];
-  if (!exampleWord || !connector) return character;
-  return `${character} ${connector} ${exampleWord}`;
+  return connector ? `${character} ${connector} ${exampleWord}` : `${character} ${exampleWord}`;
 }
 
 // ------------------------------------------------------------------ actions

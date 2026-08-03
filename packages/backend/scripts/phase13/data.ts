@@ -204,6 +204,103 @@ export const BENGALI_CHARACTERS: ScriptCharacterData[] = [
   { character: 'জ্ঞ', characterType: 'conjunct', romanization: 'gæ', exampleWord: 'জ্ঞান', exampleTransliteration: 'gæan', exampleGloss: 'knowledge', sortOrder: 53 },
 ];
 
+/**
+ * Tamil (`script: 'tamil'` in `@sarvabhasha/shared`'s `languages.ts`) — the
+ * THIRD script authored through this pipeline (2026-08-04), for the `ta`
+ * live language. Unlike Devanagari/Bengali, this pass had no live WebSearch
+ * verification available for the earlier two scripts' sourcing — this one
+ * does, and every structural claim below was checked against real sources
+ * (Wikiversity's Tamil Language/Letters, Remitly's Tamil Alphabet guide,
+ * and a dedicated search on Tamil's word-initial restrictions), not drafted
+ * from memory alone and asserted as verified.
+ *
+ * SOURCING: Tamil's own traditional count is 12 உயிரெழுத்து (uyir eluttu,
+ * "life letters" = vowels) + 18 மெய்யெழுத்து (mei eluttu, "body letters" =
+ * consonants) + 1 ஆயுத எழுத்து (aytham/āytham, a unique Tamil grapheme with
+ * no vowel/consonant/conjunct equivalent in the other scripts this project
+ * has authored) = 31 "Mutal Elutukkal" (primary letters) — confirmed
+ * consistent across Wikiversity and multiple Tamil-language teaching sites.
+ * On top of these 31, this dataset adds all 6 GRANTHA consonants (ஜ ஶ ஷ ஸ ஹ
+ * க்ஷ) — borrowed from the historical Grantha script specifically to write
+ * Sanskrit/English loanwords Tamil's native 18 consonants can't represent
+ * (confirmed via Talkpal's "What are the Grantha letters" and Omniglot) —
+ * for 37 characters total. Unlike Devanagari/Bengali's "3 most common
+ * conjuncts, not exhaustive" precedent, ALL 6 grantha letters are included
+ * here since they're a small, closed, well-defined set (not an open-ended
+ * combinatoric space the way conjuncts are), and every one is genuinely
+ * common in everyday modern Tamil (ஜன்னல்/window, ஹோட்டல்/hotel).
+ *
+ * NO Devanagari/Bengali-style word-initial "1 core vowel + 2 special marks"
+ * grouping applies here — Tamil has no anusvara/visarga/chandrabindu
+ * equivalent; all 12 vowels are genuinely independent letters.
+ *
+ * MNEMONIC CONVENTION: no confirmed single-word Tamil equivalent of Hindi's
+ * "से"/Bengali's "এ" connector was found or is claimed here. Per
+ * `MNEMONIC_CONNECTOR`'s own documented discipline ("a known-mediocre-but-
+ * honest result is better than silently mixing in a word from a convention
+ * that doesn't apply"), `ta` has NO entry in that map — `buildSynthesisText`
+ * falls back to bare "<character> <exampleWord>" juxtaposition for Tamil
+ * (see that function's updated doc comment), not a fabricated connector.
+ *
+ * WORD-INITIAL RESTRICTION (a real, well-documented rule of Tamil
+ * orthography, confirmed via a dedicated search — not assumed by analogy
+ * with Devanagari/Bengali's much smaller "rarely initial" sets): SIX
+ * consonants — ங, ண, ழ, ள, ற, ன — can NEVER begin a native Tamil word,
+ * regardless of vowel. This is a larger, harder restriction than either
+ * other script authored so far (Devanagari: 4 letters "rarely" initial;
+ * Bengali: 10, but softer "almost never" wording) — Tamil's rule is
+ * absolute. Every one of these 6 has a `note` explaining its medial/final
+ * standard example instead. ஞ is NOT in this restricted set (ஞாயிறு/sun and
+ * ஞானம்/wisdom both genuinely begin with ஞ) — confirmed independently, not
+ * assumed from Devanagari's ञ having the opposite restriction.
+ */
+export const TAMIL_CHARACTERS: ScriptCharacterData[] = [
+  // ---- உயிரெழுத்து (uyir eluttu, vowels) — 12 ----
+  { character: 'அ', characterType: 'vowel', romanization: 'a', exampleWord: 'அம்மா', exampleTransliteration: 'ammaa', exampleGloss: 'mother', sortOrder: 1 },
+  { character: 'ஆ', characterType: 'vowel', romanization: 'aa', exampleWord: 'ஆடு', exampleTransliteration: 'aadu', exampleGloss: 'goat', sortOrder: 2 },
+  { character: 'இ', characterType: 'vowel', romanization: 'i', exampleWord: 'இலை', exampleTransliteration: 'ilai', exampleGloss: 'leaf', sortOrder: 3 },
+  { character: 'ஈ', characterType: 'vowel', romanization: 'ii', exampleWord: 'ஈ', exampleTransliteration: 'ii', exampleGloss: 'housefly', sortOrder: 4, note: 'A rare case where the example word IS the letter itself (long ஈ, pronounced "ee") — ஈ is the actual Tamil word for "housefly", a well-known self-referential primer mnemonic.' },
+  { character: 'உ', characterType: 'vowel', romanization: 'u', exampleWord: 'உலகம்', exampleTransliteration: 'ulagam', exampleGloss: 'world', sortOrder: 5 },
+  { character: 'ஊ', characterType: 'vowel', romanization: 'uu', exampleWord: 'ஊஞ்சல்', exampleTransliteration: 'oonjal', exampleGloss: 'swing', sortOrder: 6 },
+  { character: 'எ', characterType: 'vowel', romanization: 'e', exampleWord: 'எலி', exampleTransliteration: 'eli', exampleGloss: 'mouse/rat', sortOrder: 7 },
+  { character: 'ஏ', characterType: 'vowel', romanization: 'ee', exampleWord: 'ஏணி', exampleTransliteration: 'yeni', exampleGloss: 'ladder', sortOrder: 8 },
+  { character: 'ஐ', characterType: 'vowel', romanization: 'ai', exampleWord: 'ஐந்து', exampleTransliteration: 'aindhu', exampleGloss: 'five', sortOrder: 9 },
+  { character: 'ஒ', characterType: 'vowel', romanization: 'o', exampleWord: 'ஒட்டகம்', exampleTransliteration: 'ottagam', exampleGloss: 'camel', sortOrder: 10 },
+  { character: 'ஓ', characterType: 'vowel', romanization: 'oo', exampleWord: 'ஓநாய்', exampleTransliteration: 'onaai', exampleGloss: 'wolf', sortOrder: 11 },
+  { character: 'ஔ', characterType: 'vowel', romanization: 'au', exampleWord: 'ஔடதம்', exampleTransliteration: 'audhadham', exampleGloss: 'medicine', sortOrder: 12, note: 'ஔ is Tamil’s rarest vowel, occurring almost exclusively in Sanskrit loanwords — "medicine" is, notably, also the standard textbook example for this exact vowel’s equivalent in both Devanagari (औ) and Bengali (ঔ), a genuine cross-script pattern, not a coincidence invented for this dataset.' },
+
+  // ---- மெய்யெழுத்து (mei eluttu, consonants) — 18 ----
+  { character: 'க', characterType: 'consonant', romanization: 'ka', exampleWord: 'கண்', exampleTransliteration: 'kan', exampleGloss: 'eye', sortOrder: 13 },
+  { character: 'ங', characterType: 'consonant', romanization: 'nga', exampleWord: 'பொங்கல்', exampleTransliteration: 'pongal', exampleGloss: 'Pongal (harvest festival / sweet rice dish)', sortOrder: 14, note: 'ங can NEVER begin a native Tamil word (a confirmed, absolute orthographic rule, not a "rarely" case) — பொங்கல் is the standard medial example.' },
+  { character: 'ச', characterType: 'consonant', romanization: 'cha', exampleWord: 'சட்டை', exampleTransliteration: 'chattai', exampleGloss: 'shirt', sortOrder: 15 },
+  { character: 'ஞ', characterType: 'consonant', romanization: 'nya', exampleWord: 'ஞாயிறு', exampleTransliteration: 'gnaayiru', exampleGloss: 'sun / Sunday', sortOrder: 16, note: 'Unlike its 5 fellow "never-initial" restricted consonants (ங/ண/ழ/ள/ற/ன), ஞ genuinely CAN begin a word — ஞாயிறு and ஞானம் (wisdom) both start with ஞ natively, confirmed independently rather than assumed by analogy with Devanagari’s ञ (which has the opposite restriction).' },
+  { character: 'ட', characterType: 'consonant', romanization: 'Ta', exampleWord: 'டப்பா', exampleTransliteration: 'dabbaa', exampleGloss: 'box/tin', sortOrder: 17 },
+  { character: 'ண', characterType: 'consonant', romanization: 'Na', exampleWord: 'வெண்ணை', exampleTransliteration: 'vennai', exampleGloss: 'butter', sortOrder: 18, note: 'ண can NEVER begin a native Tamil word (confirmed absolute rule) — வெண்ணை is the standard medial example.' },
+  { character: 'த', characterType: 'consonant', romanization: 'ta', exampleWord: 'தமிழ்', exampleTransliteration: 'tamizh', exampleGloss: 'Tamil (the language itself)', sortOrder: 19 },
+  { character: 'ந', characterType: 'consonant', romanization: 'na', exampleWord: 'நிலா', exampleTransliteration: 'nilaa', exampleGloss: 'moon', sortOrder: 20 },
+  { character: 'ப', characterType: 'consonant', romanization: 'pa', exampleWord: 'பால்', exampleTransliteration: 'paal', exampleGloss: 'milk', sortOrder: 21 },
+  { character: 'ம', characterType: 'consonant', romanization: 'ma', exampleWord: 'மலர்', exampleTransliteration: 'malar', exampleGloss: 'flower', sortOrder: 22 },
+  { character: 'ய', characterType: 'consonant', romanization: 'ya', exampleWord: 'யானை', exampleTransliteration: 'yaanai', exampleGloss: 'elephant', sortOrder: 23 },
+  { character: 'ர', characterType: 'consonant', romanization: 'ra', exampleWord: 'ரோஜா', exampleTransliteration: 'rojaa', exampleGloss: 'rose', sortOrder: 24 },
+  { character: 'ல', characterType: 'consonant', romanization: 'la', exampleWord: 'லட்டு', exampleTransliteration: 'laddu', exampleGloss: 'laddu (a round Indian sweet)', sortOrder: 25 },
+  { character: 'வ', characterType: 'consonant', romanization: 'va', exampleWord: 'வண்டி', exampleTransliteration: 'vandi', exampleGloss: 'cart/vehicle', sortOrder: 26 },
+  { character: 'ழ', characterType: 'consonant', romanization: 'zha', exampleWord: 'பழம்', exampleTransliteration: 'pazham', exampleGloss: 'fruit', sortOrder: 27, note: 'ழ can NEVER begin a native Tamil word (confirmed absolute rule) — பழம் is the standard medial example. தமிழ் itself (sortOrder 19’s example word) also contains ழ medially.' },
+  { character: 'ள', characterType: 'consonant', romanization: 'La', exampleWord: 'தளம்', exampleTransliteration: 'thalam', exampleGloss: 'platform/level', sortOrder: 28, note: 'ள can NEVER begin a native Tamil word (confirmed absolute rule) — தளம் is the standard medial example.' },
+  { character: 'ற', characterType: 'consonant', romanization: 'Ra', exampleWord: 'ஆறு', exampleTransliteration: 'aaru', exampleGloss: 'river / six', sortOrder: 29, note: 'ற can NEVER begin a native Tamil word (confirmed absolute rule, holding even for loanwords/onomatopoeia) — ஆறு is the standard medial example.' },
+  { character: 'ன', characterType: 'consonant', romanization: 'na', exampleWord: 'தேன்', exampleTransliteration: 'thean', exampleGloss: 'honey', sortOrder: 30, note: 'ன can NEVER begin a native Tamil word (confirmed absolute rule) — தேன் is the standard example, with ன appearing word-finally.' },
+
+  // ---- ஆயுத எழுத்து (aytham) — Tamil’s unique 31st letter, no equivalent in the other scripts authored so far ----
+  { character: 'ஃ', characterType: 'consonant', romanization: 'ak', exampleWord: 'எஃகு', exampleTransliteration: 'ehku', exampleGloss: 'steel', sortOrder: 31, note: 'ஆயுத எழுத்து (aytham) is a unique Tamil grapheme (a glottal glide marker) with no vowel/consonant/conjunct equivalent in Devanagari or Bengali — classified here as ‘consonant’ as the closest schema fit. It never begins a word; எஃகு (steel) is the standard textbook example, confirmed via direct search.' },
+
+  // ---- கிரந்த எழுத்துக்கள் (grantha letters, borrowed for Sanskrit/English loanwords) — all 6, see header ----
+  { character: 'ஜ', characterType: 'consonant', romanization: 'ja', exampleWord: 'ஜன்னல்', exampleTransliteration: 'jannal', exampleGloss: 'window', sortOrder: 32 },
+  { character: 'ஶ', characterType: 'consonant', romanization: 'sha', exampleWord: 'ஶ்ரீ', exampleTransliteration: 'shri', exampleGloss: 'Sri (a common honorific prefix)', sortOrder: 33, note: 'ஶ (distinct from ஷ) is the rarest grantha letter in everyday use, appearing almost exclusively in the honorific ஶ்ரீ — included for completeness since Tamil’s grantha set is small and closed, unlike the open-ended conjunct space Devanagari/Bengali draw their "3 most common" conjuncts from.' },
+  { character: 'ஷ', characterType: 'consonant', romanization: 'Sha', exampleWord: 'ஷண்முகன்', exampleTransliteration: 'shanmukhan', exampleGloss: 'Shanmukhan (a name of the deity Murugan)', sortOrder: 34 },
+  { character: 'ஸ', characterType: 'consonant', romanization: 'sa', exampleWord: 'ஸரஸ்வதி', exampleTransliteration: 'sarasvathi', exampleGloss: 'Saraswathi (goddess of learning)', sortOrder: 35 },
+  { character: 'ஹ', characterType: 'consonant', romanization: 'ha', exampleWord: 'ஹோட்டல்', exampleTransliteration: 'hotel', exampleGloss: 'hotel / restaurant (a very common everyday loanword in spoken Tamil)', sortOrder: 36 },
+  { character: 'க்ஷ', characterType: 'conjunct', romanization: 'ksha', exampleWord: 'க்ஷணம்', exampleTransliteration: 'kshanam', exampleGloss: 'moment/instant', sortOrder: 37 },
+];
+
 export interface NumberItem {
   itemKey: string;
   englishWord: string;
@@ -402,6 +499,63 @@ export const BODY_PARTS: FamilyItem[] = [
  * "most natural common word matters more than avoiding incidental overlap"
  * reasoning already established for Food & Drink/Animals/Colours.
  */
+/**
+ * Clothes (2026-08-04, third follow-on pass). `imageSubject` describes a
+ * single garment laid flat / displayed on its own — explicitly "no person
+ * wearing it" on every item, same "generic, not a specific character"
+ * discipline as `familyIconPrompt`/`bodyPartImagePrompt`: a garment shown
+ * being worn risks reading as a copy of the locked four-character cast.
+ *
+ * Words are everyday spoken Hindi, mixing native/Urdu-origin terms already
+ * naturalized into common usage (कमीज़, दुपट्टा, रूमाल) with common English
+ * loanwords that are themselves the dominant real-world usage (पैंट, स्कर्ट,
+ * स्वेटर, जैकेट, बेल्ट) — same "most natural common word" bar as every prior
+ * category, not a purist-native-only constraint.
+ */
+export const CLOTHES: FamilyItem[] = [
+  { itemKey: 'shirt', englishWord: 'Shirt', text: 'कमीज़', transliteration: 'kameez', imageSubject: 'a single collared button-front shirt laid flat, no person wearing it' },
+  { itemKey: 'pants', englishWord: 'Pants / Trousers', text: 'पैंट', transliteration: 'paint', imageSubject: 'a single pair of trousers laid flat, no person wearing them' },
+  { itemKey: 'saree', englishWord: 'Saree', text: 'साड़ी', transliteration: 'saadi', imageSubject: 'a single folded saree in a vibrant solid colour with a decorative border, laid flat, no person wearing it' },
+  { itemKey: 'kurta', englishWord: 'Kurta', text: 'कुर्ता', transliteration: 'kurta', imageSubject: 'a single long kurta shirt laid flat, no person wearing it, entirely plain solid-colour fabric with a plain solid-colour collar and cuffs (a single flat stripe of contrasting colour only, absolutely no decorative border pattern, no motifs, no repeating shapes or swirls of any kind that could resemble writing), no embroidery, no signature, stamp, or symbols anywhere on the garment or in any corner of the image' },
+  { itemKey: 'shoes', englishWord: 'Shoes', text: 'जूते', transliteration: 'joote', imageSubject: 'a single pair of simple everyday shoes, side view, no person wearing them' },
+  { itemKey: 'socks', englishWord: 'Socks', text: 'मोज़े', transliteration: 'moze', imageSubject: 'a single pair of matching socks laid flat, no person wearing them' },
+  { itemKey: 'cap', englishWord: 'Cap', text: 'टोपी', transliteration: 'topi', imageSubject: 'a single baseball-style cap viewed from the side, with a long, flat, rigid brim/visor jutting straight out to one side — the brim is the dominant, unmistakable feature of the image, clearly a separate flat curved piece of fabric extending outward, NOT rounded at that edge — plus a rounded fabric crown behind it with a small button on top and a completely plain, blank adjustable strap visible at the back — no tag, no logo, no lettering, no symbol of any kind on the strap or anywhere else on the cap' },
+  { itemKey: 'scarf', englishWord: 'Scarf (dupatta)', text: 'दुपट्टा', transliteration: 'dupatta', imageSubject: 'a single long dupatta scarf in a solid colour with a decorative border, laid in a loose flowing fold, no person wearing it' },
+  { itemKey: 'dress', englishWord: 'Dress', text: 'पोशाक', transliteration: 'poshak', imageSubject: 'a single simple sleeveless dress laid flat, no person wearing it' },
+  { itemKey: 'skirt', englishWord: 'Skirt', text: 'स्कर्ट', transliteration: 'skirt', imageSubject: 'a single pleated skirt laid flat, no person wearing it' },
+  { itemKey: 'sweater', englishWord: 'Sweater', text: 'स्वेटर', transliteration: 'sweater', imageSubject: 'a single knitted crew-neck sweater laid flat, no person wearing it' },
+  { itemKey: 'jacket', englishWord: 'Jacket', text: 'जैकेट', transliteration: 'jacket', imageSubject: 'a single zip-up jacket laid flat, no person wearing it' },
+  { itemKey: 'gloves', englishWord: 'Gloves', text: 'दस्ताने', transliteration: 'dastane', imageSubject: 'a single pair of matching gloves laid flat, fingers spread, no person wearing them' },
+  { itemKey: 'belt', englishWord: 'Belt', text: 'बेल्ट', transliteration: 'belt', imageSubject: 'a single leather belt with a simple buckle, coiled in a loose curve' },
+  { itemKey: 'handkerchief', englishWord: 'Handkerchief', text: 'रूमाल', transliteration: 'rumal', imageSubject: 'a single square handkerchief with a simple patterned border, folded into a neat square and laid flat' },
+];
+
+/**
+ * Vegetables (2026-08-04, third follow-on pass) — deliberately a SEPARATE
+ * category from `FOOD_DRINK`'s general food/drink items, teaching raw
+ * vegetable names specifically (no overlap with `FOOD_DRINK`'s prepared
+ * dishes like सब्ज़ी/vegetable-curry). `imageSubject` follows the same
+ * "single recognizable item, no clutter" discipline as `foodImagePrompt`,
+ * via a new dedicated `vegetableImagePrompt`.
+ */
+export const VEGETABLES: FamilyItem[] = [
+  { itemKey: 'onion', englishWord: 'Onion', text: 'प्याज़', transliteration: 'pyaaz', imageSubject: 'a single whole onion with papery outer skin visible' },
+  { itemKey: 'potato', englishWord: 'Potato', text: 'आलू', transliteration: 'aloo', imageSubject: 'a single whole unpeeled potato' },
+  { itemKey: 'tomato', englishWord: 'Tomato', text: 'टमाटर', transliteration: 'tamatar', imageSubject: 'a single whole ripe red tomato with its green stem' },
+  { itemKey: 'brinjal', englishWord: 'Brinjal (Eggplant)', text: 'बैंगन', transliteration: 'baingan', imageSubject: 'a single whole glossy purple brinjal (eggplant) with its green cap' },
+  { itemKey: 'carrot', englishWord: 'Carrot', text: 'गाजर', transliteration: 'gajar', imageSubject: 'a single whole orange carrot with its green leafy top' },
+  { itemKey: 'cabbage', englishWord: 'Cabbage', text: 'पत्तागोभी', transliteration: 'pattagobhi', imageSubject: 'a single whole round green cabbage' },
+  { itemKey: 'cauliflower', englishWord: 'Cauliflower', text: 'फूलगोभी', transliteration: 'phoolgobhi', imageSubject: 'a single whole white cauliflower head with a few green leaves' },
+  { itemKey: 'spinach', englishWord: 'Spinach', text: 'पालक', transliteration: 'palak', imageSubject: 'a small bunch of fresh green spinach leaves' },
+  { itemKey: 'peas', englishWord: 'Peas', text: 'मटर', transliteration: 'matar', imageSubject: 'a few green pea pods, one partly open showing round peas inside' },
+  { itemKey: 'cucumber', englishWord: 'Cucumber', text: 'खीरा', transliteration: 'kheera', imageSubject: 'a single whole green cucumber' },
+  { itemKey: 'pumpkin', englishWord: 'Pumpkin', text: 'कद्दू', transliteration: 'kaddu', imageSubject: 'a single whole round orange pumpkin' },
+  { itemKey: 'okra', englishWord: 'Okra (Ladyfinger)', text: 'भिंडी', transliteration: 'bhindi', imageSubject: 'a few whole green okra (ladyfinger) pods' },
+  { itemKey: 'garlic', englishWord: 'Garlic', text: 'लहसुन', transliteration: 'lahsun', imageSubject: 'a single whole garlic bulb with papery white skin' },
+  { itemKey: 'ginger', englishWord: 'Ginger', text: 'अदरक', transliteration: 'adrak', imageSubject: 'a single knobby piece of fresh ginger root' },
+  { itemKey: 'capsicum', englishWord: 'Capsicum (Bell Pepper)', text: 'शिमला मिर्च', transliteration: 'shimla mirch', imageSubject: 'a single whole glossy green bell pepper (capsicum)' },
+];
+
 export const HOUSEHOLD_ITEMS: FamilyItem[] = [
   { itemKey: 'door', englishWord: 'Door', text: 'दरवाज़ा', transliteration: 'darwaza', imageSubject: 'a single closed wooden door with a round doorknob, viewed straight-on' },
   { itemKey: 'window', englishWord: 'Window', text: 'खिड़की', transliteration: 'khidki', imageSubject: 'a single window with visible panes and simple hanging curtains on either side, viewed straight-on' },

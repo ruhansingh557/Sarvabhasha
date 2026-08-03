@@ -176,6 +176,36 @@ export function householdItemImagePrompt(subjectDescription: string): string {
   );
 }
 
+/**
+ * Prompt for a Clothes vocabulary item: one garment laid flat / displayed on
+ * its own — explicitly no person wearing it, same "generic, not a specific
+ * character" discipline as `bodyPartImagePrompt`/`familyIconPrompt`: a
+ * garment shown being worn risks reading as a copy of the locked
+ * four-character cast.
+ */
+export function clothesImagePrompt(subjectDescription: string): string {
+  return (
+    `A simple, clean icon-style illustration of "${subjectDescription}" — a single, clearly ` +
+    `recognizable garment, centered, filling most of the frame, nothing else sharing the frame. ` +
+    `${VOCAB_STYLE_ANCHOR}`
+  );
+}
+
+/**
+ * Prompt for a Vegetables vocabulary item: one whole, clearly recognizable
+ * vegetable, centered — same "single subject, no clutter" discipline as
+ * `foodImagePrompt`, kept as a separate function (rather than reusing
+ * `foodImagePrompt` directly) since Vegetables is a distinct category from
+ * Food & Drink (raw ingredients, not prepared dishes/vessels).
+ */
+export function vegetableImagePrompt(subjectDescription: string): string {
+  return (
+    `A simple, appetizing icon-style illustration of "${subjectDescription}" — a single, clearly ` +
+    `recognizable whole vegetable, centered, filling most of the frame, nothing else sharing the ` +
+    `frame. ${VOCAB_STYLE_ANCHOR}`
+  );
+}
+
 // ----------------------------------------------------------------- internals
 
 const FLUX_DEV_RATE_PER_IMAGE = 0.025; // fal-ai/flux/dev, single 1024px-class image — verify live.

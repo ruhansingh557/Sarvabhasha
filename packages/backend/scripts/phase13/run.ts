@@ -85,6 +85,7 @@ import { resolve } from 'node:path';
 import {
   DEVANAGARI_CHARACTERS,
   BENGALI_CHARACTERS,
+  TAMIL_CHARACTERS,
   NUMBERS,
   FAMILY,
   FOOD_DRINK,
@@ -92,6 +93,8 @@ import {
   COLOURS,
   BODY_PARTS,
   HOUSEHOLD_ITEMS,
+  CLOTHES,
+  VEGETABLES,
   type ScriptCharacterData,
 } from './data';
 
@@ -102,9 +105,11 @@ type CategorySlug =
   | 'animals'
   | 'colours'
   | 'body-parts'
-  | 'household-items';
+  | 'household-items'
+  | 'clothing'
+  | 'vegetables';
 
-type ScriptSlug = 'devanagari' | 'bengali';
+type ScriptSlug = 'devanagari' | 'bengali' | 'tamil';
 
 /**
  * Every script authored through this pipeline, plus the ONE live language
@@ -117,6 +122,7 @@ type ScriptSlug = 'devanagari' | 'bengali';
 const SCRIPTS: Record<ScriptSlug, { characters: ScriptCharacterData[]; languageCode: string }> = {
   devanagari: { characters: DEVANAGARI_CHARACTERS, languageCode: 'hi' },
   bengali: { characters: BENGALI_CHARACTERS, languageCode: 'bn' },
+  tamil: { characters: TAMIL_CHARACTERS, languageCode: 'ta' },
 };
 
 const BACKEND_DIR = resolve(__dirname, '..', '..');
@@ -287,6 +293,30 @@ function householdItemImagePrompt(subjectDescription: string): string {
   );
 }
 
+/** Mirrors `convex/fal/vocabularyImages.ts`'s `clothesImagePrompt` — see that file for the reasoning. */
+function clothesImagePrompt(subjectDescription: string): string {
+  return (
+    `A simple, clean icon-style illustration of "${subjectDescription}" — a single, clearly ` +
+    `recognizable garment, centered, filling most of the frame, nothing else sharing the frame. ` +
+    `Soft-shaded 2D digital illustration style — gently dimensional rendering with smooth gradient ` +
+    `shading, NO hard black outline or visible linework. Warm, saturated Indian-daylight color ` +
+    `palette (not pastel, not muted). Plain softly-warm background, no scene, no setting. Clean, ` +
+    `friendly, iconic, readable at small size. No text, no watermark, no logo.`
+  );
+}
+
+/** Mirrors `convex/fal/vocabularyImages.ts`'s `vegetableImagePrompt` — see that file for the reasoning. */
+function vegetableImagePrompt(subjectDescription: string): string {
+  return (
+    `A simple, appetizing icon-style illustration of "${subjectDescription}" — a single, clearly ` +
+    `recognizable whole vegetable, centered, filling most of the frame, nothing else sharing the ` +
+    `frame. Soft-shaded 2D digital illustration style — gently dimensional rendering with smooth ` +
+    `gradient shading, NO hard black outline or visible linework. Warm, saturated Indian-daylight ` +
+    `color palette (not pastel, not muted). Plain softly-warm background, no scene, no setting. ` +
+    `Clean, friendly, iconic, readable at small size. No text, no watermark, no logo.`
+  );
+}
+
 function itemsForCategory(categorySlug: CategorySlug) {
   switch (categorySlug) {
     case 'numbers':
@@ -303,6 +333,10 @@ function itemsForCategory(categorySlug: CategorySlug) {
       return BODY_PARTS;
     case 'household-items':
       return HOUSEHOLD_ITEMS;
+    case 'clothing':
+      return CLOTHES;
+    case 'vegetables':
+      return VEGETABLES;
   }
 }
 
@@ -422,12 +456,26 @@ async function genImages(categorySlug: CategorySlug, onlyKeys?: string[]) {
                     sortOrder: i + 1,
                     prompt: bodyPartImagePrompt(b.imageSubject),
                   }))
-                : HOUSEHOLD_ITEMS.map((h, i) => ({
-                    itemKey: h.itemKey,
-                    englishWord: h.englishWord,
-                    sortOrder: i + 1,
-                    prompt: householdItemImagePrompt(h.imageSubject),
-                  }))
+                : categorySlug === 'household-items'
+                  ? HOUSEHOLD_ITEMS.map((h, i) => ({
+                      itemKey: h.itemKey,
+                      englishWord: h.englishWord,
+                      sortOrder: i + 1,
+                      prompt: householdItemImagePrompt(h.imageSubject),
+                    }))
+                  : categorySlug === 'clothing'
+                    ? CLOTHES.map((c, i) => ({
+                        itemKey: c.itemKey,
+                        englishWord: c.englishWord,
+                        sortOrder: i + 1,
+                        prompt: clothesImagePrompt(c.imageSubject),
+                      }))
+                    : VEGETABLES.map((v, i) => ({
+                        itemKey: v.itemKey,
+                        englishWord: v.englishWord,
+                        sortOrder: i + 1,
+                        prompt: vegetableImagePrompt(v.imageSubject),
+                      }))
   ).filter((item) => !onlyKeys || onlyKeys.includes(item.itemKey));
 
   for (const item of items) {
