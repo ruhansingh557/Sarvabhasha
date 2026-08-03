@@ -55,7 +55,9 @@ export function PhraseDetailScreen() {
 
   if (detail === null) {
     return (
-      <Screen>
+      // Pushed under the LearnStack's native header (headerShown: true) —
+      // opt out of Screen's inset padding; the header already reserves it.
+      <Screen topInset={false}>
         <Box flex={1} alignItems="center" justifyContent="center">
           <Text variant="body" color="textSecondary" textAlign="center">
             {t('Learn.PHRASE_UNAVAILABLE')}
@@ -66,7 +68,7 @@ export function PhraseDetailScreen() {
   }
 
   return (
-    <Screen scroll>
+    <Screen scroll topInset={false}>
       <Text variant="caption" marginBottom="xs">
         {detail.sourceText}
       </Text>

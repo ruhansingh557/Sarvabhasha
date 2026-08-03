@@ -26,7 +26,8 @@ Severity guide:
 
 | ID | Severity | Description | Reference | Owner |
 |----|:--------:|-------------|-----------|-------|
-| F-001 | med | `Screen.tsx`'s shared shell has no `useSafeAreaInsets` handling — every screen's top content can render under/behind the status bar. Patched locally in the two Tutor views (`VoiceTutor.tsx`, `TutorChat.tsx`) this session; the underlying app-wide gap (Home/Learn/Profile/Auth) is untouched. | `apps/mobile/src/shared/components/atoms/Screen.tsx` | — |
+| F-003 | med | `AuthScreen` predates `Screen.tsx` (its own docstring says so) and never adopted it — it renders directly under `RootNavigator` with no navigator/header when there's no session, so its title/form can render under the status bar, same class of bug as the now-fixed F-001. | `apps/mobile/src/features/auth/screens/AuthScreen.tsx` | — |
+| F-004 | low | Home's "continue learning" CTA deep-links straight to `LearnTab > PhraseList`, skipping the new `PhraseCategories` route the Learn tab redesign introduced (Learn root is now 4 cards, "Common Phrases" pushes to `PhraseCategories` first). Back button from that deep link now lands on the 4-card root instead of the category list — a nav-stack ordering nuance, not a broken feature. | `apps/mobile/src/features/home/screens/HomeScreen.tsx` | — |
 
 ## Performance / cost opportunities
 

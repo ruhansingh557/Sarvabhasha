@@ -77,3 +77,87 @@ export async function getLivePhrasesForCategory(
     .collect();
   return phrases.filter((p) => p.status === 'live');
 }
+
+/**
+ * Vocabulary/Numbers equivalent of `getLiveTranslationAndAudio` above — same
+ * "both halves must independently be `live`" gate, just against the
+ * `vocabularyTranslations`/`vocabularyAudio` tables instead of
+ * `phraseTranslations`/`audioAssets`. See `vocabulary.ts`.
+ */
+export async function getLiveVocabularyTranslationAndAudio(
+  ctx: QueryCtx,
+  vocabularyItemId: Id<'vocabularyItems'>,
+  languageCode: string,
+): Promise<{ translation: Doc<'vocabularyTranslations'>; audio: Doc<'vocabularyAudio'> } | null> {
+  const [translation, audio] = await Promise.all([
+    ctx.db
+      .query('vocabularyTranslations')
+      .withIndex('by_item_language', (q) =>
+        q.eq('vocabularyItemId', vocabularyItemId).eq('languageCode', languageCode),
+      )
+      .first(),
+    ctx.db
+      .query('vocabularyAudio')
+      .withIndex('by_item_language', (q) =>
+        q.eq('vocabularyItemId', vocabularyItemId).eq('languageCode', languageCode),
+      )
+      .first(),
+  ]);
+
+  if (!translation || translation.status !== 'live') return null;
+  if (!audio || audio.status !== 'live') return null;
+  return { translation, audio };
+}
+
+/**
+ * Live vocabulary items for one category, in `sortOrder`. Bounded the same
+ * way as `getLivePhrasesForCategory` — a category's item count is curated
+ * (roughly 15–25 words, see the phase-13 plan doc's content-scope section),
+ * so the in-memory status filter after the indexed fetch stays scoped to a
+ * handful of rows.
+ */
+export async function getLiveVocabularyItemsForCategory(
+  ctx: QueryCtx,
+  categoryId: Id<'vocabularyCategories'>,
+): Promise<Doc<'vocabularyItems'>[]> {
+  const items = await ctx.db
+    .query('vocabularyItems')
+    .withIndex('by_category_order', (q) => q.eq('categoryId', categoryId))
+    .collect();
+  return items.filter((i) => i.status === 'live');
+}
+
+/**
+ * Live characters for one script, in `sortOrder`. Bounded — a script's
+ * character count is small (~30–50, see the phase-13 plan doc), so this is
+ * never a scan over a growing table the way an unindexed lookup would be.
+ */
+export async function getLiveScriptCharactersForScript(
+  ctx: QueryCtx,
+  script: string,
+): Promise<Doc<'scriptCharacters'>[]> {
+  const characters = await ctx.db
+    .query('scriptCharacters')
+    .withIndex('by_script_order', (q) => q.eq('script', script))
+    .collect();
+  return characters.filter((c) => c.status === 'live');
+}
+
+/**
+ * The `live` audio for one script character, or `null`. Like `audioAssets`
+ * (and unlike `animations`), `scriptCharacterAudio` has no `attempt`/model
+ * metadata — it is a single upserted row per character, re-recorded in place
+ * via `aksharmala.ts`'s upsert mutation, not a growing set of attempts. A
+ * plain `.first()` is therefore the right lookup, same as
+ * `getLiveTranslationAndAudio` above.
+ */
+export async function getLiveScriptCharacterAudio(
+  ctx: QueryCtx,
+  scriptCharacterId: Id<'scriptCharacters'>,
+): Promise<Doc<'scriptCharacterAudio'> | null> {
+  const audio = await ctx.db
+    .query('scriptCharacterAudio')
+    .withIndex('by_character', (q) => q.eq('scriptCharacterId', scriptCharacterId))
+    .first();
+  return audio && audio.status === 'live' ? audio : null;
+}

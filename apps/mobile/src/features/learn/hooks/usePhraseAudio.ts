@@ -58,10 +58,25 @@ export function usePhraseAudio(audioUrl: string | null | undefined) {
     }
   };
 
+  // Unconditional start, as opposed to `toggle`'s "flip whatever it's doing
+  // now" — added for `VocabularyCategoryContent`, which lifts ONE instance of
+  // this hook to cover a whole grid of cards (CLAUDE.md's "audio state is
+  // global" concern, applied without spinning up a per-card native player):
+  // switching which item is "active" needs to both swap `audioUrl` (handled
+  // by the caller re-rendering with a new prop) AND then actually start
+  // playback once the new source finishes loading, which `toggle` alone
+  // can't express. Purely additive — `PhraseDetailScreen`'s existing
+  // `toggle`-only usage is unaffected.
+  const play = () => {
+    if (!player.isLoaded) return;
+    player.play();
+  };
+
   return {
     playing: status.playing,
     isLoaded: player.isLoaded,
     toggle,
+    play,
   };
 }
 

@@ -25,6 +25,8 @@
 | 9 | [i18n expansion](phase-9-i18n-expansion.md) | ◻ | Translate UI chrome into the other 21 locales (only English exists today) |
 | 10 | [Admin console](phase-10-admin-console.md) | ◻ | `apps/admin` — approval queue, phrase curation, spend dashboard (replaces manual `convex run` + dashboard flips) |
 | 11 | [Production readiness](phase-11-production-readiness.md) | ◻ | EAS build/submit, real app icon/splash, offline downloads, deferred social features |
+| 12 | [v1.0.0 Launch Readiness](phase-12-v1-launch.md) | 🚧 | Master sequencing doc for launch. **13 languages now live** (original 6 + Malayalam/Punjabi/Assamese/Gujarati/Urdu/Bodo/Manipuri, promoted 2026-08-03 on explicit project-owner authorization; native-speaker verification deferred to a TestFlight beta round, not a pre-launch review pass). Odia deferred (dead TTS, no fallback). Home tab redesigned content-forward. Privacy policy drafted (`legal/PRIVACY_POLICY.md`, needs legal review). Remaining: i18n UI chrome for the 7 new languages, app-store checklist + actual TestFlight build, tutor voice verification, monetization go/no-go |
+| 13 | [Foundations: Vocabulary, Numbers, Aksharmala](phase-13-foundations-vocab-numbers-alphabet.md) | 🚧 | Three new beginner content types, modeled on `learn-bharat`'s Fundamentals but built to avoid its live-TTS/dead-image/incomplete-alphabet mistakes. Started 2026-08-03 — project owner re-sequenced ahead of phase 12's remaining steps (i18n/app-store/tutor-verification/monetization), paused rather than finished first. Schema + Convex backend now built (6 new tables, `vocabulary.ts`, `aksharmala.ts`); no actual content authored yet — that's the content pipeline's job next |
 
 ## Current state, in one paragraph
 

@@ -411,3 +411,35 @@ export const approveTranslationAndAudio = internalMutation({
     return null;
   },
 });
+
+/**
+ * Promotes a language's own `languages` row to `live` — a pure DATA change
+ * against the table (CLAUDE.md rule 11), never a re-run of `seedLanguages`
+ * (which would re-patch every field from `LANGUAGES`' seed-time
+ * `launchStatus`, not the live-promotion decision made after the fact).
+ *
+ * The original 6 launch languages never needed this — they were seeded
+ * `live` from day one. This is the first time a language is promoted AFTER
+ * initial seeding, so the mutation didn't exist until now.
+ *
+ * Does not check `canPromote` itself — the caller (a human, via
+ * `review:getCategoryCoverage`) is expected to have already confirmed every
+ * category is `ready` before calling this. Promoting with holes is a
+ * process failure to catch before this call, not something this mutation
+ * re-validates.
+ */
+export const promoteLanguageToLive = internalMutation({
+  args: { languageCode: v.string() },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const language = await ctx.db
+      .query('languages')
+      .withIndex('by_code', (q) => q.eq('code', args.languageCode))
+      .first();
+    if (!language) {
+      throw new Error(`No language "${args.languageCode}"`);
+    }
+    await ctx.db.patch(language._id, { status: 'live' });
+    return null;
+  },
+});

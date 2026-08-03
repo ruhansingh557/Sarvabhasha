@@ -60,6 +60,12 @@ const GOOGLE_VOICES: Record<string, { male: string; female: string }> = {
   te: { female: 'te-IN-Chirp3-HD-Kore', male: 'te-IN-Chirp3-HD-Charon' },
   mr: { female: 'mr-IN-Chirp3-HD-Kore', male: 'mr-IN-Chirp3-HD-Charon' },
   kn: { female: 'kn-IN-Chirp3-HD-Kore', male: 'kn-IN-Chirp3-HD-Charon' },
+  // Added 2026-08-03 (plans/phase-12-v1-launch.md Step 1) — Bhashini is dead
+  // for both (Gujarati: sustained 504 at the compute layer; Urdu: flat 400,
+  // no model registered), but Google's `voices.list` confirms real Chirp3-HD
+  // coverage for gu-IN/ur-IN right now. Same fixed-roster reasoning as above.
+  gu: { female: 'gu-IN-Chirp3-HD-Kore', male: 'gu-IN-Chirp3-HD-Charon' },
+  ur: { female: 'ur-IN-Chirp3-HD-Kore', male: 'ur-IN-Chirp3-HD-Charon' },
 };
 
 /** BCP-47 locale Google expects, keyed by our ISO 639-1 `languageCode`. */
@@ -70,6 +76,8 @@ const GOOGLE_LOCALE: Record<string, string> = {
   te: 'te-IN',
   mr: 'mr-IN',
   kn: 'kn-IN',
+  gu: 'gu-IN',
+  ur: 'ur-IN',
 };
 
 function getGoogleTtsKey(): string {

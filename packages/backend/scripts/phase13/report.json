@@ -1,0 +1,1206 @@
+{
+  "spendUsd": 0.8500000000000004,
+  "imageCalls": [
+    {
+      "categorySlug": "numbers",
+      "itemKey": "1",
+      "ok": true,
+      "detail": "seed 1830350287",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/2424d63c-b2d5-41b4-b013-27ce1bebce82",
+      "seed": 1830350287
+    },
+    {
+      "categorySlug": "numbers",
+      "itemKey": "2",
+      "ok": true,
+      "detail": "seed 1274609117",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/7d3e4ca2-16ce-4624-968b-abb78805bf1c",
+      "seed": 1274609117
+    },
+    {
+      "categorySlug": "numbers",
+      "itemKey": "3",
+      "ok": true,
+      "detail": "seed 1118996966",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/1533eb28-65d1-4cd0-8f1b-a5db1fe653a8",
+      "seed": 1118996966
+    },
+    {
+      "categorySlug": "numbers",
+      "itemKey": "4",
+      "ok": true,
+      "detail": "seed 2008562585",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/9c8a3eb4-a183-415e-8d42-e185fd455a6f",
+      "seed": 2008562585
+    },
+    {
+      "categorySlug": "numbers",
+      "itemKey": "5",
+      "ok": true,
+      "detail": "seed 1388831170",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/efb5b0d9-7751-4147-b6ae-66a38314ce96",
+      "seed": 1388831170
+    },
+    {
+      "categorySlug": "numbers",
+      "itemKey": "6",
+      "ok": true,
+      "detail": "seed 752956844",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/a7c23047-7b47-4db6-a134-7963f047ab76",
+      "seed": 752956844
+    },
+    {
+      "categorySlug": "numbers",
+      "itemKey": "7",
+      "ok": true,
+      "detail": "seed 1219947306",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/613e7638-22fc-4f5c-bf46-bfd80094f50a",
+      "seed": 1219947306
+    },
+    {
+      "categorySlug": "numbers",
+      "itemKey": "8",
+      "ok": true,
+      "detail": "seed 1267443893",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/38844e1a-c481-4258-a902-2dd7701f3140",
+      "seed": 1267443893
+    },
+    {
+      "categorySlug": "numbers",
+      "itemKey": "9",
+      "ok": true,
+      "detail": "seed 266073852",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/4188d237-ccf0-4066-84b9-724cbdc84cf6",
+      "seed": 266073852
+    },
+    {
+      "categorySlug": "numbers",
+      "itemKey": "10",
+      "ok": true,
+      "detail": "seed 1058481733",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/74d30238-4689-4e85-93bd-d5b4f8725801",
+      "seed": 1058481733
+    },
+    {
+      "categorySlug": "numbers",
+      "itemKey": "11",
+      "ok": true,
+      "detail": "seed 2014429363",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/055e2090-8340-47cd-be66-e8179bd05b8e",
+      "seed": 2014429363
+    },
+    {
+      "categorySlug": "numbers",
+      "itemKey": "12",
+      "ok": true,
+      "detail": "seed 1067881108",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/7169f70a-f65c-4e04-be9d-aff54331a9d5",
+      "seed": 1067881108
+    },
+    {
+      "categorySlug": "numbers",
+      "itemKey": "13",
+      "ok": true,
+      "detail": "seed 686422078",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/99b08720-2b90-4e1c-8f91-3f4dad3ff1f7",
+      "seed": 686422078
+    },
+    {
+      "categorySlug": "numbers",
+      "itemKey": "14",
+      "ok": true,
+      "detail": "seed 562348546",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/a327928f-b915-45e8-b83e-13c34fac4445",
+      "seed": 562348546
+    },
+    {
+      "categorySlug": "numbers",
+      "itemKey": "15",
+      "ok": true,
+      "detail": "seed 51086658",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/c4bde5ab-c39b-4d55-85e3-a896aeed51cd",
+      "seed": 51086658
+    },
+    {
+      "categorySlug": "numbers",
+      "itemKey": "16",
+      "ok": true,
+      "detail": "seed 2145351959",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/20417a8d-d1bc-4f43-abbb-2b5cf46bc89a",
+      "seed": 2145351959
+    },
+    {
+      "categorySlug": "numbers",
+      "itemKey": "17",
+      "ok": true,
+      "detail": "seed 724669363",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/5fa63e62-5a28-46dd-bf3e-4ac063326379",
+      "seed": 724669363
+    },
+    {
+      "categorySlug": "numbers",
+      "itemKey": "18",
+      "ok": true,
+      "detail": "seed 166792158",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/ccc21a9d-fb66-4d4c-9987-5a7d76af8173",
+      "seed": 166792158
+    },
+    {
+      "categorySlug": "numbers",
+      "itemKey": "19",
+      "ok": true,
+      "detail": "seed 738301149",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/eabfe41c-3fe7-45a0-ac69-c3a7042f34a0",
+      "seed": 738301149
+    },
+    {
+      "categorySlug": "numbers",
+      "itemKey": "20",
+      "ok": true,
+      "detail": "seed 135190063",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/cf90bebf-2341-4f62-907f-a350534750d4",
+      "seed": 135190063
+    },
+    {
+      "categorySlug": "family",
+      "itemKey": "mother",
+      "ok": true,
+      "detail": "seed 233037502",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/0a196676-08a3-40d0-b611-45c8a74720e1",
+      "seed": 233037502
+    },
+    {
+      "categorySlug": "family",
+      "itemKey": "father",
+      "ok": true,
+      "detail": "seed 193160686",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/bdd4bb92-4569-42c2-b969-386d3411eb94",
+      "seed": 193160686
+    },
+    {
+      "categorySlug": "family",
+      "itemKey": "brother",
+      "ok": true,
+      "detail": "seed 1131239071",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/8ce4c4de-e9f0-4cf2-89e4-21dc35276db9",
+      "seed": 1131239071
+    },
+    {
+      "categorySlug": "family",
+      "itemKey": "sister",
+      "ok": true,
+      "detail": "seed 1467680877",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/7d2930a6-15d0-4162-95ef-37bb63573bc7",
+      "seed": 1467680877
+    },
+    {
+      "categorySlug": "family",
+      "itemKey": "grandmother-paternal",
+      "ok": true,
+      "detail": "seed 1281696612",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/d2f593c9-ca60-430a-9385-e534d39422a7",
+      "seed": 1281696612
+    },
+    {
+      "categorySlug": "family",
+      "itemKey": "grandmother-maternal",
+      "ok": true,
+      "detail": "seed 1611116044",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/65d14f5c-afed-42ac-bf0a-05c89a617895",
+      "seed": 1611116044
+    },
+    {
+      "categorySlug": "family",
+      "itemKey": "grandfather-paternal",
+      "ok": true,
+      "detail": "seed 788583789",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/31c99e6c-0208-4b16-90b6-0a5ba192c760",
+      "seed": 788583789
+    },
+    {
+      "categorySlug": "family",
+      "itemKey": "grandfather-maternal",
+      "ok": true,
+      "detail": "seed 1395477992",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/f6af8992-36bc-4a38-8fba-45721f7aa1f9",
+      "seed": 1395477992
+    },
+    {
+      "categorySlug": "family",
+      "itemKey": "uncle",
+      "ok": true,
+      "detail": "seed 413729761",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/b557249e-3526-4e05-9172-84a62868e72e",
+      "seed": 413729761
+    },
+    {
+      "categorySlug": "family",
+      "itemKey": "aunt",
+      "ok": true,
+      "detail": "seed 1579837959",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/7591b38f-f9c2-4f8a-9627-8904aa67592c",
+      "seed": 1579837959
+    },
+    {
+      "categorySlug": "family",
+      "itemKey": "son",
+      "ok": true,
+      "detail": "seed 150480831",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/2ad50fb4-1a4d-49bd-ad7b-9b5ef8d38c97",
+      "seed": 150480831
+    },
+    {
+      "categorySlug": "family",
+      "itemKey": "daughter",
+      "ok": true,
+      "detail": "seed 970142700",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/17920bb7-5082-4634-9887-7bbf06be37f8",
+      "seed": 970142700
+    },
+    {
+      "categorySlug": "family",
+      "itemKey": "husband",
+      "ok": true,
+      "detail": "seed 1776685333",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/ea9d821b-8008-48ed-92cf-d3d3e15aaa2f",
+      "seed": 1776685333
+    },
+    {
+      "categorySlug": "family",
+      "itemKey": "wife",
+      "ok": true,
+      "detail": "seed 209846204",
+      "imageUrl": "https://opulent-salamander-497.convex.cloud/api/storage/279c4719-ffb1-4767-b3c0-ae119d0d770d",
+      "seed": 209846204
+    }
+  ],
+  "audioCalls": [
+    {
+      "kind": "character",
+      "key": "अ",
+      "ok": true,
+      "detail": "female, 618ms, 27KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/b017b1d8-c823-4f41-be7f-4c116af65003",
+      "expectedText": "अ",
+      "asrOk": false,
+      "asrNote": "ASR call failed: Bhashini ASR failed: 500 — {\"detail\":{\"kind\":\"DHRUVA-101\",\"message\":\"Failed to send request\"}}"
+    },
+    {
+      "kind": "character",
+      "key": "आ",
+      "ok": true,
+      "detail": "female, 664ms, 29KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/c1a2d9e1-956e-4efe-974b-2d67c18860b6",
+      "expectedText": "आ",
+      "asrOk": false,
+      "asrNote": "ASR call failed: Bhashini ASR failed: 500 — {\"detail\":{\"kind\":\"DHRUVA-101\",\"message\":\"Failed to send request\"}}"
+    },
+    {
+      "kind": "character",
+      "key": "इ",
+      "ok": true,
+      "detail": "female, 731ms, 31KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/601b5fda-e895-40ef-8fe2-d44d2c473084",
+      "expectedText": "इ",
+      "asrTranscript": "एक",
+      "asrOk": false,
+      "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "character",
+      "key": "ई",
+      "ok": true,
+      "detail": "female, 711ms, 31KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/d87b6bd9-ebfe-4bb7-92c2-e1467371057f",
+      "expectedText": "ई",
+      "asrOk": false,
+      "asrNote": "ASR call failed: empty_or_too_short"
+    },
+    {
+      "kind": "character",
+      "key": "उ",
+      "ok": true,
+      "detail": "female, 571ms, 25KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/d43171b6-7ba5-4536-a408-d9d235ce7e2d",
+      "expectedText": "उ",
+      "asrTranscript": "पर",
+      "asrOk": false,
+      "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "character",
+      "key": "ऊ",
+      "ok": true,
+      "detail": "female, 571ms, 25KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/26ac8eb0-a2ff-4de4-bf1a-c5ad340aca23",
+      "expectedText": "ऊ",
+      "asrTranscript": "अा",
+      "asrOk": false,
+      "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "character",
+      "key": "ऋ",
+      "ok": true,
+      "detail": "female, 664ms, 29KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/c85fd7f5-ea46-42e4-b397-9d287c1e2823",
+      "expectedText": "ऋ",
+      "asrTranscript": "एक",
+      "asrOk": false,
+      "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "character",
+      "key": "ए",
+      "ok": true,
+      "detail": "female, 618ms, 27KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/3b128d5b-7d32-4e19-af28-30c43be45a11",
+      "expectedText": "ए",
+      "asrTranscript": "हम्म",
+      "asrOk": false,
+      "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "character",
+      "key": "ऐ",
+      "ok": true,
+      "detail": "female, 595ms, 26KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/44fd321e-09a6-4cd5-8e7a-f4c876721f4a",
+      "expectedText": "ऐ",
+      "asrOk": false,
+      "asrNote": "ASR call failed: empty_or_too_short"
+    },
+    {
+      "kind": "character",
+      "key": "ओ",
+      "ok": true,
+      "detail": "female, 618ms, 27KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/e58fc46b-fe74-4b65-a3ec-5def9c97dea2",
+      "expectedText": "ओ",
+      "asrTranscript": "औरँ",
+      "asrOk": false,
+      "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "character",
+      "key": "औ",
+      "ok": true,
+      "detail": "female, 708ms, 30KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/4b03cd4d-aa52-4326-b9f6-ac2c6af738e4",
+      "expectedText": "औ",
+      "asrTranscript": "एक",
+      "asrOk": false,
+      "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "character",
+      "key": "अं",
+      "ok": true,
+      "detail": "female, 618ms, 27KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/5dd88936-63ab-4c31-a0d2-4090f65651b2",
+      "expectedText": "अं",
+      "asrOk": false,
+      "asrNote": "ASR call failed: empty_or_too_short"
+    },
+    {
+      "kind": "character",
+      "key": "अः",
+      "ok": true,
+      "detail": "female, 827ms, 36KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/9e4322df-d59c-4ed4-a1a8-16326ff90c7a",
+      "expectedText": "अः",
+      "asrTranscript": "एक",
+      "asrOk": false,
+      "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "character",
+      "key": "क",
+      "ok": true,
+      "detail": "female, 664ms, 29KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/fc8349e3-0f58-4605-bab6-c94ac12d5a5f",
+      "expectedText": "क",
+      "asrTranscript": "अभी",
+      "asrOk": false,
+      "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "character",
+      "key": "ख",
+      "ok": true,
+      "detail": "female, 780ms, 34KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/0cedd6e4-7084-4b54-908f-9e9e1af2c283",
+      "expectedText": "ख",
+      "asrOk": false,
+      "asrNote": "ASR call failed: empty_or_too_short"
+    },
+    {
+      "kind": "character",
+      "key": "ग",
+      "ok": true,
+      "detail": "female, 734ms, 32KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/0efc73dd-be29-4a45-ae3e-3ceface10279",
+      "expectedText": "ग",
+      "asrTranscript": "हम्म",
+      "asrOk": false,
+      "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "character",
+      "key": "घ",
+      "ok": true,
+      "detail": "female, 641ms, 28KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/c36025c9-efb1-4698-9512-616fc81071d4",
+      "expectedText": "घ",
+      "asrTranscript": "फिर",
+      "asrOk": false,
+      "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "character",
+      "key": "ङ",
+      "ok": true,
+      "detail": "female, 711ms, 31KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/8393296a-3ba7-459c-b0b4-7fd28b34f19f",
+      "expectedText": "ङ",
+      "asrTranscript": "एक",
+      "asrOk": false,
+      "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "character",
+      "key": "च",
+      "ok": true,
+      "detail": "female, 751ms, 32KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/55a873e9-0bdd-4d5a-b5be-325f6a2589b9",
+      "expectedText": "च",
+      "asrTranscript": "तीिर",
+      "asrOk": false,
+      "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "character",
+      "key": "छ",
+      "ok": true,
+      "detail": "female, 635ms, 27KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/edf891af-6ac1-45e8-a7c1-ffe0db5c2f50",
+      "expectedText": "छ",
+      "asrOk": false,
+      "asrNote": "ASR call failed: empty_or_too_short"
+    },
+    {
+      "kind": "character",
+      "key": "ज",
+      "ok": true,
+      "detail": "female, 571ms, 25KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/601d31d2-4dea-4cbf-85bd-170f388a23bc",
+      "expectedText": "ज",
+      "asrTranscript": "ती",
+      "asrOk": false,
+      "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "character",
+      "key": "झ",
+      "ok": true,
+      "detail": "female, 757ms, 33KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/197ebe08-a3fb-4512-8b2d-43fe84330c0b",
+      "expectedText": "झ",
+      "asrOk": false,
+      "asrNote": "ASR call failed: empty_or_too_short"
+    },
+    {
+      "kind": "character",
+      "key": "ञ",
+      "ok": true,
+      "detail": "female, 711ms, 31KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/0856fbd6-c488-4bb1-8713-51bc2ddbd4e5",
+      "expectedText": "ञ",
+      "asrTranscript": "एक",
+      "asrOk": false,
+      "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "character",
+      "key": "ट",
+      "ok": true,
+      "detail": "female, 731ms, 31KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/afd6bf84-4f07-444a-8d31-fc22faaf12a2",
+      "expectedText": "ट",
+      "asrOk": false,
+      "asrNote": "ASR call failed: empty_or_too_short"
+    },
+    {
+      "kind": "character",
+      "key": "ठ",
+      "ok": true,
+      "detail": "female, 664ms, 29KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/ebaa62a2-e4b8-4e26-9cc4-ad6ec90cb1e8",
+      "expectedText": "ठ",
+      "asrTranscript": "पिर",
+      "asrOk": false,
+      "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "character",
+      "key": "ड",
+      "ok": true,
+      "detail": "female, 618ms, 27KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/f6a1b07f-1aa3-4966-9ef7-d4356b0c7e1f",
+      "expectedText": "ड",
+      "asrOk": false,
+      "asrNote": "ASR call failed: empty_or_too_short"
+    },
+    {
+      "kind": "character",
+      "key": "ढ",
+      "ok": true,
+      "detail": "female, 641ms, 28KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/5739e996-6b67-4ba2-a1e0-383c3d649905",
+      "expectedText": "ढ",
+      "asrOk": false,
+      "asrNote": "ASR call failed: empty_or_too_short"
+    },
+    {
+      "kind": "character",
+      "key": "ण",
+      "ok": true,
+      "detail": "female, 911ms, 39KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/c249c8f9-e9fb-430f-a6ed-88217161e9db",
+      "expectedText": "ण",
+      "asrTranscript": "यद",
+      "asrOk": false,
+      "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "character",
+      "key": "त",
+      "ok": true,
+      "detail": "female, 685ms, 29KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/b3119c5a-eb0a-455e-ab4b-be44b53ebd0d",
+      "expectedText": "त",
+      "asrTranscript": "फिर",
+      "asrOk": false,
+      "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "character",
+      "key": "थ",
+      "ok": true,
+      "detail": "female, 778ms, 33KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/6b07b2e2-4075-44cb-a87c-738a88916780",
+      "expectedText": "थ",
+      "asrOk": false,
+      "asrNote": "ASR call failed: empty_or_too_short"
+    },
+    {
+      "kind": "character",
+      "key": "द",
+      "ok": true,
+      "detail": "female, 641ms, 28KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/dfad298a-3a21-4bfb-b939-f4ef462009c8",
+      "expectedText": "द",
+      "asrTranscript": "हम्म",
+      "asrOk": false,
+      "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "character",
+      "key": "ध",
+      "ok": true,
+      "detail": "female, 664ms, 29KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/cfb834b8-71d0-4998-9d12-5932310cf8e8",
+      "expectedText": "ध",
+      "asrOk": false,
+      "asrNote": "ASR call failed: empty_or_too_short"
+    },
+    {
+      "kind": "character",
+      "key": "न",
+      "ok": true,
+      "detail": "female, 814ms, 35KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/ed483761-eb5b-4e98-bef0-b7576ce919ad",
+      "expectedText": "न",
+      "asrOk": false,
+      "asrNote": "ASR call failed: empty_or_too_short"
+    },
+    {
+      "kind": "character",
+      "key": "प",
+      "ok": true,
+      "detail": "female, 548ms, 24KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/2da08c85-5614-40ba-a786-390e491a0b4e",
+      "expectedText": "प",
+      "asrOk": false,
+      "asrNote": "ASR call failed: empty_or_too_short"
+    },
+    {
+      "kind": "character",
+      "key": "फ",
+      "ok": true,
+      "detail": "female, 778ms, 33KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/eb8106b2-6218-40ff-aca7-d496ed2becef",
+      "expectedText": "फ",
+      "asrOk": false,
+      "asrNote": "ASR call failed: empty_or_too_short"
+    },
+    {
+      "kind": "character",
+      "key": "ब",
+      "ok": true,
+      "detail": "female, 711ms, 31KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/d4ef6355-7a5c-4bf6-a28d-0fd7a32820d1",
+      "expectedText": "ब",
+      "asrTranscript": "और",
+      "asrOk": false,
+      "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "character",
+      "key": "भ",
+      "ok": true,
+      "detail": "female, 664ms, 29KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/0557d508-b177-4ef5-93ca-bc03f32e2207",
+      "expectedText": "भ",
+      "asrTranscript": "अब",
+      "asrOk": false,
+      "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "character",
+      "key": "म",
+      "ok": true,
+      "detail": "female, 664ms, 29KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/5daa5708-3a53-40bf-8730-cd66c63b77da",
+      "expectedText": "म",
+      "asrTranscript": "एम",
+      "asrOk": true,
+      "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "character",
+      "key": "य",
+      "ok": true,
+      "detail": "female, 641ms, 28KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/c50cf0d5-456c-4b7f-b1a3-1dacd6a30aa9",
+      "expectedText": "य",
+      "asrTranscript": "एक",
+      "asrOk": false,
+      "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "character",
+      "key": "र",
+      "ok": true,
+      "detail": "female, 641ms, 28KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/c666f3b9-5481-49ac-b5de-fbe80e82e544",
+      "expectedText": "र",
+      "asrOk": false,
+      "asrNote": "ASR call failed: empty_or_too_short"
+    },
+    {
+      "kind": "character",
+      "key": "ल",
+      "ok": true,
+      "detail": "female, 641ms, 28KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/dbb029cb-851d-41bf-901a-2cdfffb4c0c0",
+      "expectedText": "ल",
+      "asrOk": false,
+      "asrNote": "ASR call failed: empty_or_too_short"
+    },
+    {
+      "kind": "character",
+      "key": "व",
+      "ok": true,
+      "detail": "female, 687ms, 30KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/f93d0e2e-05e8-4098-9217-f8e4764931ff",
+      "expectedText": "व",
+      "asrTranscript": "हम्म",
+      "asrOk": false,
+      "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "character",
+      "key": "श",
+      "ok": true,
+      "detail": "female, 744ms, 32KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/965daa0d-a490-404c-9ff1-11c39c8345fe",
+      "expectedText": "श",
+      "asrTranscript": "भी",
+      "asrOk": false,
+      "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "character",
+      "key": "ष",
+      "ok": true,
+      "detail": "female, 864ms, 37KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/01b3d331-609f-4abf-ac5d-b00905bab322",
+      "expectedText": "ष",
+      "asrTranscript": "कििर",
+      "asrOk": false,
+      "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "character",
+      "key": "स",
+      "ok": true,
+      "detail": "female, 687ms, 30KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/ebe9c6ef-d143-4238-a4de-2ba534f01562",
+      "expectedText": "स",
+      "asrTranscript": "एक",
+      "asrOk": false,
+      "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "character",
+      "key": "ह",
+      "ok": true,
+      "detail": "female, 658ms, 28KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/7440d21f-a2e4-41da-a98c-0ec314de8144",
+      "expectedText": "ह",
+      "asrOk": false,
+      "asrNote": "ASR call failed: empty_or_too_short"
+    },
+    {
+      "kind": "character",
+      "key": "क्ष",
+      "ok": true,
+      "detail": "female, 757ms, 33KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/743ebdae-5b64-43e7-a41b-52bf9eb37b69",
+      "expectedText": "क्ष",
+      "asrTranscript": "पशक",
+      "asrOk": false,
+      "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "character",
+      "key": "त्र",
+      "ok": true,
+      "detail": "female, 780ms, 34KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/8d37b39d-28e7-47d3-93f3-b523495dddb7",
+      "expectedText": "त्र",
+      "asrOk": false,
+      "asrNote": "ASR call failed: empty_or_too_short"
+    },
+    {
+      "kind": "character",
+      "key": "ज्ञ",
+      "ok": true,
+      "detail": "female, 850ms, 37KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/045467ad-917b-4c7a-9e25-5557410f63b8",
+      "expectedText": "ज्ञ",
+      "asrTranscript": "गे",
+      "asrOk": false,
+      "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "vocab",
+      "key": "1",
+      "categorySlug": "numbers",
+      "ok": true,
+      "detail": "female, 711ms, 31KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/1d14b971-1b83-4c7c-8efb-a470941e4596",
+      "expectedText": "एक",
+      "asrTranscript": "एक",
+      "asrOk": true,
+      "asrNote": "ASR transcript matches synthesized text."
+    },
+    {
+      "kind": "vocab",
+      "key": "2",
+      "categorySlug": "numbers",
+      "ok": true,
+      "detail": "female, 827ms, 36KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/5da7b7ae-cf27-4d7f-b01f-67df8b868cbe",
+      "expectedText": "दो",
+      "asrTranscript": "दो",
+      "asrOk": true,
+      "asrNote": "ASR transcript matches synthesized text."
+    },
+    {
+      "kind": "vocab",
+      "key": "3",
+      "categorySlug": "numbers",
+      "ok": true,
+      "detail": "female, 780ms, 34KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/20b08419-b6d8-4f8f-a17e-355a208d0ed8",
+      "expectedText": "तीन",
+      "asrTranscript": "तीन",
+      "asrOk": true,
+      "asrNote": "ASR transcript matches synthesized text."
+    },
+    {
+      "kind": "vocab",
+      "key": "4",
+      "categorySlug": "numbers",
+      "ok": true,
+      "detail": "female, 1059ms, 46KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/c6696e50-04ae-44a2-aba5-13edf7d2b391",
+      "expectedText": "चार",
+      "asrTranscript": "चार",
+      "asrOk": true,
+      "asrNote": "ASR transcript matches synthesized text."
+    },
+    {
+      "kind": "vocab",
+      "key": "5",
+      "categorySlug": "numbers",
+      "ok": true,
+      "detail": "female, 1059ms, 46KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/111b3e4d-fe88-4697-b83e-541d4c9fba96",
+      "expectedText": "पांच",
+      "asrTranscript": "पाँच",
+      "asrOk": false,
+      "asrNote": "ASR transcript did NOT match — flag for manual re-check / regeneration."
+    },
+    {
+      "kind": "vocab",
+      "key": "6",
+      "categorySlug": "numbers",
+      "ok": true,
+      "detail": "female, 687ms, 30KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/92cee742-7705-42da-b0de-99fa546b13be",
+      "expectedText": "छह",
+      "asrTranscript": "छः",
+      "asrOk": false,
+      "asrNote": "ASR transcript did NOT match — flag for manual re-check / regeneration."
+    },
+    {
+      "kind": "vocab",
+      "key": "7",
+      "categorySlug": "numbers",
+      "ok": true,
+      "detail": "female, 1082ms, 47KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/886ca028-c231-4259-9d74-7cb179a72344",
+      "expectedText": "सात",
+      "asrTranscript": "सात",
+      "asrOk": true,
+      "asrNote": "ASR transcript matches synthesized text."
+    },
+    {
+      "kind": "vocab",
+      "key": "8",
+      "categorySlug": "numbers",
+      "ok": true,
+      "detail": "female, 1042ms, 45KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/e3db46ec-fb73-456d-b0e9-b97ff944556a",
+      "expectedText": "आठ",
+      "asrTranscript": "आठ",
+      "asrOk": true,
+      "asrNote": "ASR transcript matches synthesized text."
+    },
+    {
+      "kind": "vocab",
+      "key": "9",
+      "categorySlug": "numbers",
+      "ok": true,
+      "detail": "female, 711ms, 31KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/e82e9099-ce51-4ba4-ac0c-bd89efb5def1",
+      "expectedText": "नौ",
+      "asrTranscript": "नौ",
+      "asrOk": true,
+      "asrNote": "ASR transcript matches synthesized text."
+    },
+    {
+      "kind": "vocab",
+      "key": "10",
+      "categorySlug": "numbers",
+      "ok": true,
+      "detail": "female, 734ms, 32KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/fdf1d402-5ee0-4b3c-bccc-7d72aec56fe3",
+      "expectedText": "दस",
+      "asrTranscript": "बस",
+      "asrOk": false,
+      "asrNote": "ASR transcript did NOT match — flag for manual re-check / regeneration."
+    },
+    {
+      "kind": "vocab",
+      "key": "11",
+      "categorySlug": "numbers",
+      "ok": true,
+      "detail": "female, 1361ms, 59KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/a52cc502-03d9-46e0-9ce2-abb5da39cc18",
+      "expectedText": "ग्यारह",
+      "asrTranscript": "ग्यारह",
+      "asrOk": true,
+      "asrNote": "ASR transcript matches synthesized text."
+    },
+    {
+      "kind": "vocab",
+      "key": "12",
+      "categorySlug": "numbers",
+      "ok": true,
+      "detail": "female, 1384ms, 60KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/3a65345a-21f4-43fa-beaa-0909b2967b44",
+      "expectedText": "बारह",
+      "asrTranscript": "बारहत",
+      "asrOk": true,
+      "asrNote": "ASR transcript matches synthesized text."
+    },
+    {
+      "kind": "vocab",
+      "key": "13",
+      "categorySlug": "numbers",
+      "ok": true,
+      "detail": "female, 850ms, 37KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/09551617-08f5-4ad1-b621-041ad638dccd",
+      "expectedText": "तेरह",
+      "asrTranscript": "तिरह",
+      "asrOk": false,
+      "asrNote": "ASR transcript did NOT match — flag for manual re-check / regeneration."
+    },
+    {
+      "kind": "vocab",
+      "key": "14",
+      "categorySlug": "numbers",
+      "ok": true,
+      "detail": "female, 1129ms, 49KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/2e9267ec-609c-4092-9f70-f60b09fc9a8c",
+      "expectedText": "चौदह",
+      "asrTranscript": "चौदह",
+      "asrOk": true,
+      "asrNote": "ASR transcript matches synthesized text."
+    },
+    {
+      "kind": "vocab",
+      "key": "15",
+      "categorySlug": "numbers",
+      "ok": true,
+      "detail": "female, 1105ms, 48KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/84d9174f-cb4a-44a2-90a8-44bcdf28fd6a",
+      "expectedText": "पंद्रह",
+      "asrTranscript": "पंद्रह",
+      "asrOk": true,
+      "asrNote": "ASR transcript matches synthesized text."
+    },
+    {
+      "kind": "vocab",
+      "key": "16",
+      "categorySlug": "numbers",
+      "ok": true,
+      "detail": "female, 1338ms, 58KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/49c12994-159a-413f-8906-c261bb82e7e8",
+      "expectedText": "सोलह",
+      "asrTranscript": "सोलह",
+      "asrOk": true,
+      "asrNote": "ASR transcript matches synthesized text."
+    },
+    {
+      "kind": "vocab",
+      "key": "17",
+      "categorySlug": "numbers",
+      "ok": true,
+      "detail": "female, 1245ms, 54KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/5ce05692-9e5d-451c-b8ca-7858e79b0de3",
+      "expectedText": "सत्रह",
+      "asrTranscript": "सदरह",
+      "asrOk": false,
+      "asrNote": "ASR transcript did NOT match — flag for manual re-check / regeneration."
+    },
+    {
+      "kind": "vocab",
+      "key": "18",
+      "categorySlug": "numbers",
+      "ok": true,
+      "detail": "female, 1570ms, 68KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/38aa2716-490c-4a5f-8d55-14329accb053",
+      "expectedText": "अठारह",
+      "asrTranscript": "अ्ठारह",
+      "asrOk": false,
+      "asrNote": "ASR transcript did NOT match — flag for manual re-check / regeneration."
+    },
+    {
+      "kind": "vocab",
+      "key": "19",
+      "categorySlug": "numbers",
+      "ok": true,
+      "detail": "female, 1112ms, 48KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/51dcde27-4baa-4413-9b7a-682d3440ce7b",
+      "expectedText": "उन्नीस",
+      "asrTranscript": "उन्नीस",
+      "asrOk": true,
+      "asrNote": "ASR transcript matches synthesized text."
+    },
+    {
+      "kind": "vocab",
+      "key": "20",
+      "categorySlug": "numbers",
+      "ok": true,
+      "detail": "female, 1013ms, 44KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/1360796d-5574-4953-8f3a-40920c60478a",
+      "expectedText": "बीस",
+      "asrTranscript": "बीस",
+      "asrOk": true,
+      "asrNote": "ASR transcript matches synthesized text."
+    },
+    {
+      "kind": "vocab",
+      "key": "mother",
+      "categorySlug": "family",
+      "ok": true,
+      "detail": "female, 1198ms, 52KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/dd9cfe94-9c0c-46d9-85f9-4b8fd336dafa",
+      "expectedText": "माँ",
+      "asrTranscript": "मा",
+      "asrOk": true,
+      "asrNote": "ASR transcript matches synthesized text."
+    },
+    {
+      "kind": "vocab",
+      "key": "father",
+      "categorySlug": "family",
+      "ok": true,
+      "detail": "female, 1036ms, 45KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/d6841915-03fe-4523-9917-e67513f354d5",
+      "expectedText": "पापा",
+      "asrTranscript": "पाप",
+      "asrOk": true,
+      "asrNote": "ASR transcript matches synthesized text."
+    },
+    {
+      "kind": "vocab",
+      "key": "brother",
+      "categorySlug": "family",
+      "ok": true,
+      "detail": "female, 1036ms, 45KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/a8c109d6-f7ab-461e-b5ba-e4f7699f2c2c",
+      "expectedText": "भाई",
+      "asrTranscript": "भाई",
+      "asrOk": true,
+      "asrNote": "ASR transcript matches synthesized text."
+    },
+    {
+      "kind": "vocab",
+      "key": "sister",
+      "categorySlug": "family",
+      "ok": true,
+      "detail": "female, 1082ms, 47KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/c9055633-5c06-4c2c-ade5-7ca9e0ab295f",
+      "expectedText": "बहन",
+      "asrTranscript": "बहन",
+      "asrOk": true,
+      "asrNote": "ASR transcript matches synthesized text."
+    },
+    {
+      "kind": "vocab",
+      "key": "grandmother-paternal",
+      "categorySlug": "family",
+      "ok": true,
+      "detail": "female, 1198ms, 52KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/af65a6d8-c27d-44ba-9e34-98a3266c1a73",
+      "expectedText": "दादी",
+      "asrTranscript": "दादी",
+      "asrOk": true,
+      "asrNote": "ASR transcript matches synthesized text."
+    },
+    {
+      "kind": "vocab",
+      "key": "grandmother-maternal",
+      "categorySlug": "family",
+      "ok": true,
+      "detail": "female, 1152ms, 50KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/d7cbfa5b-1daa-4c6a-a56d-f37ea808ce6d",
+      "expectedText": "नानी",
+      "asrTranscript": "नान",
+      "asrOk": true,
+      "asrNote": "ASR transcript matches synthesized text."
+    },
+    {
+      "kind": "vocab",
+      "key": "grandfather-paternal",
+      "categorySlug": "family",
+      "ok": true,
+      "detail": "female, 1222ms, 53KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/d692689d-1ec3-4eca-9437-99b4b039abb8",
+      "expectedText": "दादा",
+      "asrTranscript": "दादा",
+      "asrOk": true,
+      "asrNote": "ASR transcript matches synthesized text."
+    },
+    {
+      "kind": "vocab",
+      "key": "grandfather-maternal",
+      "categorySlug": "family",
+      "ok": true,
+      "detail": "female, 1268ms, 55KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/97a71ed1-2261-43a8-a1a3-3126f1ea2fa0",
+      "expectedText": "नाना",
+      "asrTranscript": "नाना",
+      "asrOk": true,
+      "asrNote": "ASR transcript matches synthesized text."
+    },
+    {
+      "kind": "vocab",
+      "key": "uncle",
+      "categorySlug": "family",
+      "ok": true,
+      "detail": "female, 1036ms, 45KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/7567febc-5acd-4869-bdd7-7bcb53433c44",
+      "expectedText": "अंकल",
+      "asrTranscript": "अंकल",
+      "asrOk": true,
+      "asrNote": "ASR transcript matches synthesized text."
+    },
+    {
+      "kind": "vocab",
+      "key": "aunt",
+      "categorySlug": "family",
+      "ok": true,
+      "detail": "female, 943ms, 41KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/a042caf8-87f1-4d7e-8472-c362994aa9c4",
+      "expectedText": "आंटी",
+      "asrTranscript": "आटी",
+      "asrOk": false,
+      "asrNote": "ASR transcript did NOT match — flag for manual re-check / regeneration."
+    },
+    {
+      "kind": "vocab",
+      "key": "son",
+      "categorySlug": "family",
+      "ok": true,
+      "detail": "female, 1129ms, 49KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/e312fb04-f569-4247-b6dc-117136e6009f",
+      "expectedText": "बेटा",
+      "asrTranscript": "बेटा",
+      "asrOk": true,
+      "asrNote": "ASR transcript matches synthesized text."
+    },
+    {
+      "kind": "vocab",
+      "key": "daughter",
+      "categorySlug": "family",
+      "ok": true,
+      "detail": "female, 1268ms, 55KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/007a5c77-aea2-4b48-8750-3c3e131bd6de",
+      "expectedText": "बेटी",
+      "asrTranscript": "बेटी",
+      "asrOk": true,
+      "asrNote": "ASR transcript matches synthesized text."
+    },
+    {
+      "kind": "vocab",
+      "key": "husband",
+      "categorySlug": "family",
+      "ok": true,
+      "detail": "female, 920ms, 40KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/3cfa9fb7-4016-490d-8875-1a46c7d3c982",
+      "expectedText": "पति",
+      "asrTranscript": "बदी",
+      "asrOk": false,
+      "asrNote": "ASR transcript did NOT match — flag for manual re-check / regeneration."
+    },
+    {
+      "kind": "vocab",
+      "key": "wife",
+      "categorySlug": "family",
+      "ok": true,
+      "detail": "female, 1105ms, 48KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/8d73eb85-e97f-428e-8157-ac15bbe2fafe",
+      "expectedText": "पत्नी",
+      "asrTranscript": "पत्नी",
+      "asrOk": true,
+      "asrNote": "ASR transcript matches synthesized text."
+    }
+  ]
+}

@@ -1,131 +1,130 @@
-import { useState } from 'react';
-import { ActivityIndicator, ScrollView, useWindowDimensions } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQuery } from 'convex/react';
 import { api } from '@backend/_generated/api';
-import { getCategory } from '@sarvabhasha/shared';
-import { Box, Text, useTheme, MAX_CONTENT_WIDTH } from '@theme';
+import { getLanguage } from '@sarvabhasha/shared';
+import { Box, Text, useTheme } from '@theme';
+import { Ionicons } from '@expo/vector-icons';
 import { Screen } from '@shared/components/atoms/Screen';
-import { ListCard } from '@shared/components/molecules/ListCard';
-import { PhraseListContent } from '../components/PhraseListContent';
+import { FoundationCard } from '../components/FoundationCard';
+import { fallbackGlyphForScript } from '../utils/foundationsDisplay';
 import type { LearnStackParamList } from '@navigation/types';
 
 /**
- * Learn tab root. The one screen in this app with a genuinely different
- * tablet/wide layout (CLAUDE.md rule 16 / the layout-intent table): phone
- * pushes a `PhraseList` stack screen on category tap, tablet/wide shows both
- * panes at once — categories left, the tapped category's phrases right.
+ * Learn tab root — the locked "Foundations" IA (Option A, four equal-peer
+ * cards, no inline previews): plans/phase-13-foundations-vocab-numbers-alphabet.md,
+ * "Where this lives in the Learn tab." Exactly four cards, nothing else.
+ * Each carries a live count so browsing answers "how much is in here?"
+ * before tapping in; every category/character-set/word-list lives one tap
+ * deeper, on its own screen.
  *
- * Sidebar width is a fixed constant (like `MAX_CONTENT_WIDTH`), not a
- * fraction of window width, so it reads as a stable nav rail rather than a
- * proportional split.
+ * This screen deliberately does NOT get the two-pane tablet/wide treatment
+ * `PhraseCategoriesScreen` (the former Learn root) still has — "only Learn
+ * gets a genuinely different layout" (CLAUDE.md rule 16) refers to that
+ * category/phrase drill-down specifically, not to this menu. A four-card
+ * menu reads fine as a normal, centred, `Screen`-constrained page at every
+ * breakpoint; inventing a wider variant here would be exactly the "invented
+ * tablet-only screen" rule 16 warns against.
  */
-const CATEGORY_PANE_WIDTH = 320;
-
 export function LearnScreen() {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { width } = useWindowDimensions();
-  const isWide = width >= theme.breakpoints.tablet;
   const navigation = useNavigation<NativeStackNavigationProp<LearnStackParamList>>();
-  const categories = useQuery(api.categories.listCategories);
-  const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
 
-  if (categories === undefined) {
-    return (
-      <Box flex={1} backgroundColor="background" alignItems="center" justifyContent="center">
-        <ActivityIndicator color={theme.colors.primary} />
-      </Box>
-    );
-  }
+  const phraseCategories = useQuery(api.categories.listCategories);
+  const user = useQuery(api.users.getCurrentUser);
+  const vocabCategories = useQuery(api.vocabulary.listCategories);
+  const numbersResult = useQuery(api.vocabulary.listItemsByCategory, { categorySlug: 'numbers' });
 
-  const firstLiveSlug = categories.find((c) => c.status === 'live')?.slug ?? null;
-  const activeSlug = isWide ? (selectedSlug ?? firstLiveSlug) : null;
-
-  const categoryList = (
-    <Box gap="s">
-      {categories.map((category) => {
-        const def = getCategory(category.slug);
-        const displayName = def ? t(def.i18nKey) : category.slug;
-        const isLive = category.status === 'live';
-
-        return (
-          <ListCard
-            key={category._id}
-            title={displayName}
-            subtitle={isLive ? undefined : t('Learn.COMING_SOON_LABEL')}
-            trailingText={
-              isLive
-                ? t('Learn.CATEGORY_PROGRESS', {
-                    viewed: category.viewedCount,
-                    total: category.phraseCount,
-                  })
-                : undefined
-            }
-            disabled={!isLive}
-            selected={isWide && activeSlug === category.slug}
-            onPress={
-              isLive
-                ? () =>
-                    isWide
-                      ? setSelectedSlug(category.slug)
-                      : navigation.navigate('PhraseList', { categorySlug: category.slug })
-                : undefined
-            }
-          />
-        );
-      })}
-    </Box>
+  const targetScript = user?.targetLanguage ? getLanguage(user.targetLanguage)?.script : undefined;
+  // `'skip'` until a script is resolvable — same pattern `HomeScreen` uses
+  // for a query with nothing to fetch yet.
+  const scriptCharacters = useQuery(
+    api.aksharmala.listCharactersForScript,
+    targetScript ? { script: targetScript } : 'skip',
   );
 
-  if (!isWide) {
-    return (
-      <Screen scroll>
-        <Text variant="h1" marginBottom="l">
-          {t('Learn.TITLE')}
-        </Text>
-        {categoryList}
-      </Screen>
-    );
-  }
+  // ---- Common Phrases: "N categories · M phrases", both derived from the
+  // same live-only query LearnScreen used to drive its own category list.
+  const liveCategories = (phraseCategories ?? []).filter((c) => c.status === 'live');
+  const commonPhrasesCount = phraseCategories
+    ? t('Learn.COMMON_PHRASES_COUNT', {
+        categories: liveCategories.length,
+        phrases: liveCategories.reduce((sum, c) => sum + c.phraseCount, 0),
+      })
+    : undefined;
+
+  // ---- Aksharmala: count of LIVE characters for the learner's script, icon
+  // is the actual script's first live vowel when available, falling back to
+  // a representative glyph (never taught content) before that data exists.
+  const aksharmalaCount = scriptCharacters
+    ? t('Learn.AKSHARMALA_COUNT', { count: scriptCharacters.length })
+    : undefined;
+  const firstVowel = scriptCharacters?.find((c) => c.characterType === 'vowel');
+  const aksharmalaGlyph = firstVowel?.character ?? fallbackGlyphForScript(targetScript);
+
+  // ---- Numbers: count of LIVE items in the "numbers" vocabularyCategories row.
+  const numbersCount =
+    numbersResult && !numbersResult.needsTargetLanguage
+      ? t('Learn.NUMBERS_COUNT', { count: numbersResult.items.length })
+      : undefined;
+
+  // ---- Vocabulary: category count (excluding "numbers", which has its own
+  // card) rather than a total-word count — that would need a query per
+  // category, which isn't worth adding for a root-screen badge.
+  const nonNumberVocabCategories = (vocabCategories ?? []).filter((c) => c.slug !== 'numbers');
+  const vocabularyCount = vocabCategories
+    ? t('Learn.VOCABULARY_COUNT', { count: nonNumberVocabCategories.length })
+    : undefined;
 
   return (
-    <Box flex={1} backgroundColor="background" flexDirection="row">
-      <Box width={CATEGORY_PANE_WIDTH} backgroundColor="surface" borderRightWidth={1} borderColor="border">
-        <ScrollView contentContainerStyle={{ padding: theme.spacing.l }}>
-          <Text variant="h1" marginBottom="l">
-            {t('Learn.TITLE')}
-          </Text>
-          {categoryList}
-        </ScrollView>
-      </Box>
-      <Box flex={1}>
-        <ScrollView contentContainerStyle={{ padding: theme.spacing.xl, flexGrow: 1 }}>
-          {/*
-            Cap the pane's own content width (CLAUDE.md rule 16 — full-bleed
-            content gets a maxWidth). The sidebar/pane split itself is the
-            intentional "genuinely different" tablet layout, but on a very
-            wide iPad or unfolded foldable the *right pane alone* can still
-            exceed a sane reading/row width, stretching each ListCard's
-            title/trailing-text gap absurdly wide. Left-aligned, not centred,
-            since this pane already sits to the right of the fixed sidebar.
-          */}
-          <Box width="100%" maxWidth={MAX_CONTENT_WIDTH}>
-            {activeSlug ? (
-              <PhraseListContent
-                categorySlug={activeSlug}
-                onSelectPhrase={(phraseId) => navigation.navigate('PhraseDetail', { phraseId })}
-              />
-            ) : (
-              <Text variant="body" color="textMuted">
-                {t('Learn.SELECT_CATEGORY_PROMPT')}
-              </Text>
-            )}
+    <Screen scroll>
+      <Text variant="h1" marginBottom="l">
+        {t('Learn.TITLE')}
+      </Text>
+      <Box gap="m">
+        <Box flexDirection="row" gap="m">
+          <Box flex={1}>
+            <FoundationCard
+              icon={<Ionicons name="chatbubbles-outline" size={26} color={theme.colors.primary} />}
+              title={t('Learn.COMMON_PHRASES_CARD_TITLE')}
+              countLabel={commonPhrasesCount}
+              onPress={() => navigation.navigate('PhraseCategories')}
+            />
           </Box>
-        </ScrollView>
+          <Box flex={1}>
+            <FoundationCard
+              icon={
+                <Text variant="hero" color="primary">
+                  {aksharmalaGlyph}
+                </Text>
+              }
+              title={t('Learn.AKSHARMALA_CARD_TITLE')}
+              countLabel={aksharmalaCount}
+              onPress={() => navigation.navigate('Aksharmala')}
+            />
+          </Box>
+        </Box>
+        <Box flexDirection="row" gap="m">
+          <Box flex={1}>
+            <FoundationCard
+              icon={<Ionicons name="calculator-outline" size={26} color={theme.colors.primary} />}
+              title={t('Learn.NUMBERS_CARD_TITLE')}
+              countLabel={numbersCount}
+              onPress={() => navigation.navigate('Numbers')}
+            />
+          </Box>
+          <Box flex={1}>
+            <FoundationCard
+              icon={<Ionicons name="images-outline" size={26} color={theme.colors.primary} />}
+              title={t('Learn.VOCABULARY_CARD_TITLE')}
+              countLabel={vocabularyCount}
+              onPress={() => navigation.navigate('Vocabulary')}
+            />
+          </Box>
+        </Box>
       </Box>
-    </Box>
+    </Screen>
   );
 }

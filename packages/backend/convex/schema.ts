@@ -55,6 +55,19 @@ export const tutorExpression = v.union(
   v.literal('thinking'),
 );
 
+/**
+ * A script character's grammatical role. Exported the same way as
+ * `tutorExpression` above, for reuse anywhere else that needs to talk about
+ * Aksharmala content (e.g. a future `apps/admin` filter) without redeclaring
+ * the union. See `scriptCharacters` below for why this is keyed by SCRIPT,
+ * not by language.
+ */
+export const scriptCharacterType = v.union(
+  v.literal('vowel'),
+  v.literal('consonant'),
+  v.literal('conjunct'),
+);
+
 export default defineSchema({
   // ---------------------------------------------------------------- identity
 
@@ -258,6 +271,140 @@ export default defineSchema({
   })
     .index('by_character_expression', ['characterSlug', 'expression'])
     .index('by_status', ['status']),
+
+  // ------------------------------------------------------------ foundations
+  //
+  // Vocabulary, Numbers, and Aksharmala (the alphabet) — see
+  // plans/phase-13-foundations-vocab-numbers-alphabet.md. Distinct from the
+  // phrases/animations model above: each item here is a single standalone
+  // concept (a word, a number, a letter), not a situational scene, so there
+  // is no `situation`/`speakerCharacter` anywhere in this section. Numbers is
+  // NOT a separate table — it is a `vocabularyCategories` row like any other
+  // (slug: "numbers"), reusing `vocabularyItems`/`vocabularyTranslations`/
+  // `vocabularyAudio` exactly. A number is a word with a numeral for an image.
+
+  /** Same "chrome vs content" split as `categories` — display name is an i18n key. */
+  vocabularyCategories: defineTable({
+    slug: v.string(),
+    iconKey: v.string(),
+    sortOrder: v.number(),
+    status: contentStatus,
+  })
+    .index('by_slug', ['slug'])
+    .index('by_status_order', ['status', 'sortOrder']),
+
+  /**
+   * Language-INDEPENDENT, same structural trick as `animations.phraseId`
+   * (schema.ts structural decision 1): a picture of an apple doesn't change
+   * per language, so ONE `imageStorageId` is shared across every language's
+   * translation instead of being duplicated 22 times.
+   *
+   * `imageStorageId` is OPTIONAL, unlike `animations.storageId` — this is a
+   * deliberate difference from the phrase model, not an oversight. Phrase
+   * `situation`/`sourceText` are hand-typed English, so `phrases.status` can
+   * be `live` at insert time; a vocabulary item's image is itself a fal.ai
+   * generation (CLAUDE.md rule 14: generated content never auto-publishes),
+   * so an item can exist mid-authoring (word researched, image not generated
+   * yet, or generated but not yet approved) with no image attached. A
+   * missing or unapproved image simply keeps `status` at `draft` — see
+   * `vocabulary.ts`'s `approveVocabularyItem`.
+   */
+  vocabularyItems: defineTable({
+    categoryId: v.id('vocabularyCategories'),
+    /** Stable slug within its category, e.g. "apple". */
+    itemKey: v.string(),
+    englishWord: v.string(),
+    imageStorageId: v.optional(v.id('_storage')),
+    sortOrder: v.number(),
+    status: contentStatus,
+  })
+    .index('by_category_order', ['categoryId', 'sortOrder'])
+    .index('by_status', ['status']),
+
+  /**
+   * Per-language. Live-ness is PER TRANSLATION, same as `phraseTranslations` —
+   * an item can be live while its Tamil translation is still draft.
+   */
+  vocabularyTranslations: defineTable({
+    vocabularyItemId: v.id('vocabularyItems'),
+    languageCode: v.string(),
+    /** Target script. */
+    text: v.string(),
+    /** Latin transliteration. */
+    transliteration: v.string(),
+    status: contentStatus,
+    /** Must be a NATIVE SPEAKER. Machine translation never ships unreviewed. */
+    reviewedBy: v.optional(v.id('users')),
+    reviewedAt: v.optional(v.number()),
+  })
+    .index('by_item_language', ['vocabularyItemId', 'languageCode'])
+    .index('by_language_status', ['languageCode', 'status']),
+
+  /**
+   * Per-language. Generated ONCE at authoring time via `bhashini/tts.ts` —
+   * never called at runtime (CLAUDE.md rule 10). Vocabulary/Numbers items
+   * aren't tied to a scene character, so `voiceGender` picks a single
+   * consistent narrator voice per language rather than the per-character
+   * convention `phrases`/`audioAssets` use — see
+   * plans/phase-13-foundations-vocab-numbers-alphabet.md's "Voice" note.
+   */
+  vocabularyAudio: defineTable({
+    vocabularyItemId: v.id('vocabularyItems'),
+    languageCode: v.string(),
+    storageId: v.id('_storage'),
+    voiceGender: v.union(v.literal('male'), v.literal('female')),
+    durationMs: v.number(),
+    source: audioSource,
+    status: contentStatus,
+  }).index('by_item_language', ['vocabularyItemId', 'languageCode']),
+
+  /**
+   * Aksharmala content, keyed by SCRIPT — deliberately NOT `languageCode`.
+   * `languages.script` (in `@sarvabhasha/shared`) already models this:
+   * `devanagari` alone covers hi, mr, ne, sa, kok, doi, mai, and brx — 8 of
+   * the 22 languages share one script. Keying by script means building one
+   * script's ~46-character set serves every language using it once, instead
+   * of duplicating the same rows per language (12 real content builds across
+   * 22 languages, not 22). Getting this wrong doesn't multiply a metered
+   * bill the way the animation mistake would, but it is still exactly the
+   * kind of per-language duplication this project's structural patterns
+   * exist to avoid — see CLAUDE.md rule 2 / rule 11.
+   *
+   * No `imageStorageId` — the character's own glyph, rendered client-side in
+   * the appropriate script font, IS the visual. Nothing to generate.
+   *
+   * Held to a STRICTER review bar than phrase content (see the plan doc):
+   * unlike a phrase's phrasing, "the alphabet" is maximally checkable by any
+   * literate speaker of that script, and a partial or wrong character set is
+   * a trust failure, not a stylistic quibble. `exampleWord`/
+   * `exampleTransliteration` are optional — not every character (e.g. some
+   * conjuncts) needs one.
+   */
+  scriptCharacters: defineTable({
+    script: v.string(),
+    character: v.string(),
+    characterType: scriptCharacterType,
+    romanization: v.string(),
+    exampleWord: v.optional(v.string()),
+    exampleTransliteration: v.optional(v.string()),
+    sortOrder: v.number(),
+    status: contentStatus,
+  })
+    .index('by_script_order', ['script', 'sortOrder'])
+    .index('by_status', ['status']),
+
+  /**
+   * ONE audio clip per character per SCRIPT — not per language, same reuse
+   * win as `scriptCharacters` itself. Generated once via `bhashini/tts.ts`,
+   * never live at runtime.
+   */
+  scriptCharacterAudio: defineTable({
+    scriptCharacterId: v.id('scriptCharacters'),
+    storageId: v.id('_storage'),
+    durationMs: v.number(),
+    source: audioSource,
+    status: contentStatus,
+  }).index('by_character', ['scriptCharacterId']),
 
   // --------------------------------------------------------------- progress
 

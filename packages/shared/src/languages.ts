@@ -42,21 +42,23 @@ export const LANGUAGES: readonly LanguageDef[] = [
   { code: 'kn',  nativeName: 'ಕನ್ನಡ',         englishName: 'Kannada',   script: 'kannada',    ttsQuality: 'good', launchStatus: 'live',  sortOrder: 6 },
 
   // ---- Draft: promote per-language after native-speaker review ----
-  { code: 'gu',  nativeName: 'ગુજરાતી',       englishName: 'Gujarati',  script: 'gujarati',   ttsQuality: 'good', launchStatus: 'draft', sortOrder: 7 },
+  // ---- ttsQuality below re-verified 2026-08-03 against LIVE Bhashini + Google Cloud TTS
+  // responses (not the prior guesses) — see plans/phase-12-v1-launch.md Step 0.
+  { code: 'gu',  nativeName: 'ગુજરાતી',       englishName: 'Gujarati',  script: 'gujarati',   ttsQuality: 'fair', launchStatus: 'draft', sortOrder: 7 },
   { code: 'ml',  nativeName: 'മലയാളം',       englishName: 'Malayalam', script: 'malayalam',  ttsQuality: 'good', launchStatus: 'draft', sortOrder: 8 },
   { code: 'pa',  nativeName: 'ਪੰਜਾਬੀ',        englishName: 'Punjabi',   script: 'gurmukhi',   ttsQuality: 'good', launchStatus: 'draft', sortOrder: 9 },
   { code: 'or',  nativeName: 'ଓଡ଼ିଆ',         englishName: 'Odia',      script: 'odia',       ttsQuality: 'fair', launchStatus: 'draft', sortOrder: 10 },
-  { code: 'as',  nativeName: 'অসমীয়া',       englishName: 'Assamese',  script: 'bengali',    ttsQuality: 'fair', launchStatus: 'draft', sortOrder: 11 },
+  { code: 'as',  nativeName: 'অসমীয়া',       englishName: 'Assamese',  script: 'bengali',    ttsQuality: 'good', launchStatus: 'draft', sortOrder: 11 },
   { code: 'ur',  nativeName: 'اردو',           englishName: 'Urdu',      script: 'arabic',     ttsQuality: 'fair', launchStatus: 'draft', sortOrder: 12 },
-  { code: 'ne',  nativeName: 'नेपाली',        englishName: 'Nepali',    script: 'devanagari', ttsQuality: 'fair', launchStatus: 'draft', sortOrder: 13 },
-  { code: 'sa',  nativeName: 'संस्कृतम्',      englishName: 'Sanskrit',  script: 'devanagari', ttsQuality: 'fair', launchStatus: 'draft', sortOrder: 14 },
+  { code: 'ne',  nativeName: 'नेपाली',        englishName: 'Nepali',    script: 'devanagari', ttsQuality: 'none', launchStatus: 'draft', sortOrder: 13 },
+  { code: 'sa',  nativeName: 'संस्कृतम्',      englishName: 'Sanskrit',  script: 'devanagari', ttsQuality: 'none', launchStatus: 'draft', sortOrder: 14 },
   { code: 'ks',  nativeName: 'कॉशुर',         englishName: 'Kashmiri',  script: 'devanagari', ttsQuality: 'none', launchStatus: 'draft', sortOrder: 15 },
   { code: 'sd',  nativeName: 'سنڌي',           englishName: 'Sindhi',    script: 'arabic',     ttsQuality: 'none', launchStatus: 'draft', sortOrder: 16 },
   { code: 'kok', nativeName: 'कोंकणी',        englishName: 'Konkani',   script: 'devanagari', ttsQuality: 'none', launchStatus: 'draft', sortOrder: 17 },
   { code: 'doi', nativeName: 'डोगरी',         englishName: 'Dogri',     script: 'devanagari', ttsQuality: 'none', launchStatus: 'draft', sortOrder: 18 },
   { code: 'mai', nativeName: 'मैथिली',        englishName: 'Maithili',  script: 'devanagari', ttsQuality: 'none', launchStatus: 'draft', sortOrder: 19 },
-  { code: 'brx', nativeName: 'बड़ो',           englishName: 'Bodo',      script: 'devanagari', ttsQuality: 'none', launchStatus: 'draft', sortOrder: 20 },
-  { code: 'mni', nativeName: 'ꯃꯤꯇꯩ ꯂꯣꯟ',      englishName: 'Manipuri',  script: 'meetei',     ttsQuality: 'none', launchStatus: 'draft', sortOrder: 21 },
+  { code: 'brx', nativeName: 'बड़ो',           englishName: 'Bodo',      script: 'devanagari', ttsQuality: 'good', launchStatus: 'draft', sortOrder: 20 },
+  { code: 'mni', nativeName: 'ꯃꯤꯇꯩ ꯂꯣꯟ',      englishName: 'Manipuri',  script: 'meetei',     ttsQuality: 'good', launchStatus: 'draft', sortOrder: 21 },
   { code: 'sat', nativeName: 'ᱥᱟᱱᱛᱟᱲᱤ',       englishName: 'Santali',   script: 'ol-chiki',   ttsQuality: 'none', launchStatus: 'draft', sortOrder: 22 },
 ] as const;
 

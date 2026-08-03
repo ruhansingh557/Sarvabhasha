@@ -186,6 +186,80 @@ User-selectable voice gender is a possible v2 feature — generated on demand fo
 
 Bhashini (`convex/bhashini/tts.ts`) is the primary — and default — TTS provider: free, and it covers all 22 target languages. Google Cloud Text-to-Speech (`convex/google/tts.ts`, `generateAudioForPhraseGoogle`) exists as a **manually-invoked** fallback for when Bhashini fails for a specific (phrase, language) — first used to unblock Marathi (`mr`) after a sustained, language-specific `504` from Bhashini. It is not wired into `generateAudioForPhrase` and nothing calls it automatically: there is no live traffic in this pipeline to route, every TTS call is a one-off authoring-time `convex run` invocation, and a human decides per clip which provider to use. `audioAssets.source` records which provider produced a row. Google Cloud TTS is metered (see root `CLAUDE.md`'s cost-discipline table) — expected volume is near-zero.
 
+### Foundations: Vocabulary, Numbers, Aksharmala
+
+See [`plans/phase-13-foundations-vocab-numbers-alphabet.md`](../plans/phase-13-foundations-vocab-numbers-alphabet.md) for the full rationale. Three beginner-level content types, distinct from the phrase/animation model above because each item is a single standalone concept (a word, a number, a letter) — no `situation`, no `speakerCharacter`, no scene.
+
+```ts
+vocabularyCategories: defineTable({
+  slug: v.string(),
+  iconKey: v.string(),
+  sortOrder: v.number(),
+  status: /* lifecycle union */,
+}).index("by_slug", ["slug"]).index("by_status_order", ["status", "sortOrder"])
+
+vocabularyItems: defineTable({
+  categoryId: v.id("vocabularyCategories"),
+  itemKey: v.string(),
+  englishWord: v.string(),
+  imageStorageId: v.optional(v.id("_storage")),   // language-INDEPENDENT, same trick as animations.phraseId
+  sortOrder: v.number(),
+  status: /* lifecycle union */,
+}).index("by_category_order", ["categoryId", "sortOrder"]).index("by_status", ["status"])
+
+vocabularyTranslations: defineTable({
+  vocabularyItemId: v.id("vocabularyItems"),
+  languageCode: v.string(),
+  text: v.string(),
+  transliteration: v.string(),
+  status: /* lifecycle union */,
+  reviewedBy: v.optional(v.id("users")),
+  reviewedAt: v.optional(v.number()),
+}).index("by_item_language", ["vocabularyItemId", "languageCode"])
+  .index("by_language_status", ["languageCode", "status"])
+
+vocabularyAudio: defineTable({
+  vocabularyItemId: v.id("vocabularyItems"),
+  languageCode: v.string(),
+  storageId: v.id("_storage"),
+  voiceGender: v.union(v.literal("male"), v.literal("female")),
+  durationMs: v.number(),
+  source: /* audioSource union */,
+  status: /* lifecycle union */,
+}).index("by_item_language", ["vocabularyItemId", "languageCode"])
+```
+
+**Numbers is not a separate table.** It is a `vocabularyCategories` row (`slug: "numbers"`), reusing `vocabularyItems`/`vocabularyTranslations`/`vocabularyAudio` exactly — a number is a word with a numeral for an image.
+
+`vocabularyItems.imageStorageId` is **optional**, unlike `animations.storageId` — a deliberate difference from the phrase model. A phrase's `situation`/`sourceText` are hand-typed English, so `phrases.status` can be `live` at insert time; a vocabulary item's image is itself a fal.ai generation (CLAUDE.md rule 14), so an item can exist mid-authoring with no image yet. `vocabulary.ts`'s `approveVocabularyItem` is the gate for the item's own English word + image, separate from `approveVocabularyTranslationAndAudio`'s per-language gate — an item is browsable only once BOTH pass, exactly like a phrase needing a `live` category AND a `live` per-language translation+audio.
+
+```ts
+scriptCharacters: defineTable({
+  script: v.string(),              // "devanagari" — NOT languageCode, see below
+  character: v.string(),
+  characterType: v.union(v.literal("vowel"), v.literal("consonant"), v.literal("conjunct")),
+  romanization: v.string(),
+  exampleWord: v.optional(v.string()),
+  exampleTransliteration: v.optional(v.string()),
+  sortOrder: v.number(),
+  status: /* lifecycle union */,
+}).index("by_script_order", ["script", "sortOrder"]).index("by_status", ["status"])
+
+scriptCharacterAudio: defineTable({
+  scriptCharacterId: v.id("scriptCharacters"),
+  storageId: v.id("_storage"),
+  durationMs: v.number(),
+  source: /* audioSource union */,
+  status: /* lifecycle union */,
+}).index("by_character", ["scriptCharacterId"])
+```
+
+**Aksharmala is keyed by SCRIPT, not `languageCode`** — the second structural reuse win in this schema, alongside decision 1's animation/phrase split. `@sarvabhasha/shared`'s `languages.ts` already models this via each language's `script` field: `devanagari` alone covers hi, mr, ne, sa, kok, doi, mai, and brx — 8 of the 22 languages. Building one script's ~46-character set once serves every language sharing it, instead of duplicating the same rows per language (12 real content builds across the 22 languages, not 22). `scriptCharacters` has no `imageStorageId` — the glyph itself, rendered client-side in the appropriate script font, is the visual.
+
+Aksharmala is held to a **stricter review bar** than phrase or vocabulary content: unlike a phrase's phrasing, "the alphabet" is maximally checkable by any literate speaker of the script, so a partial or wrong character set is a trust failure, not a stylistic quibble. `aksharmala.ts`'s `getScriptCoverage` reports completeness of whatever has been *seeded* so far — it cannot verify that the full, correct set (per an authoritative textbook ordering) has been entered at all; that is a human judgment before promoting.
+
+There is no per-script "promote to live" mutation the way `vocabularyCategories`/`languages` have one — a script is a string field, not an entity with its own row. A script's readiness is simply the union of all its `scriptCharacters` rows being individually `live`.
+
 ### Progress
 
 ```ts
@@ -333,6 +407,7 @@ generationJobs: defineTable({
 - **Bhashini male voice quality per language is unverified.** Female voices are generally better trained. Test one male-speaker phrase in each of the six live languages during the first generation pass and record the result — it determines whether `neighbour` phrases need a per-language override.
 - **Pronunciation scoring** via Bhashini ASR has no result table. Add when the feature is specced.
 - The **±1 day clamp** on user-supplied `day` is a proposal, not a verified-safe bound.
+- **No `progress` tracking for Vocabulary/Aksharmala yet.** `progress` is keyed by `phraseId` only — a learner's mastery of vocabulary words or alphabet characters isn't recorded anywhere. Schema + backend for Foundations landed with no actual content authored yet (see the phase-13 plan); progress tracking for these content types is unscoped, not an oversight to fix in this pass.
 
 ## Cross-references
 
@@ -345,3 +420,4 @@ generationJobs: defineTable({
 | Language `status` and quality tiers | [`languages-and-rollout.md`](languages-and-rollout.md) |
 | The character bible behind `characters` | [`branding-and-voice.md`](branding-and-voice.md) |
 | Better Auth wiring and the `users` mirror | [`auth.md`](auth.md) |
+| Vocabulary/Numbers/Aksharmala rationale, content scope, mobile UI | [`plans/phase-13-foundations-vocab-numbers-alphabet.md`](../plans/phase-13-foundations-vocab-numbers-alphabet.md) |

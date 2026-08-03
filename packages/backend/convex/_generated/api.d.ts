@@ -8,17 +8,21 @@
  * @module
  */
 
+import type * as aksharmala from "../aksharmala.js";
 import type * as animations from "../animations.js";
 import type * as auth from "../auth.js";
+import type * as bhashini_aksharmalaTts from "../bhashini/aksharmalaTts.js";
 import type * as bhashini_asr from "../bhashini/asr.js";
 import type * as bhashini_lib from "../bhashini/lib.js";
 import type * as bhashini_tts from "../bhashini/tts.js";
 import type * as bhashini_tutorSpeech from "../bhashini/tutorSpeech.js";
+import type * as bhashini_vocabularyTts from "../bhashini/vocabularyTts.js";
 import type * as categories from "../categories.js";
 import type * as fal_animations from "../fal/animations.js";
 import type * as fal_characters from "../fal/characters.js";
 import type * as fal_lib from "../fal/lib.js";
 import type * as fal_personaAnimations from "../fal/personaAnimations.js";
+import type * as fal_vocabularyImages from "../fal/vocabularyImages.js";
 import type * as google_tts from "../google/tts.js";
 import type * as home from "../home.js";
 import type * as http from "../http.js";
@@ -34,6 +38,7 @@ import type * as review from "../review.js";
 import type * as seed from "../seed.js";
 import type * as tutor from "../tutor.js";
 import type * as users from "../users.js";
+import type * as vocabulary from "../vocabulary.js";
 
 import type {
   ApiFromModules,
@@ -42,17 +47,21 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  aksharmala: typeof aksharmala;
   animations: typeof animations;
   auth: typeof auth;
+  "bhashini/aksharmalaTts": typeof bhashini_aksharmalaTts;
   "bhashini/asr": typeof bhashini_asr;
   "bhashini/lib": typeof bhashini_lib;
   "bhashini/tts": typeof bhashini_tts;
   "bhashini/tutorSpeech": typeof bhashini_tutorSpeech;
+  "bhashini/vocabularyTts": typeof bhashini_vocabularyTts;
   categories: typeof categories;
   "fal/animations": typeof fal_animations;
   "fal/characters": typeof fal_characters;
   "fal/lib": typeof fal_lib;
   "fal/personaAnimations": typeof fal_personaAnimations;
+  "fal/vocabularyImages": typeof fal_vocabularyImages;
   "google/tts": typeof google_tts;
   home: typeof home;
   http: typeof http;
@@ -68,6 +77,7 @@ declare const fullApi: ApiFromModules<{
   seed: typeof seed;
   tutor: typeof tutor;
   users: typeof users;
+  vocabulary: typeof vocabulary;
 }>;
 
 /**

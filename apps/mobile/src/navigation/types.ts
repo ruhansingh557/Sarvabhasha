@@ -24,8 +24,13 @@ export type HomeStackParamList = {
 
 export type LearnStackParamList = {
   Learn: undefined;
+  /** The "Common Phrases" destination — the former Learn-tab root, unchanged behavior. */
+  PhraseCategories: undefined;
   PhraseList: { categorySlug: string };
   PhraseDetail: { phraseId: Id<'phrases'> };
+  Aksharmala: undefined;
+  Numbers: undefined;
+  Vocabulary: undefined;
 };
 
 export type TutorStackParamList = {

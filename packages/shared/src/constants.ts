@@ -92,10 +92,36 @@ export const ASR_LANGUAGES = new Set([
 /**
  * Languages with a Bhashini TTS voice. Absence here is why `ttsQuality: 'none'`
  * exists in @sarvabhasha/shared — a language with no voice can never go live.
+ *
+ * Re-verified 2026-08-03 with real `getPipelineConfig`/`synthesize` calls
+ * against live Bhashini (see plans/phase-12-v1-launch.md Step 0) — this set
+ * previously disagreed with reality on three languages:
+ *   - `sd` (Sindhi) REMOVED: pipeline-config negotiation returns a clean
+ *     `400 "No supported tasks found"` — there is no TTS model for Sindhi on
+ *     Bhashini's PIPELINE_ID at all (same flat rejection `ur`/`ne`/`sa` give,
+ *     which were already correctly excluded).
+ *   - `brx` (Bodo) and `mni` (Manipuri) ADDED: both have a real, working
+ *     Bhashini TTS voice (`ai4bharat/indic-tts-coqui-misc-gpu--t4`) —
+ *     synthesis succeeded twice each with consistent audio byte length. They
+ *     were never in this set, which would have made `generateAudioForPhrase`
+ *     reject them before even trying, despite the underlying service
+ *     genuinely working.
+ *
+ * `gu` (Gujarati) and `or` (Odia) are LEFT IN this set despite synthesis
+ * failing 3/3 times with a sustained `504 Gateway Time-out` during
+ * verification: pipeline-config negotiation succeeds for both (an
+ * `ai4bharat/indic-tts-coqui-indo_aryan-gpu--t4` model is genuinely
+ * registered), which is the same "config exists, compute layer times out"
+ * pattern already seen and resolved for Marathi (`plans/phase-4-...md`) via
+ * the Google Cloud TTS fallback — not the flat "no such model" rejection
+ * `sd`/`ur`/`ne`/`sa` give. Treat both as currently non-functional via
+ * Bhashini and re-test before relying on them; `gu` has a confirmed-available
+ * (but not yet wired into `google/tts.ts`'s `GOOGLE_VOICES`) Google Cloud TTS
+ * fallback, `or` does not (Google has zero `or-IN` voices).
  */
 export const TTS_LANGUAGES = new Set([
   'hi', 'bn', 'te', 'mr', 'ta', 'ur', 'gu', 'kn',
-  'ml', 'pa', 'as', 'or', 'ne', 'sa', 'sd', 'en',
+  'ml', 'pa', 'as', 'or', 'ne', 'sa', 'brx', 'mni', 'en',
 ]);
 
 /**

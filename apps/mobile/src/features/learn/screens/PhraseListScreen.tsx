@@ -14,7 +14,10 @@ export function PhraseListScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<LearnStackParamList>>();
 
   return (
-    <Screen scroll>
+    // Pushed under the LearnStack's native header (headerShown: true) —
+    // the header itself reserves the top safe-area inset, so this screen
+    // opts out of Screen's own inset padding to avoid double-padding.
+    <Screen scroll topInset={false}>
       <PhraseListContent
         categorySlug={route.params.categorySlug}
         onSelectPhrase={(phraseId) => navigation.navigate('PhraseDetail', { phraseId })}

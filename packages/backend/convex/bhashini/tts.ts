@@ -24,7 +24,12 @@ import { internalAction, internalQuery } from '../_generated/server';
 import { internal } from '../_generated/api';
 import type { Doc, Id } from '../_generated/dataModel';
 import { voiceForCharacter, TTS_LANGUAGES } from '@sarvabhasha/shared';
-import { BHASHINI_COMPUTE_URL, BHASHINI_PIPELINE_URL, PIPELINE_ID, getBhashiniCredentials } from './lib';
+import {
+  getBhashiniCredentials,
+  getTtsPipelineConfig,
+  synthesizeTts,
+  decodeBase64Audio,
+} from './lib';
 
 /**
  * TTS_LANGUAGES now lives in @sarvabhasha/shared (relocated from a local
@@ -35,73 +40,8 @@ import { BHASHINI_COMPUTE_URL, BHASHINI_PIPELINE_URL, PIPELINE_ID, getBhashiniCr
  */
 export { TTS_LANGUAGES };
 
-async function getPipelineConfig(
-  language: string,
-  gender: 'male' | 'female',
-  creds: { apiKey: string; userId: string },
-) {
-  const res = await fetch(BHASHINI_PIPELINE_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      userID: creds.userId,
-      ulcaApiKey: creds.apiKey,
-    },
-    body: JSON.stringify({
-      pipelineTasks: [
-        { taskType: 'tts', config: { language: { sourceLanguage: language }, gender } },
-      ],
-      pipelineRequestConfig: { pipelineId: PIPELINE_ID },
-    }),
-  });
-  if (!res.ok) {
-    throw new Error(`Bhashini pipeline config failed: ${res.status} — ${await res.text()}`);
-  }
-  return await res.json();
-}
-
-/** Returns base64 audio. */
-async function synthesize(
-  text: string,
-  language: string,
-  gender: 'male' | 'female',
-  pipelineConfig: any,
-  creds: { apiKey: string; userId: string },
-): Promise<string> {
-  const serviceId = pipelineConfig.pipelineResponseConfig?.[0]?.config?.[0]?.serviceId;
-  const authToken = pipelineConfig.pipelineInferenceAPIEndPoint?.inferenceApiKey?.value;
-  const callbackUrl =
-    pipelineConfig.pipelineInferenceAPIEndPoint?.callbackUrl ?? BHASHINI_COMPUTE_URL;
-
-  if (!serviceId) throw new Error('Pipeline config missing serviceId');
-
-  const res = await fetch(callbackUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(authToken && { Authorization: authToken }),
-      ulcaApiKey: creds.apiKey,
-      userID: creds.userId,
-    },
-    body: JSON.stringify({
-      pipelineTasks: [
-        {
-          taskType: 'tts',
-          config: { language: { sourceLanguage: language }, serviceId, gender },
-        },
-      ],
-      inputData: { input: [{ source: text }] },
-    }),
-  });
-  if (!res.ok) {
-    throw new Error(`Bhashini TTS failed: ${res.status} — ${await res.text()}`);
-  }
-
-  const data = await res.json();
-  const audio = data.pipelineResponse?.[0]?.audio?.[0]?.audioContent;
-  if (!audio) throw new Error('TTS response missing audioContent');
-  return audio;
-}
+// `getTtsPipelineConfig`/`synthesizeTts` now live in `./lib` (shared with
+// `vocabularyTts.ts`/`aksharmalaTts.ts`) — see that file's doc comment.
 
 // ---------------------------------------------------------------- internals
 //
@@ -186,17 +126,12 @@ export const generateAudioForPhrase = internalAction({
 
     try {
       const creds = getBhashiniCredentials();
-      const config = await getPipelineConfig(args.languageCode, gender, creds);
-      const base64 = await synthesize(translation.text, args.languageCode, gender, config, creds);
+      const config = await getTtsPipelineConfig(args.languageCode, gender, creds);
+      const base64 = await synthesizeTts(translation.text, args.languageCode, gender, config, creds);
 
-      const binary = atob(base64);
-      const bytes = new Uint8Array(binary.length);
-      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      const { bytes, durationMs } = decodeBase64Audio(base64);
 
       const storageId = await ctx.storage.store(new Blob([bytes], { type: 'audio/wav' }));
-
-      // Rough: Bhashini returns 22.05kHz 16-bit mono WAV.
-      const durationMs = Math.round((bytes.length / (22050 * 2)) * 1000);
 
       const audioId: Id<'audioAssets'> = await ctx.runMutation(
         internal.lib.audioAssets.insertAudioAsset,
