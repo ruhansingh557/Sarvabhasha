@@ -86,6 +86,11 @@ import {
   DEVANAGARI_CHARACTERS,
   BENGALI_CHARACTERS,
   TAMIL_CHARACTERS,
+  TELUGU_CHARACTERS,
+  KANNADA_CHARACTERS,
+  GUJARATI_CHARACTERS,
+  GURMUKHI_CHARACTERS,
+  MALAYALAM_CHARACTERS,
   NUMBERS,
   FAMILY,
   FOOD_DRINK,
@@ -109,7 +114,7 @@ type CategorySlug =
   | 'clothing'
   | 'vegetables';
 
-type ScriptSlug = 'devanagari' | 'bengali' | 'tamil';
+type ScriptSlug = 'devanagari' | 'bengali' | 'tamil' | 'telugu' | 'kannada' | 'gujarati' | 'gurmukhi' | 'malayalam';
 
 /**
  * Every script authored through this pipeline, plus the ONE live language
@@ -123,6 +128,11 @@ const SCRIPTS: Record<ScriptSlug, { characters: ScriptCharacterData[]; languageC
   devanagari: { characters: DEVANAGARI_CHARACTERS, languageCode: 'hi' },
   bengali: { characters: BENGALI_CHARACTERS, languageCode: 'bn' },
   tamil: { characters: TAMIL_CHARACTERS, languageCode: 'ta' },
+  telugu: { characters: TELUGU_CHARACTERS, languageCode: 'te' },
+  kannada: { characters: KANNADA_CHARACTERS, languageCode: 'kn' },
+  gujarati: { characters: GUJARATI_CHARACTERS, languageCode: 'gu' },
+  gurmukhi: { characters: GURMUKHI_CHARACTERS, languageCode: 'pa' },
+  malayalam: { characters: MALAYALAM_CHARACTERS, languageCode: 'ml' },
 };
 
 const BACKEND_DIR = resolve(__dirname, '..', '..');

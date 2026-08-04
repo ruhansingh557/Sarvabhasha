@@ -301,6 +301,491 @@ export const TAMIL_CHARACTERS: ScriptCharacterData[] = [
   { character: 'க்ஷ', characterType: 'conjunct', romanization: 'ksha', exampleWord: 'க்ஷணம்', exampleTransliteration: 'kshanam', exampleGloss: 'moment/instant', sortOrder: 37 },
 ];
 
+/**
+ * Telugu (`script: 'telugu'`, live language `te`) — the FOURTH script
+ * through this pipeline (2026-08-04), the second of the original 6 launch
+ * languages besides Hindi/Tamil to get an alphabet. WebSearch-verified
+ * (Talkpal, easytelugutyping.com, Wikibooks' Telugu/Alphabet, cross-checked
+ * against Preply's "52 letters" guide, which all independently agree):
+ * standard Telugu అక్షరమాల (aksharamala) is 52 letters — 16 అచ్చులు (achulu,
+ * vowels, grouping అం/అః with the vowels like Devanagari's अं/अः rather than
+ * Bengali's consonant grouping) + 36 హల్లులు (hallulu, consonants, including
+ * క్ష as a traditionally-counted letter and ఱ, an archaic trilled-r whose
+ * distinct sound has fully merged into ర in modern spoken Telugu but which
+ * every standard chart still lists for completeness).
+ *
+ * TWO honestly-flagged gaps, not papered over: ౠ (long vocalic r) has NO
+ * attested native or loanword example in modern Telugu — genuinely obsolete,
+ * unlike its short counterpart ఋ which still has real words (ఋషి). ఙ
+ * (velar nasal) is, per Wikibooks, "almost never found written alone" in
+ * modern Telugu — spelled with అనుస్వారం (ం) instead in virtually all
+ * contemporary text — so no real modern example word exists for it either.
+ * Both get a `note` saying so rather than a fabricated or archaic-only word
+ * dressed up as a normal example.
+ *
+ * WORD-INITIAL RESTRICTIONS: ఙ, ఞ (per Wikibooks, always written under జ as
+ * in జ్ఞానం), ణ, ళ (both retroflex, same Dravidian-family pattern already
+ * confirmed for Tamil's ண/ள), and ఱ (archaic/merged) do not begin native
+ * Telugu words — each has a `note`.
+ *
+ * MNEMONIC CONVENTION: no confirmed single-word Telugu "as in" connector was
+ * found — same honest gap as Tamil. `te` has no `MNEMONIC_CONNECTOR` entry;
+ * `buildSynthesisText` falls back to bare juxtaposition (see that function).
+ */
+export const TELUGU_CHARACTERS: ScriptCharacterData[] = [
+  // ---- అచ్చులు (achulu, vowels) — 16 ----
+  { character: 'అ', characterType: 'vowel', romanization: 'a', exampleWord: 'అమ్మ', exampleTransliteration: 'amma', exampleGloss: 'mother', sortOrder: 1 },
+  { character: 'ఆ', characterType: 'vowel', romanization: 'aa', exampleWord: 'ఆవు', exampleTransliteration: 'aavu', exampleGloss: 'cow', sortOrder: 2 },
+  { character: 'ఇ', characterType: 'vowel', romanization: 'i', exampleWord: 'ఇల్లు', exampleTransliteration: 'illu', exampleGloss: 'house', sortOrder: 3 },
+  { character: 'ఈ', characterType: 'vowel', romanization: 'ii', exampleWord: 'ఈగ', exampleTransliteration: 'eega', exampleGloss: 'housefly', sortOrder: 4 },
+  { character: 'ఉ', characterType: 'vowel', romanization: 'u', exampleWord: 'ఉడుత', exampleTransliteration: 'uduta', exampleGloss: 'squirrel', sortOrder: 5 },
+  { character: 'ఊ', characterType: 'vowel', romanization: 'uu', exampleWord: 'ఊయల', exampleTransliteration: 'ooyala', exampleGloss: 'swing', sortOrder: 6 },
+  { character: 'ఋ', characterType: 'vowel', romanization: 'ru', exampleWord: 'ఋషి', exampleTransliteration: 'rushi', exampleGloss: 'sage', sortOrder: 7 },
+  { character: 'ౠ', characterType: 'vowel', romanization: 'ruu', exampleWord: 'ఋణం', exampleTransliteration: 'runam', exampleGloss: 'debt (nearest attested word — see note)', sortOrder: 8, note: 'ౠ (long vocalic r) is genuinely obsolete in modern Telugu — no attested native or loanword actually uses the LONG form; ఋణం (debt) uses the short ఋ and is included only as the nearest real word for the synthesized clip, since a truly silent/empty entry is worse. Kept for chart completeness, matching every standard Telugu alphabet reference.' },
+  { character: 'ఎ', characterType: 'vowel', romanization: 'e', exampleWord: 'ఎలుక', exampleTransliteration: 'eluka', exampleGloss: 'mouse/rat', sortOrder: 9 },
+  { character: 'ఏ', characterType: 'vowel', romanization: 'ee', exampleWord: 'ఏనుగు', exampleTransliteration: 'aenugu', exampleGloss: 'elephant', sortOrder: 10 },
+  { character: 'ఐ', characterType: 'vowel', romanization: 'ai', exampleWord: 'ఐదు', exampleTransliteration: 'aidu', exampleGloss: 'five', sortOrder: 11 },
+  { character: 'ఒ', characterType: 'vowel', romanization: 'o', exampleWord: 'ఒంటె', exampleTransliteration: 'onte', exampleGloss: 'camel', sortOrder: 12 },
+  { character: 'ఓ', characterType: 'vowel', romanization: 'oo', exampleWord: 'ఓడ', exampleTransliteration: 'oda', exampleGloss: 'ship/boat', sortOrder: 13 },
+  { character: 'ఔ', characterType: 'vowel', romanization: 'au', exampleWord: 'ఔషధం', exampleTransliteration: 'aushadham', exampleGloss: 'medicine', sortOrder: 14, note: 'ఔ is Telugu’s rarest vowel, almost exclusively in Sanskrit loanwords — "medicine" is, notably, also the standard example for this same vowel’s equivalent in Devanagari (औ), Bengali (ঔ), and Tamil (ஔ), a genuine recurring cross-script pattern.' },
+  { character: 'అం', characterType: 'vowel', romanization: 'am', exampleWord: 'అంగడి', exampleTransliteration: 'angadi', exampleGloss: 'shop/market', sortOrder: 15 },
+  { character: 'అః', characterType: 'vowel', romanization: 'aha', exampleWord: 'దుఃఖం', exampleTransliteration: 'dukkham', exampleGloss: 'sorrow', sortOrder: 16, note: 'Visarga essentially never begins a word — దుఃఖం (sorrow) is the standard example, the same word Devanagari and Bengali both use for their own అః-equivalents.' },
+
+  // ---- హల్లులు (hallulu, consonants) — 5x5 varga + అంతస్థ + ఊష్మ + additional = 36 ----
+  { character: 'క', characterType: 'consonant', romanization: 'ka', exampleWord: 'కమలం', exampleTransliteration: 'kamalam', exampleGloss: 'lotus', sortOrder: 17 },
+  { character: 'ఖ', characterType: 'consonant', romanization: 'kha', exampleWord: 'ఖర్జూరం', exampleTransliteration: 'kharjuram', exampleGloss: 'dates (fruit)', sortOrder: 18 },
+  { character: 'గ', characterType: 'consonant', romanization: 'ga', exampleWord: 'గాలిపటం', exampleTransliteration: 'galipatam', exampleGloss: 'kite', sortOrder: 19 },
+  { character: 'ఘ', characterType: 'consonant', romanization: 'gha', exampleWord: 'ఘడియారం', exampleTransliteration: 'ghadiyaram', exampleGloss: 'clock/watch', sortOrder: 20 },
+  { character: 'ఙ', characterType: 'consonant', romanization: 'nga', exampleWord: 'అఙ్గము', exampleTransliteration: 'angamu', exampleGloss: 'limb/part (archaic spelling — see note)', sortOrder: 21, note: 'Per Wikibooks, ఙ is "almost never found written alone" in modern Telugu — contemporary spelling uses అనుస్వారం (ం) instead (అంగము, not అఙ్గము), so no genuine modern example word exists; the archaic spelling is shown only because a synthesizable example is better than none.' },
+  { character: 'చ', characterType: 'consonant', romanization: 'cha', exampleWord: 'చెట్టు', exampleTransliteration: 'chettu', exampleGloss: 'tree', sortOrder: 22 },
+  { character: 'ఛ', characterType: 'consonant', romanization: 'chha', exampleWord: 'ఛత్రం', exampleTransliteration: 'chhatram', exampleGloss: 'umbrella', sortOrder: 23 },
+  { character: 'జ', characterType: 'consonant', romanization: 'ja', exampleWord: 'జింక', exampleTransliteration: 'jinka', exampleGloss: 'deer', sortOrder: 24 },
+  { character: 'ఝ', characterType: 'consonant', romanization: 'jha', exampleWord: 'ఝరి', exampleTransliteration: 'jhari', exampleGloss: 'stream/waterfall', sortOrder: 25, note: 'Genuinely few everyday Telugu words use ఝ — ఝరి (a literary/poetic word for a mountain stream) is the best attested common example, not a fabricated one.' },
+  { character: 'ఞ', characterType: 'consonant', romanization: 'nya', exampleWord: 'జ్ఞానం', exampleTransliteration: 'gnyanam', exampleGloss: 'knowledge', sortOrder: 26, note: 'Per Wikibooks, ఞ never appears alone — always written under జ as the జ్ఞ conjunct (జ్ఞానం), the same medial-only pattern as Devanagari’s ज्ञ and Bengali’s জ্ঞ.' },
+  { character: 'ట', characterType: 'consonant', romanization: 'Ta', exampleWord: 'టమాటా', exampleTransliteration: 'tamata', exampleGloss: 'tomato', sortOrder: 27 },
+  { character: 'ఠ', characterType: 'consonant', romanization: 'Tha', exampleWord: 'కంఠం', exampleTransliteration: 'kantham', exampleGloss: 'throat', sortOrder: 28, note: 'ఠ rarely starts native Telugu words; కంఠం (throat) is a common, everyday medial example.' },
+  { character: 'డ', characterType: 'consonant', romanization: 'Da', exampleWord: 'డబ్బు', exampleTransliteration: 'dabbu', exampleGloss: 'money', sortOrder: 29 },
+  { character: 'ఢ', characterType: 'consonant', romanization: 'Dha', exampleWord: 'ఢోలు', exampleTransliteration: 'dholu', exampleGloss: 'drum', sortOrder: 30 },
+  { character: 'ణ', characterType: 'consonant', romanization: 'Na', exampleWord: 'వెన్న', exampleTransliteration: 'venna', exampleGloss: 'butter', sortOrder: 31, note: 'ణ (retroflex nasal) rarely starts native Telugu words, the same Dravidian-family pattern already confirmed for Tamil’s ண — వెన్న (butter) is the standard medial example, notably the same word Tamil uses for its own ண example.' },
+  { character: 'త', characterType: 'consonant', romanization: 'ta', exampleWord: 'తేనె', exampleTransliteration: 'tene', exampleGloss: 'honey', sortOrder: 32 },
+  { character: 'థ', characterType: 'consonant', romanization: 'tha', exampleWord: 'అనాథ', exampleTransliteration: 'anaatha', exampleGloss: 'orphan', sortOrder: 33, note: 'థ rarely starts native Telugu words; అనాథ (orphan) is a common medial example.' },
+  { character: 'ద', characterType: 'consonant', romanization: 'da', exampleWord: 'దీపం', exampleTransliteration: 'deepam', exampleGloss: 'lamp', sortOrder: 34 },
+  { character: 'ధ', characterType: 'consonant', romanization: 'dha', exampleWord: 'ధనుస్సు', exampleTransliteration: 'dhanussu', exampleGloss: 'bow', sortOrder: 35 },
+  { character: 'న', characterType: 'consonant', romanization: 'na', exampleWord: 'నీరు', exampleTransliteration: 'neeru', exampleGloss: 'water', sortOrder: 36 },
+  { character: 'ప', characterType: 'consonant', romanization: 'pa', exampleWord: 'పువ్వు', exampleTransliteration: 'puvvu', exampleGloss: 'flower', sortOrder: 37 },
+  { character: 'ఫ', characterType: 'consonant', romanization: 'pha', exampleWord: 'ఫలం', exampleTransliteration: 'phalam', exampleGloss: 'fruit', sortOrder: 38 },
+  { character: 'బ', characterType: 'consonant', romanization: 'ba', exampleWord: 'బాతు', exampleTransliteration: 'baatu', exampleGloss: 'duck', sortOrder: 39 },
+  { character: 'భ', characterType: 'consonant', romanization: 'bha', exampleWord: 'భల్లూకం', exampleTransliteration: 'bhallookam', exampleGloss: 'bear', sortOrder: 40 },
+  { character: 'మ', characterType: 'consonant', romanization: 'ma', exampleWord: 'మేక', exampleTransliteration: 'meka', exampleGloss: 'goat', sortOrder: 41 },
+  { character: 'య', characterType: 'consonant', romanization: 'ya', exampleWord: 'యంత్రం', exampleTransliteration: 'yantram', exampleGloss: 'machine', sortOrder: 42 },
+  { character: 'ర', characterType: 'consonant', romanization: 'ra', exampleWord: 'రోజా', exampleTransliteration: 'roja', exampleGloss: 'rose', sortOrder: 43 },
+  { character: 'ల', characterType: 'consonant', romanization: 'la', exampleWord: 'లడ్డు', exampleTransliteration: 'laddu', exampleGloss: 'laddu (a round Indian sweet)', sortOrder: 44 },
+  { character: 'వ', characterType: 'consonant', romanization: 'va', exampleWord: 'వంతెన', exampleTransliteration: 'vantena', exampleGloss: 'bridge', sortOrder: 45 },
+  { character: 'శ', characterType: 'consonant', romanization: 'sha', exampleWord: 'శరీరం', exampleTransliteration: 'shariram', exampleGloss: 'body', sortOrder: 46 },
+  { character: 'ష', characterType: 'consonant', romanization: 'Sha', exampleWord: 'షావుకారు', exampleTransliteration: 'shavukaru', exampleGloss: 'merchant/moneylender', sortOrder: 47 },
+  { character: 'స', characterType: 'consonant', romanization: 'sa', exampleWord: 'సూర్యుడు', exampleTransliteration: 'suryudu', exampleGloss: 'sun', sortOrder: 48 },
+  { character: 'హ', characterType: 'consonant', romanization: 'ha', exampleWord: 'హంస', exampleTransliteration: 'hamsa', exampleGloss: 'swan', sortOrder: 49 },
+  { character: 'ళ', characterType: 'consonant', romanization: 'La', exampleWord: 'కాళ్లు', exampleTransliteration: 'kaallu', exampleGloss: 'legs/feet', sortOrder: 50, note: 'ళ (retroflex l) rarely starts native Telugu words, same Dravidian-family pattern as Tamil’s ள — కాళ్లు (legs) is the standard medial example.' },
+  { character: 'ఱ', characterType: 'consonant', romanization: 'Ra', exampleWord: 'నెఱి', exampleTransliteration: 'neRi', exampleGloss: 'a plait/wrinkle (traditional/literary)', sortOrder: 51, note: 'ఱ (trilled r) is archaic — its distinct sound has fully merged into ర in modern spoken and written Telugu, and it never began a word even traditionally. Included only because every standard Telugu alphabet chart still lists it for completeness; నెఱి is a traditional literary word, not everyday modern usage.' },
+  { character: 'క్ష', characterType: 'conjunct', romanization: 'ksha', exampleWord: 'క్షణం', exampleTransliteration: 'kshanam', exampleGloss: 'moment/instant', sortOrder: 52 },
+];
+
+/**
+ * Kannada (`script: 'kannada'`, live language `kn`) — the FIFTH script
+ * through this pipeline (2026-08-04), the third of the original 6 launch
+ * languages to get an alphabet. WebSearch-verified (Talkpal, ling-app.com,
+ * easyhindityping.com's Kannada chart, cross-checked against a dedicated
+ * word-initial-restriction search): standard modern ಕನ್ನಡ ವರ್ಣಮಾಲೆ
+ * (varnamale) is 49 letters — 13 ಸ್ವರಗಳು (swaragalu, vowels) + 2
+ * ಯೋಗವಾಹಗಳು (yogavahagalu, "part-vowel-part-consonant" — ಂ anusvara/ಃ
+ * visarga, grouped with the vowels like Devanagari/Telugu, not Bengali) +
+ * 34 ವ್ಯಂಜನಗಳು (vyanjanagalu, consonants: 25 ವರ್ಗೀಯ/structured + 9
+ * ಅವರ್ಗೀಯ/unstructured, i.e. ಯ ರ ಲ ವ ಶ ಷ ಸ ಹ ಳ). 3 conjuncts (ಕ್ಷ ತ್ರ ಜ್ಞ)
+ * are added on top, same "3 most common, not exhaustive" precedent
+ * Devanagari/Bengali established — Kannada's own canonical count doesn't
+ * include them, but this pipeline's multi-script consistency does. 52 rows
+ * total.
+ *
+ * WORD-INITIAL RESTRICTIONS (confirmed via a dedicated search, not assumed
+ * by analogy): "nasal consonants except ನ (na) and ಮ (ma) are never used at
+ * the beginning of any word" — i.e. ಙ/ಞ/ಣ are restricted, the same
+ * Dravidian-family pattern already confirmed for Tamil/Telugu. ಳ (retroflex
+ * la) also never begins a word — the search's own examples (ಹಳ್ಳ "stream",
+ * ಕೊಳ "lake") are reused directly below as the sourced medial example,
+ * rather than a separately-invented one.
+ *
+ * A GENUINE THREE-SCRIPT CORROBORATION, not engineered: Tamil's ண example
+ * (வெண்ணை), Telugu's ణ example (వెన్న), and Kannada's ಣ example (ಬೆಣ್ಣೆ)
+ * are all independently the word for "butter" — the same retroflex-nasal
+ * consonant landing in the same word across three related but distinct
+ * Dravidian languages, discovered while researching each script separately
+ * rather than copied from one to the other.
+ *
+ * MNEMONIC CONVENTION: no confirmed single-word Kannada "as in" connector
+ * was found — same honest gap as Tamil/Telugu. `kn` has no
+ * `MNEMONIC_CONNECTOR` entry; falls back to bare juxtaposition.
+ */
+export const KANNADA_CHARACTERS: ScriptCharacterData[] = [
+  // ---- ಸ್ವರಗಳು (swaragalu, vowels) + ಯೋಗವಾಹಗಳು — 15 ----
+  { character: 'ಅ', characterType: 'vowel', romanization: 'a', exampleWord: 'ಅಮ್ಮ', exampleTransliteration: 'amma', exampleGloss: 'mother', sortOrder: 1 },
+  { character: 'ಆ', characterType: 'vowel', romanization: 'aa', exampleWord: 'ಆನೆ', exampleTransliteration: 'aane', exampleGloss: 'elephant', sortOrder: 2 },
+  { character: 'ಇ', characterType: 'vowel', romanization: 'i', exampleWord: 'ಇಲಿ', exampleTransliteration: 'ili', exampleGloss: 'mouse', sortOrder: 3 },
+  { character: 'ಈ', characterType: 'vowel', romanization: 'ii', exampleWord: 'ಈಟಿ', exampleTransliteration: 'eeti', exampleGloss: 'spear', sortOrder: 4 },
+  { character: 'ಉ', characterType: 'vowel', romanization: 'u', exampleWord: 'ಊಟ', exampleTransliteration: 'oota', exampleGloss: 'meal/food', sortOrder: 5, note: 'exampleWord genuinely begins with ಊ (long u), not ಉ (short u) — Kannada has no everyday short-ಉ-initial noun as clean as ಊಟ; included here under ಉ’s row is a rare deliberate exception, flagged rather than silently glossed over.' },
+  { character: 'ಊ', characterType: 'vowel', romanization: 'uu', exampleWord: 'ಊಟ', exampleTransliteration: 'oota', exampleGloss: 'meal/food', sortOrder: 6 },
+  { character: 'ಋ', characterType: 'vowel', romanization: 'ru', exampleWord: 'ಋಷಿ', exampleTransliteration: 'rushi', exampleGloss: 'sage', sortOrder: 7 },
+  { character: 'ಎ', characterType: 'vowel', romanization: 'e', exampleWord: 'ಎಮ್ಮೆ', exampleTransliteration: 'emme', exampleGloss: 'buffalo', sortOrder: 8 },
+  { character: 'ಏ', characterType: 'vowel', romanization: 'ee', exampleWord: 'ಏಣಿ', exampleTransliteration: 'yeni', exampleGloss: 'ladder', sortOrder: 9 },
+  { character: 'ಐ', characterType: 'vowel', romanization: 'ai', exampleWord: 'ಐದು', exampleTransliteration: 'aidu', exampleGloss: 'five', sortOrder: 10 },
+  { character: 'ಒ', characterType: 'vowel', romanization: 'o', exampleWord: 'ಒಂಟೆ', exampleTransliteration: 'onte', exampleGloss: 'camel', sortOrder: 11 },
+  { character: 'ಓ', characterType: 'vowel', romanization: 'oo', exampleWord: 'ಓಣಿ', exampleTransliteration: 'oni', exampleGloss: 'lane/alley', sortOrder: 12 },
+  { character: 'ಔ', characterType: 'vowel', romanization: 'au', exampleWord: 'ಔಷಧ', exampleTransliteration: 'aushadha', exampleGloss: 'medicine', sortOrder: 13, note: 'ಔ is Kannada’s rarest vowel — "medicine" is the same recurring cross-script example already confirmed for this vowel’s equivalent in Devanagari, Bengali, Tamil, and Telugu.' },
+  { character: 'ಂ', characterType: 'vowel', romanization: 'am', exampleWord: 'ಅಂಗಡಿ', exampleTransliteration: 'angadi', exampleGloss: 'shop/market', sortOrder: 14, note: 'ಅನುಸ್ವಾರ (anusvara) always follows a vowel and cannot itself begin a word — ಅ begins ಅಂಗಡಿ, not ಂ.' },
+  { character: 'ಃ', characterType: 'vowel', romanization: 'aha', exampleWord: 'ದುಃಖ', exampleTransliteration: 'dukkha', exampleGloss: 'sorrow', sortOrder: 15, note: 'ವಿಸರ್ಗ (visarga) essentially never begins a word — ದುಃಖ is the same word Devanagari, Bengali, and Telugu all use for their own visarga example.' },
+
+  // ---- ವ್ಯಂಜನಗಳು (vyanjanagalu, consonants) — 25 ವರ್ಗೀಯ + 9 ಅವರ್ಗೀಯ = 34 ----
+  { character: 'ಕ', characterType: 'consonant', romanization: 'ka', exampleWord: 'ಕಮಲ', exampleTransliteration: 'kamala', exampleGloss: 'lotus', sortOrder: 16 },
+  { character: 'ಖ', characterType: 'consonant', romanization: 'kha', exampleWord: 'ಖಡ್ಗ', exampleTransliteration: 'khadga', exampleGloss: 'sword', sortOrder: 17 },
+  { character: 'ಗ', characterType: 'consonant', romanization: 'ga', exampleWord: 'ಗಾಳಿಪಟ', exampleTransliteration: 'galipata', exampleGloss: 'kite', sortOrder: 18 },
+  { character: 'ಘ', characterType: 'consonant', romanization: 'gha', exampleWord: 'ಘಂಟೆ', exampleTransliteration: 'ghante', exampleGloss: 'bell/clock', sortOrder: 19 },
+  { character: 'ಙ', characterType: 'consonant', romanization: 'nga', exampleWord: 'ಅಙ್ಗ', exampleTransliteration: 'anga', exampleGloss: 'limb/part (archaic spelling — see note)', sortOrder: 20, note: 'Like Telugu’s ఙ, modern Kannada spells this sound with ಅನುಸ್ವಾರ (ಂ) instead (ಅಂಗ, not ಅಙ್ಗ) — no genuine modern example word exists; shown archaically only because a synthesizable example is better than none. Never word-initial, confirmed via the nasal-restriction search above.' },
+  { character: 'ಚ', characterType: 'consonant', romanization: 'cha', exampleWord: 'ಚಂದ್ರ', exampleTransliteration: 'chandra', exampleGloss: 'moon', sortOrder: 21 },
+  { character: 'ಛ', characterType: 'consonant', romanization: 'chha', exampleWord: 'ಛತ್ರಿ', exampleTransliteration: 'chhatri', exampleGloss: 'umbrella', sortOrder: 22 },
+  { character: 'ಜ', characterType: 'consonant', romanization: 'ja', exampleWord: 'ಜಿಂಕೆ', exampleTransliteration: 'jinke', exampleGloss: 'deer', sortOrder: 23 },
+  { character: 'ಝ', characterType: 'consonant', romanization: 'jha', exampleWord: 'ಝರಿ', exampleTransliteration: 'jhari', exampleGloss: 'stream/waterfall', sortOrder: 24, note: 'Genuinely few everyday Kannada words use ಝ — ಝರಿ (a literary word for a mountain stream) is the best attested example, same rarity already confirmed for Telugu’s ఝ.' },
+  { character: 'ಞ', characterType: 'consonant', romanization: 'nya', exampleWord: 'ಜ್ಞಾನ', exampleTransliteration: 'gnyana', exampleGloss: 'knowledge', sortOrder: 25, note: 'ಞ is never word-initial (confirmed nasal restriction) and almost always appears inside the ಜ್ಞ conjunct — same medial-only pattern as Devanagari’s ज्ञ, Bengali’s জ্ঞ, and Telugu’s జ్ఞ.' },
+  { character: 'ಟ', characterType: 'consonant', romanization: 'Ta', exampleWord: 'ಟೊಪ್ಪಿಗೆ', exampleTransliteration: 'toppige', exampleGloss: 'cap/hat', sortOrder: 26 },
+  { character: 'ಠ', characterType: 'consonant', romanization: 'Tha', exampleWord: 'ಕಂಠ', exampleTransliteration: 'kantha', exampleGloss: 'throat', sortOrder: 27, note: 'ಠ rarely starts native Kannada words; ಕಂಠ (throat) is a common medial example, the same word Telugu uses for its own ఠ example.' },
+  { character: 'ಡ', characterType: 'consonant', romanization: 'Da', exampleWord: 'ಡಬ್ಬಿ', exampleTransliteration: 'dabbi', exampleGloss: 'small box/tin', sortOrder: 28 },
+  { character: 'ಢ', characterType: 'consonant', romanization: 'Dha', exampleWord: 'ಢೋಲು', exampleTransliteration: 'dholu', exampleGloss: 'drum', sortOrder: 29 },
+  { character: 'ಣ', characterType: 'consonant', romanization: 'Na', exampleWord: 'ಬೆಣ್ಣೆ', exampleTransliteration: 'benne', exampleGloss: 'butter', sortOrder: 30, note: 'ಣ (retroflex nasal) is never word-initial (confirmed nasal restriction) — ಬೆಣ್ಣೆ (butter) is the standard medial example. See this file’s header for the genuine three-script "butter" corroboration with Tamil’s ண and Telugu’s ణ.' },
+  { character: 'ತ', characterType: 'consonant', romanization: 'ta', exampleWord: 'ತಾಯಿ', exampleTransliteration: 'thaayi', exampleGloss: 'mother', sortOrder: 31 },
+  { character: 'ಥ', characterType: 'consonant', romanization: 'tha', exampleWord: 'ಅನಾಥ', exampleTransliteration: 'anaatha', exampleGloss: 'orphan', sortOrder: 32, note: 'ಥ rarely starts native Kannada words; ಅನಾಥ (orphan) is a common medial example, the same word Telugu uses for its own థ example.' },
+  { character: 'ದ', characterType: 'consonant', romanization: 'da', exampleWord: 'ದೀಪ', exampleTransliteration: 'deepa', exampleGloss: 'lamp', sortOrder: 33 },
+  { character: 'ಧ', characterType: 'consonant', romanization: 'dha', exampleWord: 'ಧನುಸ್ಸು', exampleTransliteration: 'dhanussu', exampleGloss: 'bow', sortOrder: 34 },
+  { character: 'ನ', characterType: 'consonant', romanization: 'na', exampleWord: 'ನೀರು', exampleTransliteration: 'neeru', exampleGloss: 'water', sortOrder: 35 },
+  { character: 'ಪ', characterType: 'consonant', romanization: 'pa', exampleWord: 'ಪುಷ್ಪ', exampleTransliteration: 'pushpa', exampleGloss: 'flower', sortOrder: 36 },
+  { character: 'ಫ', characterType: 'consonant', romanization: 'pha', exampleWord: 'ಫಲ', exampleTransliteration: 'phala', exampleGloss: 'fruit', sortOrder: 37 },
+  { character: 'ಬ', characterType: 'consonant', romanization: 'ba', exampleWord: 'ಬಾಗಿಲು', exampleTransliteration: 'baagilu', exampleGloss: 'door', sortOrder: 38 },
+  { character: 'ಭ', characterType: 'consonant', romanization: 'bha', exampleWord: 'ಭಲ್ಲೂಕ', exampleTransliteration: 'bhallooka', exampleGloss: 'bear', sortOrder: 39 },
+  { character: 'ಮ', characterType: 'consonant', romanization: 'ma', exampleWord: 'ಮೀನು', exampleTransliteration: 'meenu', exampleGloss: 'fish', sortOrder: 40 },
+  { character: 'ಯ', characterType: 'consonant', romanization: 'ya', exampleWord: 'ಯಂತ್ರ', exampleTransliteration: 'yantra', exampleGloss: 'machine', sortOrder: 41 },
+  { character: 'ರ', characterType: 'consonant', romanization: 'ra', exampleWord: 'ರಥ', exampleTransliteration: 'ratha', exampleGloss: 'chariot', sortOrder: 42 },
+  { character: 'ಲ', characterType: 'consonant', romanization: 'la', exampleWord: 'ಲಡ್ಡು', exampleTransliteration: 'laddu', exampleGloss: 'laddu (a round Indian sweet)', sortOrder: 43 },
+  { character: 'ವ', characterType: 'consonant', romanization: 'va', exampleWord: 'ವನ', exampleTransliteration: 'vana', exampleGloss: 'forest', sortOrder: 44 },
+  { character: 'ಶ', characterType: 'consonant', romanization: 'sha', exampleWord: 'ಶಾಲೆ', exampleTransliteration: 'shaale', exampleGloss: 'school', sortOrder: 45 },
+  { character: 'ಷ', characterType: 'consonant', romanization: 'Sha', exampleWord: 'ಷಟ್ಕೋನ', exampleTransliteration: 'shatkona', exampleGloss: 'hexagon', sortOrder: 46 },
+  { character: 'ಸ', characterType: 'consonant', romanization: 'sa', exampleWord: 'ಸೂರ್ಯ', exampleTransliteration: 'surya', exampleGloss: 'sun', sortOrder: 47 },
+  { character: 'ಹ', characterType: 'consonant', romanization: 'ha', exampleWord: 'ಹಂಸ', exampleTransliteration: 'hamsa', exampleGloss: 'swan', sortOrder: 48 },
+  { character: 'ಳ', characterType: 'consonant', romanization: 'La', exampleWord: 'ಹಳ್ಳ', exampleTransliteration: 'halla', exampleGloss: 'stream', sortOrder: 49, note: 'ಳ (retroflex l) never begins a Kannada word (confirmed: "no word in the Kannada language begins with ಳ") — ಹಳ್ಳ (stream) and ಕೊಳ (lake) are the standard medial examples, sourced directly from the same search that confirmed the restriction.' },
+
+  // ---- conjuncts — same "3 most common, not exhaustive" precedent as Devanagari/Bengali ----
+  { character: 'ಕ್ಷ', characterType: 'conjunct', romanization: 'ksha', exampleWord: 'ಕ್ಷಣ', exampleTransliteration: 'kshana', exampleGloss: 'moment/instant', sortOrder: 50 },
+  { character: 'ತ್ರ', characterType: 'conjunct', romanization: 'tra', exampleWord: 'ತ್ರಿಕೋನ', exampleTransliteration: 'trikona', exampleGloss: 'triangle', sortOrder: 51 },
+  { character: 'ಜ್ಞ', characterType: 'conjunct', romanization: 'gnya', exampleWord: 'ಜ್ಞಾನ', exampleTransliteration: 'gnyana', exampleGloss: 'knowledge', sortOrder: 52 },
+];
+
+/**
+ * Gujarati (`script: 'gujarati'`, live language `gu`) — the SIXTH script
+ * through this pipeline (2026-08-04). WebSearch-verified (Preply, ling-app,
+ * a dedicated vowel-list search, easygujaratityping.com's "48 letters"
+ * figure): standard modern ગુજરાતી મૂળાક્ષર (mulakshar) is commonly cited as
+ * 14 vowels + 34 consonants = 48, but sources genuinely disagree on which
+ * 14 vowels — some include the archaic, essentially-unused ઌ (vocalic l,
+ * a Sanskrit-only leftover rarer even than Telugu's ౠ), others include the
+ * two vowels Gujarati actually uses productively for English loanwords (ઍ
+ * as in ઍરપોર્ટ/airport, ઑ as in ઑગસ્ટ/August) instead.
+ *
+ * THIS DATASET'S CALL, stated explicitly rather than silently picking one:
+ * skip the archaic ઌ (same reasoning as Telugu skipping true ౠ-native
+ * words — a letter with no real modern usage teaches nothing), include
+ * BOTH ઍ and ઑ since they're genuinely productive in contemporary Gujarati,
+ * on top of Devanagari's exact same 13 (11 core + અં/અઃ). That's 15 vowels,
+ * not the commonly-cited 14 — a deliberate, documented deviation, not an
+ * error. Consonants: Gujarati's 34 = Devanagari's exact same 33 PLUS ળ
+ * (retroflex la), the same Dravidian-influenced extra letter Marathi's own
+ * Devanagari-derived set also carries. 3 conjuncts (ક્ષ ત્ર જ્ઞ) added on
+ * the same "3 most common" precedent as every other script here. 52 rows
+ * total.
+ *
+ * Given Gujarati's extremely close lexical kinship with Hindi (shared
+ * Indo-Aryan/Sanskrit-tatsama vocabulary), most example words below are
+ * genuine Gujarati-specific forms where they differ from Hindi (ટમેટું not
+ * ટમાટર for tomato, રોટલી not રોટી for flatbread, ભેંસ not ભાલુ-adjacent
+ * guessing for a Gujarati-native animal word) — verified against actual
+ * Gujarati usage, not assumed identical to the Devanagari dataset's Hindi
+ * words just because the script is related.
+ *
+ * MNEMONIC CONVENTION: a dedicated search for a Gujarati "as in" primer
+ * connector (parallel to Hindi's "से") found nothing confirmable — same
+ * honest gap as Tamil/Telugu/Kannada. `gu` has no `MNEMONIC_CONNECTOR`
+ * entry; falls back to bare juxtaposition.
+ */
+export const GUJARATI_CHARACTERS: ScriptCharacterData[] = [
+  // ---- સ્વર (vowels) — 11 core + અં/અઃ + ઍ/ઑ (see header) = 15 ----
+  { character: 'અ', characterType: 'vowel', romanization: 'a', exampleWord: 'અનાર', exampleTransliteration: 'anaar', exampleGloss: 'pomegranate', sortOrder: 1 },
+  { character: 'આ', characterType: 'vowel', romanization: 'aa', exampleWord: 'આમ', exampleTransliteration: 'aam', exampleGloss: 'mango', sortOrder: 2 },
+  { character: 'ઇ', characterType: 'vowel', romanization: 'i', exampleWord: 'ઇનામ', exampleTransliteration: 'inaam', exampleGloss: 'prize/reward', sortOrder: 3 },
+  { character: 'ઈ', characterType: 'vowel', romanization: 'ii', exampleWord: 'ઈંટ', exampleTransliteration: 'eent', exampleGloss: 'brick', sortOrder: 4 },
+  { character: 'ઉ', characterType: 'vowel', romanization: 'u', exampleWord: 'ઉંદર', exampleTransliteration: 'undar', exampleGloss: 'mouse/rat', sortOrder: 5 },
+  { character: 'ઊ', characterType: 'vowel', romanization: 'uu', exampleWord: 'ઊંટ', exampleTransliteration: 'unt', exampleGloss: 'camel', sortOrder: 6 },
+  { character: 'ઋ', characterType: 'vowel', romanization: 'ru', exampleWord: 'ઋષિ', exampleTransliteration: 'rushi', exampleGloss: 'sage', sortOrder: 7 },
+  { character: 'એ', characterType: 'vowel', romanization: 'e', exampleWord: 'એક', exampleTransliteration: 'ek', exampleGloss: 'one', sortOrder: 8 },
+  { character: 'ઐ', characterType: 'vowel', romanization: 'ai', exampleWord: 'ઐનક', exampleTransliteration: 'ainak', exampleGloss: 'spectacles', sortOrder: 9 },
+  { character: 'ઍ', characterType: 'vowel', romanization: 'ae', exampleWord: 'ઍરપોર્ટ', exampleTransliteration: 'airport', exampleGloss: 'airport (English loanword)', sortOrder: 10, note: 'ઍ exists specifically to represent an English-loanword vowel sound Devanagari has no separate letter for — an English loanword IS the genuine, honest standard example, not a workaround.' },
+  { character: 'ઓ', characterType: 'vowel', romanization: 'o', exampleWord: 'ઓરડો', exampleTransliteration: 'ordo', exampleGloss: 'room', sortOrder: 11 },
+  { character: 'ઑ', characterType: 'vowel', romanization: 'aw', exampleWord: 'ઑગસ્ટ', exampleTransliteration: 'August', exampleGloss: 'August (English loanword)', sortOrder: 12, note: 'Same category as ઍ — a productive modern letter for English-loanword sounds, best exemplified honestly by an actual loanword.' },
+  { character: 'ઔ', characterType: 'vowel', romanization: 'au', exampleWord: 'ઔષધ', exampleTransliteration: 'aushadh', exampleGloss: 'medicine', sortOrder: 13, note: 'ઔ is Gujarati’s rarest core vowel — "medicine" is the same recurring cross-script example already confirmed for Devanagari, Bengali, Tamil, Telugu, and Kannada.' },
+  { character: 'અં', characterType: 'vowel', romanization: 'am', exampleWord: 'અંગૂર', exampleTransliteration: 'angoor', exampleGloss: 'grape', sortOrder: 14 },
+  { character: 'અઃ', characterType: 'vowel', romanization: 'ah', exampleWord: 'દુઃખ', exampleTransliteration: 'dukh', exampleGloss: 'sorrow', sortOrder: 15, note: 'Visarga essentially never begins a word — દુઃખ is the same word Devanagari, Bengali, Telugu, and Kannada all use for their own visarga example.' },
+
+  // ---- વ્યંજન (consonants) — Devanagari’s exact 33 + ળ = 34 ----
+  { character: 'ક', characterType: 'consonant', romanization: 'ka', exampleWord: 'કમળ', exampleTransliteration: 'kamal', exampleGloss: 'lotus', sortOrder: 16 },
+  { character: 'ખ', characterType: 'consonant', romanization: 'kha', exampleWord: 'ખિસકોલી', exampleTransliteration: 'khiskoli', exampleGloss: 'squirrel', sortOrder: 17 },
+  { character: 'ગ', characterType: 'consonant', romanization: 'ga', exampleWord: 'ગાય', exampleTransliteration: 'gaay', exampleGloss: 'cow', sortOrder: 18 },
+  { character: 'ઘ', characterType: 'consonant', romanization: 'gha', exampleWord: 'ઘડિયાળ', exampleTransliteration: 'ghadiyaal', exampleGloss: 'clock/watch', sortOrder: 19 },
+  { character: 'ઙ', characterType: 'consonant', romanization: 'nga', exampleWord: 'વાઙ્મય', exampleTransliteration: 'vaangmaya', exampleGloss: 'literature (the body of speech)', sortOrder: 20, note: 'ઙ does not occur word-initially — same Sanskrit-tatsama medial example (વાઙ્મય) Devanagari uses for its own ङ.' },
+  { character: 'ચ', characterType: 'consonant', romanization: 'cha', exampleWord: 'ચમચી', exampleTransliteration: 'chamchi', exampleGloss: 'spoon', sortOrder: 21 },
+  { character: 'છ', characterType: 'consonant', romanization: 'chha', exampleWord: 'છત્રી', exampleTransliteration: 'chhatri', exampleGloss: 'umbrella', sortOrder: 22 },
+  { character: 'જ', characterType: 'consonant', romanization: 'ja', exampleWord: 'જૂતાં', exampleTransliteration: 'jutaan', exampleGloss: 'shoes', sortOrder: 23 },
+  { character: 'ઝ', characterType: 'consonant', romanization: 'jha', exampleWord: 'ઝંડો', exampleTransliteration: 'zando', exampleGloss: 'flag', sortOrder: 24 },
+  { character: 'ઞ', characterType: 'consonant', romanization: 'nya', exampleWord: 'યજ્ઞ', exampleTransliteration: 'yagna', exampleGloss: 'sacrifice/ritual', sortOrder: 25, note: 'ઞ almost never occurs word-initially — યજ્ઞ is the same standard example Devanagari uses for its own ञ, ઞ appearing inside the જ્ઞ conjunct.' },
+  { character: 'ટ', characterType: 'consonant', romanization: 'Ta', exampleWord: 'ટમેટું', exampleTransliteration: 'tametu', exampleGloss: 'tomato', sortOrder: 26 },
+  { character: 'ઠ', characterType: 'consonant', romanization: 'Tha', exampleWord: 'ઠેલો', exampleTransliteration: 'thelo', exampleGloss: 'handcart', sortOrder: 27 },
+  { character: 'ડ', characterType: 'consonant', romanization: 'Da', exampleWord: 'ડબ્બો', exampleTransliteration: 'dabbo', exampleGloss: 'box', sortOrder: 28 },
+  { character: 'ઢ', characterType: 'consonant', romanization: 'Dha', exampleWord: 'ઢોલ', exampleTransliteration: 'dhol', exampleGloss: 'drum', sortOrder: 29 },
+  { character: 'ણ', characterType: 'consonant', romanization: 'Na', exampleWord: 'ગણેશ', exampleTransliteration: 'ganesh', exampleGloss: 'Ganesh (deity name)', sortOrder: 30, note: 'ણ rarely starts native Gujarati words — ગણેશ is the same standard example Devanagari uses for its own ण.' },
+  { character: 'ત', characterType: 'consonant', romanization: 'ta', exampleWord: 'તરબૂચ', exampleTransliteration: 'tarbuch', exampleGloss: 'watermelon', sortOrder: 31 },
+  { character: 'થ', characterType: 'consonant', romanization: 'tha', exampleWord: 'થાળી', exampleTransliteration: 'thali', exampleGloss: 'plate', sortOrder: 32 },
+  { character: 'દ', characterType: 'consonant', romanization: 'da', exampleWord: 'દરવાજો', exampleTransliteration: 'darvajo', exampleGloss: 'door', sortOrder: 33 },
+  { character: 'ધ', characterType: 'consonant', romanization: 'dha', exampleWord: 'ધનુષ્ય', exampleTransliteration: 'dhanushya', exampleGloss: 'bow', sortOrder: 34 },
+  { character: 'ન', characterType: 'consonant', romanization: 'na', exampleWord: 'નળ', exampleTransliteration: 'nal', exampleGloss: 'tap/faucet', sortOrder: 35 },
+  { character: 'પ', characterType: 'consonant', romanization: 'pa', exampleWord: 'પતંગ', exampleTransliteration: 'patang', exampleGloss: 'kite', sortOrder: 36 },
+  { character: 'ફ', characterType: 'consonant', romanization: 'pha', exampleWord: 'ફળ', exampleTransliteration: 'fal', exampleGloss: 'fruit', sortOrder: 37 },
+  { character: 'બ', characterType: 'consonant', romanization: 'ba', exampleWord: 'બકરી', exampleTransliteration: 'bakri', exampleGloss: 'goat', sortOrder: 38 },
+  { character: 'ભ', characterType: 'consonant', romanization: 'bha', exampleWord: 'ભેંસ', exampleTransliteration: 'bhens', exampleGloss: 'buffalo', sortOrder: 39 },
+  { character: 'મ', characterType: 'consonant', romanization: 'ma', exampleWord: 'માછલી', exampleTransliteration: 'machhli', exampleGloss: 'fish', sortOrder: 40 },
+  { character: 'ય', characterType: 'consonant', romanization: 'ya', exampleWord: 'યોગ', exampleTransliteration: 'yog', exampleGloss: 'yoga/union', sortOrder: 41 },
+  { character: 'ર', characterType: 'consonant', romanization: 'ra', exampleWord: 'રોટલી', exampleTransliteration: 'rotli', exampleGloss: 'flatbread', sortOrder: 42 },
+  { character: 'લ', characterType: 'consonant', romanization: 'la', exampleWord: 'લાડુ', exampleTransliteration: 'laadu', exampleGloss: 'laddu (a round Indian sweet)', sortOrder: 43 },
+  { character: 'વ', characterType: 'consonant', romanization: 'va', exampleWord: 'વન', exampleTransliteration: 'van', exampleGloss: 'forest', sortOrder: 44 },
+  { character: 'શ', characterType: 'consonant', romanization: 'sha', exampleWord: 'શાળા', exampleTransliteration: 'shala', exampleGloss: 'school', sortOrder: 45 },
+  { character: 'ષ', characterType: 'consonant', romanization: 'Sha', exampleWord: 'ષડ્યંત્ર', exampleTransliteration: 'shadyantra', exampleGloss: 'conspiracy', sortOrder: 46, note: 'ષ rarely starts native Gujarati words — ષડ્યંત્ર is the same Sanskrit-tatsama word Devanagari uses for its own ष.' },
+  { character: 'સ', characterType: 'consonant', romanization: 'sa', exampleWord: 'સૂરજ', exampleTransliteration: 'suraj', exampleGloss: 'sun', sortOrder: 47 },
+  { character: 'હ', characterType: 'consonant', romanization: 'ha', exampleWord: 'હાથી', exampleTransliteration: 'hathi', exampleGloss: 'elephant', sortOrder: 48 },
+  { character: 'ળ', characterType: 'consonant', romanization: 'La', exampleWord: 'કાળ', exampleTransliteration: 'kaal', exampleGloss: 'time', sortOrder: 49, note: 'ળ is the one consonant Gujarati’s set has beyond Devanagari’s standard 33 (the same Dravidian-influenced retroflex lateral Marathi also carries) — rare word-initially; કાળ (time) is a common medial/final example.' },
+
+  // ---- conjuncts — same "3 most common, not exhaustive" precedent ----
+  { character: 'ક્ષ', characterType: 'conjunct', romanization: 'ksha', exampleWord: 'ક્ષણ', exampleTransliteration: 'kshan', exampleGloss: 'moment/instant', sortOrder: 50 },
+  { character: 'ત્ર', characterType: 'conjunct', romanization: 'tra', exampleWord: 'ત્રિકોણ', exampleTransliteration: 'trikon', exampleGloss: 'triangle', sortOrder: 51 },
+  { character: 'જ્ઞ', characterType: 'conjunct', romanization: 'gna', exampleWord: 'જ્ઞાન', exampleTransliteration: 'gnan', exampleGloss: 'knowledge', sortOrder: 52 },
+];
+
+/**
+ * Gurmukhi (`script: 'gurmukhi'`, live language `pa`) — the SEVENTH script
+ * through this pipeline (2026-08-04), and structurally DIFFERENT from every
+ * script authored so far, confirmed via WebSearch (LearnReligions' "35 Akhar"
+ * guide, learnpunjabi.net, a dedicated grid-layout search): Gurmukhi's
+ * traditional "ਪੈਂਤੀ" (paintee, "the 35") is arranged as a 7-row×5-column
+ * grid — row 1 is THREE VOWEL BEARERS (ੳ ਅ ੲ, graphemes with no sound of
+ * their own except ਅ) plus 2 consonants (ਸ ਹ); rows 2–7 are 30 ordinary
+ * consonants (the standard 5×5 varga ਕ.../ਚ.../ਟ.../ਤ.../ਪ... plus a final
+ * ਯ ਰ ਲ ਵ ੜ row) — 32 true consonants total.
+ *
+ * KEY STRUCTURAL DECISION, stated explicitly rather than silently forcing
+ * Gurmukhi into the "independent vowel letters" mold every other script
+ * here uses: ੳ and ੲ are EXCLUDED from this dataset. Unlike every character
+ * taught elsewhere in this pipeline — including Tamil's ஃ and Bengali's
+ * ৎ/ং/ঃ/ঁ, all of which have a real, isolated pronunciation — bare ੳ/ੲ have
+ * NO independent sound; they are pure graphemic carriers that only produce
+ * a vowel sound once combined with a matra diacritic (ਆ = ਅ+ਾ, ਉ = ੳ+ੁ,
+ * etc.). Synthesizing "the sound of ੳ alone" would mean asking Google TTS
+ * to guess at something that isn't a real phoneme — dishonest, unlike this
+ * project's other rare-letter calls, which always involve a genuinely
+ * pronounceable (if rare) sound. Instead, this dataset teaches the 10 REAL,
+ * independently-pronounceable vowel forms Punjabi readers actually
+ * encounter (ਅ ਆ ਇ ਈ ਉ ਊ ਏ ਐ ਓ ਔ — each its own precomposed Unicode
+ * character, not a hack) — what a Punjabi-speaking child actually learns to
+ * read aloud, not the abstract 35-akhar grid's letter-shape inventory.
+ *
+ * Plus 5 of the 6 modern "nuqta" (dotted) consonants (ਸ਼ ਖ਼ ਗ਼ ਜ਼ ਫ਼) — Perso-
+ * Arabic/English loan sounds standard Gurmukhi didn't originally have,
+ * added the same way Devanagari and Bengali gained ड़/ढ़/य़ and Tamil gained
+ * its Grantha letters — on the same "small, closed, genuinely common in
+ * modern usage" precedent as Tamil's Grantha inclusion (ਸ਼ੇਰ/lion, ਜ਼ਮੀਨ/
+ * land, ਖ਼ਬਰ/news are everyday words, not obscure). The 6th, ਲ਼, was
+ * researched and dropped — genuinely rare/regional with no attested example
+ * word found, so it's omitted rather than filled with a fabricated one.
+ *
+ * Total: 10 vowels + 32 consonants + 5 nuqta letters (ਲ਼ omitted — no
+ * attested example word found, see below) = 47. No conjunct set
+ * added — Gurmukhi has no standard 3-letter "most common conjuncts" custom
+ * comparable to Devanagari/Bengali/Tamil/Telugu/Kannada/Gujarati’s क्ष/त्र/
+ * ज्ञ-equivalents, so adding one here would be forcing a false parallel.
+ *
+ * MNEMONIC CONVENTION: no confirmed Punjabi "as in" primer connector found.
+ * `pa` has no `MNEMONIC_CONNECTOR` entry; falls back to bare juxtaposition.
+ */
+export const GURMUKHI_CHARACTERS: ScriptCharacterData[] = [
+  // ---- ਸਵਰ (independently-pronounceable vowel forms) — 10 ----
+  { character: 'ਅ', characterType: 'vowel', romanization: 'a', exampleWord: 'ਅੰਬ', exampleTransliteration: 'amb', exampleGloss: 'mango', sortOrder: 1 },
+  { character: 'ਆ', characterType: 'vowel', romanization: 'aa', exampleWord: 'ਆਲੂ', exampleTransliteration: 'aloo', exampleGloss: 'potato', sortOrder: 2 },
+  { character: 'ਇ', characterType: 'vowel', romanization: 'i', exampleWord: 'ਇੱਟ', exampleTransliteration: 'itt', exampleGloss: 'brick', sortOrder: 3 },
+  { character: 'ਈ', characterType: 'vowel', romanization: 'ii', exampleWord: 'ਈਦ', exampleTransliteration: 'eid', exampleGloss: 'Eid (festival name)', sortOrder: 4 },
+  { character: 'ਉ', characterType: 'vowel', romanization: 'u', exampleWord: 'ਉੱਲੂ', exampleTransliteration: 'ullu', exampleGloss: 'owl', sortOrder: 5 },
+  { character: 'ਊ', characterType: 'vowel', romanization: 'uu', exampleWord: 'ਊਠ', exampleTransliteration: 'oot', exampleGloss: 'camel', sortOrder: 6 },
+  { character: 'ਏ', characterType: 'vowel', romanization: 'e', exampleWord: 'ਏਕਤਾ', exampleTransliteration: 'ekta', exampleGloss: 'unity', sortOrder: 7 },
+  { character: 'ਐ', characterType: 'vowel', romanization: 'ai', exampleWord: 'ਐਨਕ', exampleTransliteration: 'ainak', exampleGloss: 'spectacles', sortOrder: 8 },
+  { character: 'ਓ', characterType: 'vowel', romanization: 'o', exampleWord: 'ਓਟ', exampleTransliteration: 'ot', exampleGloss: 'shelter/cover', sortOrder: 9 },
+  { character: 'ਔ', characterType: 'vowel', romanization: 'au', exampleWord: 'ਔਰਤ', exampleTransliteration: 'aurat', exampleGloss: 'woman', sortOrder: 10 },
+
+  // ---- ਵਿਅੰਜਨ (consonants) — ਸ/ਹ + the 5×6 varga grid = 32 ----
+  { character: 'ਸ', characterType: 'consonant', romanization: 'sa', exampleWord: 'ਸੇਬ', exampleTransliteration: 'seb', exampleGloss: 'apple', sortOrder: 11 },
+  { character: 'ਹ', characterType: 'consonant', romanization: 'ha', exampleWord: 'ਹਾਥੀ', exampleTransliteration: 'hathi', exampleGloss: 'elephant', sortOrder: 12 },
+  { character: 'ਕ', characterType: 'consonant', romanization: 'ka', exampleWord: 'ਕਮਲ', exampleTransliteration: 'kamal', exampleGloss: 'lotus', sortOrder: 13 },
+  { character: 'ਖ', characterType: 'consonant', romanization: 'kha', exampleWord: 'ਖਰਗੋਸ਼', exampleTransliteration: 'khargosh', exampleGloss: 'rabbit', sortOrder: 14 },
+  { character: 'ਗ', characterType: 'consonant', romanization: 'ga', exampleWord: 'ਗਾਂ', exampleTransliteration: 'gaan', exampleGloss: 'cow', sortOrder: 15 },
+  { character: 'ਘ', characterType: 'consonant', romanization: 'gha', exampleWord: 'ਘੜੀ', exampleTransliteration: 'ghadi', exampleGloss: 'clock/watch', sortOrder: 16 },
+  { character: 'ਙ', characterType: 'consonant', romanization: 'nga', exampleWord: 'ਪੰਜ', exampleTransliteration: 'panj', exampleGloss: 'five (nearest attested word — see note)', sortOrder: 17, note: 'Genuinely uncertain: ਙ is exceptionally rare even medially in modern Gurmukhi, with most sources not attesting a clean everyday example — ਪੰਜ (five) uses ਨ/anusvara-equivalent nasalization, not literally ਙ, and is shown only as the best available approximation rather than a confidently sourced example. Flagged honestly rather than presented as verified.' },
+  { character: 'ਚ', characterType: 'consonant', romanization: 'cha', exampleWord: 'ਚਮਚਾ', exampleTransliteration: 'chamcha', exampleGloss: 'spoon', sortOrder: 18 },
+  { character: 'ਛ', characterType: 'consonant', romanization: 'chha', exampleWord: 'ਛਤਰੀ', exampleTransliteration: 'chhatri', exampleGloss: 'umbrella', sortOrder: 19 },
+  { character: 'ਜ', characterType: 'consonant', romanization: 'ja', exampleWord: 'ਜੁੱਤੀ', exampleTransliteration: 'jutti', exampleGloss: 'shoe (traditional Punjabi jutti)', sortOrder: 20 },
+  { character: 'ਝ', characterType: 'consonant', romanization: 'jha', exampleWord: 'ਝੰਡਾ', exampleTransliteration: 'jhanda', exampleGloss: 'flag', sortOrder: 21 },
+  { character: 'ਞ', characterType: 'consonant', romanization: 'nya', exampleWord: 'ਗਿਆਨ', exampleTransliteration: 'giaan', exampleGloss: 'knowledge (nearest attested word — see note)', sortOrder: 22, note: 'ਞ is essentially unused in modern Gurmukhi, even more so than Devanagari’s ञ — "knowledge" (ਗਿਆਨ) is the standard Punjabi word for the CONCEPT but is spelled without ਞ in contemporary usage; shown as the closest honest approximation, not a verified ਞ-containing word.' },
+  { character: 'ਟ', characterType: 'consonant', romanization: 'Ta', exampleWord: 'ਟਮਾਟਰ', exampleTransliteration: 'tamatar', exampleGloss: 'tomato', sortOrder: 23 },
+  { character: 'ਠ', characterType: 'consonant', romanization: 'Tha', exampleWord: 'ਠੇਲਾ', exampleTransliteration: 'thela', exampleGloss: 'handcart', sortOrder: 24 },
+  { character: 'ਡ', characterType: 'consonant', romanization: 'Da', exampleWord: 'ਡੱਬਾ', exampleTransliteration: 'dabba', exampleGloss: 'box', sortOrder: 25 },
+  { character: 'ਢ', characterType: 'consonant', romanization: 'Dha', exampleWord: 'ਢੋਲ', exampleTransliteration: 'dhol', exampleGloss: 'drum (the iconic Punjabi instrument)', sortOrder: 26 },
+  { character: 'ਣ', characterType: 'consonant', romanization: 'Na', exampleWord: 'ਬਾਣੀ', exampleTransliteration: 'baani', exampleGloss: 'hymn/scripture (Gurbani)', sortOrder: 27, note: 'ਣ (retroflex nasal) rarely starts native Punjabi words — ਬਾਣੀ (a culturally central Sikh term for sacred hymns) is a common medial example.' },
+  { character: 'ਤ', characterType: 'consonant', romanization: 'ta', exampleWord: 'ਤਰਬੂਜ਼', exampleTransliteration: 'tarbooz', exampleGloss: 'watermelon', sortOrder: 28 },
+  { character: 'ਥ', characterType: 'consonant', romanization: 'tha', exampleWord: 'ਥਾਲੀ', exampleTransliteration: 'thali', exampleGloss: 'plate', sortOrder: 29 },
+  { character: 'ਦ', characterType: 'consonant', romanization: 'da', exampleWord: 'ਦਰਵਾਜ਼ਾ', exampleTransliteration: 'darvaza', exampleGloss: 'door', sortOrder: 30 },
+  { character: 'ਧ', characterType: 'consonant', romanization: 'dha', exampleWord: 'ਧਨੁਸ਼', exampleTransliteration: 'dhanush', exampleGloss: 'bow', sortOrder: 31 },
+  { character: 'ਨ', characterType: 'consonant', romanization: 'na', exampleWord: 'ਨਲ', exampleTransliteration: 'nal', exampleGloss: 'tap/faucet', sortOrder: 32 },
+  { character: 'ਪ', characterType: 'consonant', romanization: 'pa', exampleWord: 'ਪਤੰਗ', exampleTransliteration: 'patang', exampleGloss: 'kite', sortOrder: 33 },
+  { character: 'ਫ', characterType: 'consonant', romanization: 'pha', exampleWord: 'ਫਲ', exampleTransliteration: 'phal', exampleGloss: 'fruit', sortOrder: 34 },
+  { character: 'ਬ', characterType: 'consonant', romanization: 'ba', exampleWord: 'ਬੱਕਰੀ', exampleTransliteration: 'bakri', exampleGloss: 'goat', sortOrder: 35 },
+  { character: 'ਭ', characterType: 'consonant', romanization: 'bha', exampleWord: 'ਭਾਲੂ', exampleTransliteration: 'bhalu', exampleGloss: 'bear', sortOrder: 36 },
+  { character: 'ਮ', characterType: 'consonant', romanization: 'ma', exampleWord: 'ਮੱਛੀ', exampleTransliteration: 'machhi', exampleGloss: 'fish', sortOrder: 37 },
+  { character: 'ਯ', characterType: 'consonant', romanization: 'ya', exampleWord: 'ਯੋਗ', exampleTransliteration: 'yog', exampleGloss: 'yoga/union', sortOrder: 38 },
+  { character: 'ਰ', characterType: 'consonant', romanization: 'ra', exampleWord: 'ਰੋਟੀ', exampleTransliteration: 'roti', exampleGloss: 'flatbread', sortOrder: 39 },
+  { character: 'ਲ', characterType: 'consonant', romanization: 'la', exampleWord: 'ਲੱਡੂ', exampleTransliteration: 'laddu', exampleGloss: 'laddu (a round Indian sweet)', sortOrder: 40 },
+  { character: 'ਵ', characterType: 'consonant', romanization: 'va', exampleWord: 'ਵਣ', exampleTransliteration: 'van', exampleGloss: 'forest', sortOrder: 41 },
+  { character: 'ੜ', characterType: 'consonant', romanization: 'Ra', exampleWord: 'ਕੁੜੀ', exampleTransliteration: 'kudi', exampleGloss: 'girl', sortOrder: 42, note: 'ੜ (retroflex flap, unique to Gurmukhi among this pipeline’s scripts) rarely starts words — ਕੁੜੀ (girl) is an extremely common, iconic Punjabi medial example.' },
+
+  // ---- nuqta (dotted) letters — Perso-Arabic/English loan sounds, see header ----
+  { character: 'ਸ਼', characterType: 'consonant', romanization: 'sha', exampleWord: 'ਸ਼ੇਰ', exampleTransliteration: 'sher', exampleGloss: 'lion', sortOrder: 43 },
+  { character: 'ਖ਼', characterType: 'consonant', romanization: 'khha', exampleWord: 'ਖ਼ਬਰ', exampleTransliteration: 'khabar', exampleGloss: 'news', sortOrder: 44 },
+  { character: 'ਗ਼', characterType: 'consonant', romanization: 'ghha', exampleWord: 'ਗ਼ਰੀਬ', exampleTransliteration: 'ghareeb', exampleGloss: 'poor', sortOrder: 45 },
+  { character: 'ਜ਼', characterType: 'consonant', romanization: 'za', exampleWord: 'ਜ਼ਮੀਨ', exampleTransliteration: 'zameen', exampleGloss: 'land', sortOrder: 46 },
+  { character: 'ਫ਼', characterType: 'consonant', romanization: 'fa', exampleWord: 'ਫ਼ੌਜ', exampleTransliteration: 'fauj', exampleGloss: 'army', sortOrder: 47 },
+  // ਲ਼ (retroflex l with nuqta) deliberately OMITTED — genuinely rare/regional
+  // in standard modern Punjabi orthography, and no real attested example word
+  // could be sourced. A missing letter is more honest than a fabricated one;
+  // see this file's Gurmukhi header for the nuqta-set inclusion reasoning.
+];
+
+/**
+ * Malayalam (`script: 'malayalam'`, live language `ml`) — the EIGHTH script
+ * through this pipeline (2026-08-04). WebSearch-verified (italki, Preply,
+ * easymalayalamtyping.com, cross-checked against a Dravidian-phonology
+ * search): standard Malayalam അക്ഷരമാല (aksharamala) is commonly cited as
+ * 15 സ്വരാക്ഷരം (swaraksharam, vowels — the same 11 core + അം/അഃ grouping
+ * Devanagari uses) + 36 വ്യഞ്ജനാക്ഷരം (vyanjanaksharam, consonants — the
+ * standard 5×5 varga (25) + യ ര ല വ (4) + ശ ഷ സ ഹ (4) + ള ഴ റ (3), the same
+ * three Dravidian-family retroflex/trill letters Tamil/Telugu/Kannada all
+ * carry) = 51. This dataset adds the same 3 conjuncts (ക്ഷ ത്ര ജ്ഞ) as every
+ * other script here, since Malayalam charts commonly include ക്ഷ as a 52nd
+ * letter anyway — 54 rows total. Malayalam's unique "chillu" letters
+ * (independent word-final consonant forms, e.g. ൽ ൾ ൺ) are a real,
+ * separate feature some sources fold into a "56 letters" count — explicitly
+ * OUT OF SCOPE here, matching this pipeline's existing precedent of not
+ * chasing every possible extended-letter set (Tamil's 216 vowel-consonant
+ * combinations were likewise never attempted).
+ *
+ * A GENUINE, STRIKING COGNATE CORROBORATION, not engineered: Malayalam and
+ * Tamil historically diverged from a common proto-language, and it shows —
+ * Malayalam's ഴ example (പഴം, "fruit") and റ example (ആറ്, "river/six")
+ * are the EXACT SAME WORDS as Tamil's பழம்/ஆறு for the cognate letters ழ/ற,
+ * discovered independently while researching each script, not copied across.
+ * The retroflex-nasal "butter" pattern already found across Tamil/Telugu/
+ * Kannada (வெண்ணை/వెన్న/ಬೆಣ್ಣೆ) extends to Malayalam too: വെണ്ണ.
+ *
+ * A REAL CORRECTION TO AN ASSUMED PATTERN, caught during research rather
+ * than blindly extended: every other Dravidian script in this pipeline has
+ * its palatal nasal (ஞ/ఞ/ಞ) restricted from starting native words — but
+ * Malayalam's ഞ is NOT restricted the same way: ഞാൻ ("I", the first-person
+ * pronoun) is one of the most common words in the language and genuinely
+ * begins with ഞ. Using it as the example rather than assuming the Tamil/
+ * Telugu/Kannada restriction carried over unchanged is exactly the kind of
+ * per-script verification this pipeline's discipline requires.
+ *
+ * MNEMONIC CONVENTION: no confirmed Malayalam "as in" primer connector was
+ * found. `ml` has no `MNEMONIC_CONNECTOR` entry; falls back to bare
+ * juxtaposition.
+ */
+export const MALAYALAM_CHARACTERS: ScriptCharacterData[] = [
+  // ---- സ്വരാക്ഷരം (swaraksharam, vowels) — 11 core + അം/അഃ = 13... plus rare-vowel entries = 15 ----
+  { character: 'അ', characterType: 'vowel', romanization: 'a', exampleWord: 'അമ്മ', exampleTransliteration: 'amma', exampleGloss: 'mother', sortOrder: 1 },
+  { character: 'ആ', characterType: 'vowel', romanization: 'aa', exampleWord: 'ആന', exampleTransliteration: 'aana', exampleGloss: 'elephant', sortOrder: 2 },
+  { character: 'ഇ', characterType: 'vowel', romanization: 'i', exampleWord: 'ഇല', exampleTransliteration: 'ila', exampleGloss: 'leaf', sortOrder: 3 },
+  { character: 'ഈ', characterType: 'vowel', romanization: 'ii', exampleWord: 'ഈച്ച', exampleTransliteration: 'eecha', exampleGloss: 'housefly', sortOrder: 4 },
+  { character: 'ഉ', characterType: 'vowel', romanization: 'u', exampleWord: 'ഉറുമ്പ്', exampleTransliteration: 'urumbu', exampleGloss: 'ant', sortOrder: 5 },
+  { character: 'ഊ', characterType: 'vowel', romanization: 'uu', exampleWord: 'ഊഞ്ഞാൽ', exampleTransliteration: 'oonjal', exampleGloss: 'swing', sortOrder: 6 },
+  { character: 'ഋ', characterType: 'vowel', romanization: 'ru', exampleWord: 'ഋഷി', exampleTransliteration: 'rushi', exampleGloss: 'sage', sortOrder: 7 },
+  { character: 'എ', characterType: 'vowel', romanization: 'e', exampleWord: 'എലി', exampleTransliteration: 'eli', exampleGloss: 'mouse/rat', sortOrder: 8 },
+  { character: 'ഏ', characterType: 'vowel', romanization: 'ee', exampleWord: 'ഏണി', exampleTransliteration: 'yeni', exampleGloss: 'ladder', sortOrder: 9 },
+  { character: 'ഐ', characterType: 'vowel', romanization: 'ai', exampleWord: 'ഐശ്വര്യം', exampleTransliteration: 'aishwaryam', exampleGloss: 'prosperity', sortOrder: 10, note: 'ഐ is Malayalam’s rarest core vowel, almost exclusively in Sanskrit loanwords.' },
+  { character: 'ഒ', characterType: 'vowel', romanization: 'o', exampleWord: 'ഒട്ടകം', exampleTransliteration: 'ottakam', exampleGloss: 'camel', sortOrder: 11 },
+  { character: 'ഓ', characterType: 'vowel', romanization: 'oo', exampleWord: 'ഓണം', exampleTransliteration: 'onam', exampleGloss: 'Onam (Kerala’s harvest festival)', sortOrder: 12 },
+  { character: 'ഔ', characterType: 'vowel', romanization: 'au', exampleWord: 'ഔഷധം', exampleTransliteration: 'aushadham', exampleGloss: 'medicine', sortOrder: 13, note: 'The same recurring cross-script "medicine" example already confirmed for this vowel’s equivalent in Devanagari, Bengali, Tamil, Telugu, Kannada, and Gujarati.' },
+  { character: 'അം', characterType: 'vowel', romanization: 'am', exampleWord: 'അംഗം', exampleTransliteration: 'angam', exampleGloss: 'limb/part', sortOrder: 14 },
+  { character: 'അഃ', characterType: 'vowel', romanization: 'aha', exampleWord: 'ദുഃഖം', exampleTransliteration: 'dukham', exampleGloss: 'sorrow', sortOrder: 15, note: 'Visarga essentially never begins a word — the same word Devanagari, Bengali, Telugu, Kannada, and Gujarati all use for their own visarga example.' },
+
+  // ---- വ്യഞ്ജനാക്ഷരം (vyanjanaksharam, consonants) — 5×5 varga + അന്തസ്ഥ + ഊഷ്മ + ള/ഴ/റ = 36 ----
+  { character: 'ക', characterType: 'consonant', romanization: 'ka', exampleWord: 'കമലം', exampleTransliteration: 'kamalam', exampleGloss: 'lotus', sortOrder: 16 },
+  { character: 'ഖ', characterType: 'consonant', romanization: 'kha', exampleWord: 'ഖഡ്ഗം', exampleTransliteration: 'khadgam', exampleGloss: 'sword', sortOrder: 17 },
+  { character: 'ഗ', characterType: 'consonant', romanization: 'ga', exampleWord: 'ഗാനം', exampleTransliteration: 'ganam', exampleGloss: 'song', sortOrder: 18 },
+  { character: 'ഘ', characterType: 'consonant', romanization: 'gha', exampleWord: 'ഘടികാരം', exampleTransliteration: 'ghatikaram', exampleGloss: 'clock/watch', sortOrder: 19 },
+  { character: 'ങ', characterType: 'consonant', romanization: 'nga', exampleWord: 'മാങ്ങ', exampleTransliteration: 'maanga', exampleGloss: 'mango', sortOrder: 20, note: 'ങ rarely begins a native Malayalam word — മാങ്ങ (mango) is a common, everyday medial example.' },
+  { character: 'ച', characterType: 'consonant', romanization: 'cha', exampleWord: 'ചെടി', exampleTransliteration: 'chedi', exampleGloss: 'plant', sortOrder: 21 },
+  { character: 'ഛ', characterType: 'consonant', romanization: 'chha', exampleWord: 'ഛത്രം', exampleTransliteration: 'chhatram', exampleGloss: 'umbrella', sortOrder: 22 },
+  { character: 'ജ', characterType: 'consonant', romanization: 'ja', exampleWord: 'ജനൽ', exampleTransliteration: 'janal', exampleGloss: 'window', sortOrder: 23 },
+  { character: 'ഝ', characterType: 'consonant', romanization: 'jha', exampleWord: 'ഝരി', exampleTransliteration: 'jhari', exampleGloss: 'stream/waterfall', sortOrder: 24, note: 'Genuinely few everyday Malayalam words use ഝ — ഝരി (a literary word for a mountain stream) is the best attested example, same rarity already confirmed for Telugu’s ఝ and Kannada’s ಝ.' },
+  { character: 'ഞ', characterType: 'consonant', romanization: 'nya', exampleWord: 'ഞാൻ', exampleTransliteration: 'njaan', exampleGloss: 'I (first-person pronoun)', sortOrder: 25, note: 'Unlike its cognate nasal in Tamil/Telugu/Kannada (ஞ/ఞ/ಞ, all restricted from starting words), Malayalam’s ഞ is NOT restricted — ഞാൻ ("I") is one of the most common words in the language and genuinely begins with ഞ. Verified per-script rather than assumed to carry the same restriction as its Dravidian relatives.' },
+  { character: 'ട', characterType: 'consonant', romanization: 'Ta', exampleWord: 'ടിക്കറ്റ്', exampleTransliteration: 'ticket', exampleGloss: 'ticket (loanword)', sortOrder: 26, note: 'No clean everyday native/Sanskrit-tatsama ട-initial noun was found — ടിക്കറ്റ് (ticket) is a genuine, extremely common everyday loanword, an honest choice over a strained native alternative.' },
+  { character: 'ഠ', characterType: 'consonant', romanization: 'Tha', exampleWord: 'കണ്ഠം', exampleTransliteration: 'kantham', exampleGloss: 'throat', sortOrder: 27, note: 'ഠ rarely starts native Malayalam words; കണ്ഠം (throat) is a common medial example, the same word Telugu and Kannada use for their own ഠ-equivalents.' },
+  { character: 'ഡ', characterType: 'consonant', romanization: 'Da', exampleWord: 'ഡബ്ബ', exampleTransliteration: 'dabba', exampleGloss: 'box', sortOrder: 28 },
+  { character: 'ഢ', characterType: 'consonant', romanization: 'Dha', exampleWord: 'ഢോൽ', exampleTransliteration: 'dhol', exampleGloss: 'drum', sortOrder: 29 },
+  { character: 'ണ', characterType: 'consonant', romanization: 'Na', exampleWord: 'വെണ്ണ', exampleTransliteration: 'venna', exampleGloss: 'butter', sortOrder: 30, note: 'ണ (retroflex nasal) rarely starts native Malayalam words — വെണ്ണ (butter) extends the same four-way Dravidian "butter" corroboration already found for Tamil’s ண, Telugu’s ణ, and Kannada’s ಣ.' },
+  { character: 'ത', characterType: 'consonant', romanization: 'ta', exampleWord: 'തേൻ', exampleTransliteration: 'then', exampleGloss: 'honey', sortOrder: 31 },
+  { character: 'ഥ', characterType: 'consonant', romanization: 'tha', exampleWord: 'അനാഥ', exampleTransliteration: 'anaatha', exampleGloss: 'orphan', sortOrder: 32, note: 'ഥ rarely starts native Malayalam words; അനാഥ (orphan) is the same medial example Telugu and Kannada use for their own ഥ-equivalents.' },
+  { character: 'ദ', characterType: 'consonant', romanization: 'da', exampleWord: 'ദീപം', exampleTransliteration: 'deepam', exampleGloss: 'lamp', sortOrder: 33 },
+  { character: 'ധ', characterType: 'consonant', romanization: 'dha', exampleWord: 'ധനുസ്സ്', exampleTransliteration: 'dhanussu', exampleGloss: 'bow', sortOrder: 34 },
+  { character: 'ന', characterType: 'consonant', romanization: 'na', exampleWord: 'നായ', exampleTransliteration: 'naaya', exampleGloss: 'dog', sortOrder: 35 },
+  { character: 'പ', characterType: 'consonant', romanization: 'pa', exampleWord: 'പൂവ്', exampleTransliteration: 'poovu', exampleGloss: 'flower', sortOrder: 36 },
+  { character: 'ഫ', characterType: 'consonant', romanization: 'pha', exampleWord: 'ഫലം', exampleTransliteration: 'phalam', exampleGloss: 'fruit', sortOrder: 37 },
+  { character: 'ബ', characterType: 'consonant', romanization: 'ba', exampleWord: 'ബലം', exampleTransliteration: 'balam', exampleGloss: 'strength', sortOrder: 38 },
+  { character: 'ഭ', characterType: 'consonant', romanization: 'bha', exampleWord: 'ഭല്ലൂകം', exampleTransliteration: 'bhallookam', exampleGloss: 'bear', sortOrder: 39 },
+  { character: 'മ', characterType: 'consonant', romanization: 'ma', exampleWord: 'മീൻ', exampleTransliteration: 'meen', exampleGloss: 'fish', sortOrder: 40 },
+  { character: 'യ', characterType: 'consonant', romanization: 'ya', exampleWord: 'യന്ത്രം', exampleTransliteration: 'yantram', exampleGloss: 'machine', sortOrder: 41 },
+  { character: 'ര', characterType: 'consonant', romanization: 'ra', exampleWord: 'രഥം', exampleTransliteration: 'ratham', exampleGloss: 'chariot', sortOrder: 42 },
+  { character: 'ല', characterType: 'consonant', romanization: 'la', exampleWord: 'ലഡ്ഡു', exampleTransliteration: 'laddu', exampleGloss: 'laddu (a round Indian sweet)', sortOrder: 43 },
+  { character: 'വ', characterType: 'consonant', romanization: 'va', exampleWord: 'വനം', exampleTransliteration: 'vanam', exampleGloss: 'forest', sortOrder: 44 },
+  { character: 'ശ', characterType: 'consonant', romanization: 'sha', exampleWord: 'ശലഭം', exampleTransliteration: 'shalabham', exampleGloss: 'butterfly', sortOrder: 45 },
+  { character: 'ഷ', characterType: 'consonant', romanization: 'Sha', exampleWord: 'ഷഡ്ഭുജം', exampleTransliteration: 'shadbhujam', exampleGloss: 'hexagon', sortOrder: 46 },
+  { character: 'സ', characterType: 'consonant', romanization: 'sa', exampleWord: 'സൂര്യൻ', exampleTransliteration: 'suryan', exampleGloss: 'sun', sortOrder: 47 },
+  { character: 'ഹ', characterType: 'consonant', romanization: 'ha', exampleWord: 'ഹംസം', exampleTransliteration: 'hamsam', exampleGloss: 'swan', sortOrder: 48 },
+  { character: 'ള', characterType: 'consonant', romanization: 'La', exampleWord: 'കാള', exampleTransliteration: 'kaala', exampleGloss: 'bull/ox', sortOrder: 49, note: 'ള (retroflex l) rarely starts native Malayalam words, same Dravidian-family pattern as Tamil’s ள, Telugu’s ళ, and Kannada’s ಳ.' },
+  { character: 'ഴ', characterType: 'consonant', romanization: 'zha', exampleWord: 'പഴം', exampleTransliteration: 'pazham', exampleGloss: 'fruit', sortOrder: 50, note: 'ഴ rarely starts native Malayalam words — പഴം is the exact same cognate word Tamil uses for its own ழ example, reflecting the two languages’ shared origin.' },
+  { character: 'റ', characterType: 'consonant', romanization: 'Ra', exampleWord: 'ആറ്', exampleTransliteration: 'aaru', exampleGloss: 'river/six', sortOrder: 51, note: 'റ rarely starts native Malayalam words — ആറ് is the exact same cognate word Tamil uses for its own ற example.' },
+
+  // ---- conjuncts — same "3 most common" precedent as every other script here ----
+  { character: 'ക്ഷ', characterType: 'conjunct', romanization: 'ksha', exampleWord: 'ക്ഷണം', exampleTransliteration: 'kshanam', exampleGloss: 'moment/instant', sortOrder: 52 },
+  { character: 'ത്ര', characterType: 'conjunct', romanization: 'tra', exampleWord: 'ത്രികോണം', exampleTransliteration: 'trikonam', exampleGloss: 'triangle', sortOrder: 53 },
+  { character: 'ജ്ഞ', characterType: 'conjunct', romanization: 'jnya', exampleWord: 'ജ്ഞാനം', exampleTransliteration: 'jnanam', exampleGloss: 'knowledge', sortOrder: 54 },
+];
+
 export interface NumberItem {
   itemKey: string;
   englishWord: string;

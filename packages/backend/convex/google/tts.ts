@@ -66,6 +66,11 @@ export const GOOGLE_VOICES: Record<string, { male: string; female: string }> = {
   // coverage for gu-IN/ur-IN right now. Same fixed-roster reasoning as above.
   gu: { female: 'gu-IN-Chirp3-HD-Kore', male: 'gu-IN-Chirp3-HD-Charon' },
   ur: { female: 'ur-IN-Chirp3-HD-Kore', male: 'ur-IN-Chirp3-HD-Charon' },
+  // Added 2026-08-04 for Aksharmala (Gurmukhi/pa, Malayalam/ml) — confirmed
+  // via a live `voices.list` call that pa-IN/ml-IN both carry the full
+  // 30-voice Chirp3-HD roster, same as every locale above.
+  pa: { female: 'pa-IN-Chirp3-HD-Kore', male: 'pa-IN-Chirp3-HD-Charon' },
+  ml: { female: 'ml-IN-Chirp3-HD-Kore', male: 'ml-IN-Chirp3-HD-Charon' },
 };
 
 /** BCP-47 locale Google expects, keyed by our ISO 639-1 `languageCode`. */
@@ -78,6 +83,8 @@ export const GOOGLE_LOCALE: Record<string, string> = {
   kn: 'kn-IN',
   gu: 'gu-IN',
   ur: 'ur-IN',
+  pa: 'pa-IN',
+  ml: 'ml-IN',
 };
 
 export function getGoogleTtsKey(): string {
