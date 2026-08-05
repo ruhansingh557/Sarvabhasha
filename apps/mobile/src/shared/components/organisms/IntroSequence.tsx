@@ -29,6 +29,21 @@ import { Box, Text, type Theme } from '@theme';
  * wordmark enters the same way — one shared rotate-with-depth motion
  * language across every element, not a flatter effect for the wordmark.
  *
+ * A `rotateY`+`perspective` transform alone is mathematically correct 3D but
+ * does NOT read as 3D to a casual viewer: a flat, single-plane, single-color
+ * glyph turning in Y with no lighting/depth cue is visually indistinguishable
+ * from a plain horizontal squash-and-stretch — nothing in the rendered
+ * pixels tells the eye "this is turning through space" versus "this is just
+ * getting narrower." So every rotating element (letters AND the wordmark)
+ * also renders a duller, un-rotated duplicate glyph directly behind itself —
+ * see `SHADOW_OFFSET_PX`/`SHADOW_DROP_PX`/`SHADOW_MAX_OPACITY` and the
+ * `shadowStyle` in `FlyingLetter`/`Wordmark` below. That duplicate slides out
+ * and fades in as the real glyph's OWN `rotateY` value sweeps toward
+ * edge-on, and slides back under/fades out as it returns to face-on —
+ * exactly how a physically raised, rotating card's cast shadow behaves. It's
+ * driven straight off the same shared value already animating the rotation,
+ * so it can never drift out of sync with it.
+ *
  * Mounted once by `RootNavigator` as a full-bleed overlay drawn ON TOP of
  * the real auth-check / tab-shell flow underneath, never in place of it —
  * see that file for why. `onFinish` fires once, after the sequence (or the
@@ -85,6 +100,16 @@ const ROTATE_PERSPECTIVE = 800;
 // How far from face-on the wordmark starts before rotating in to 0deg —
 // the same kind of card-flip entrance the letters use, not a plain fade.
 const WORDMARK_ROTATE_Y_START_DEG = 110;
+
+// ---- Depth-cue constants for the shadow duplicate (see the doc comment
+// above). All three are driven from `sin(rotateY)`, which is 0 at face-on/
+// back-on (0deg, 180deg, ...) and ±1 at edge-on (90deg, 270deg, ...) — so the
+// shadow is invisible exactly when the real glyph is flattest-on to the
+// viewer, and most visible/offset exactly when the glyph itself is thinnest
+// and most "turned away", matching a physically raised card. ----
+const SHADOW_OFFSET_PX = 14; // peak horizontal slide of the shadow at edge-on
+const SHADOW_DROP_PX = 6; // small downward settle that grows with the same lift
+const SHADOW_MAX_OPACITY = 0.75; // peak opacity of the shadow layer at edge-on
 
 const LAST_LETTER_ARRIVAL_MS = (SCRIPT_LETTERS.length - 1) * STAGGER_MS + FLIGHT_DURATION_MS;
 const WORDMARK_START_MS = Math.round(FLIGHT_DURATION_MS * WORDMARK_START_FRACTION);
@@ -296,25 +321,54 @@ function FlyingLetter({ plan }: { plan: FlyingLetterPlan }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const animatedStyle = useAnimatedStyle(() => ({
+  // Positions and scales the letter as a whole (shadow + front glyph move
+  // and pop in together). Rotation lives one level deeper, in `frontStyle`,
+  // so the shadow duplicate below can apply its OWN un-rotated slide instead
+  // of spinning with the glyph — a cast shadow doesn't rotate with the
+  // object casting it, it just slides and fades as the object turns.
+  const positionStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
-    // `perspective` must precede `rotateY` in the transform array — order
-    // matters — for the rotation to project as foreshortened depth instead
-    // of a flat rotation.
     transform: [
       { translateX: translateX.value },
       { translateY: translateY.value },
-      { perspective: ROTATE_PERSPECTIVE },
-      { rotateY: `${rotateY.value}deg` },
       { scale: scale.value },
     ],
   }));
 
+  const frontStyle = useAnimatedStyle(() => ({
+    // `perspective` must precede `rotateY` in the transform array — order
+    // matters — for the rotation to project as foreshortened depth instead
+    // of a flat rotation.
+    transform: [{ perspective: ROTATE_PERSPECTIVE }, { rotateY: `${rotateY.value}deg` }],
+  }));
+
+  // The depth cue itself — see the file-level doc comment and the
+  // SHADOW_* constants. Un-rotated on purpose: only its offset and opacity
+  // move, driven by sin(rotateY), so it reads as a cast shadow rather than a
+  // second spinning copy of the letter.
+  const shadowStyle = useAnimatedStyle(() => {
+    const swing = Math.sin((rotateY.value * Math.PI) / 180);
+    return {
+      opacity: Math.abs(swing) * SHADOW_MAX_OPACITY,
+      transform: [
+        { translateX: swing * SHADOW_OFFSET_PX },
+        { translateY: Math.abs(swing) * SHADOW_DROP_PX },
+      ],
+    };
+  });
+
   return (
-    <Animated.View style={[styles.letterAnchor, animatedStyle]} accessible={false}>
-      <Text variant="hero" color={plan.colorToken}>
-        {plan.glyph}
-      </Text>
+    <Animated.View style={[styles.letterAnchor, positionStyle]} accessible={false}>
+      <Animated.View style={[styles.depthLayer, shadowStyle]}>
+        <Text variant="hero" color="textMuted">
+          {plan.glyph}
+        </Text>
+      </Animated.View>
+      <Animated.View style={frontStyle}>
+        <Text variant="hero" color={plan.colorToken}>
+          {plan.glyph}
+        </Text>
+      </Animated.View>
     </Animated.View>
   );
 }
@@ -351,18 +405,53 @@ function Wordmark({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const animatedStyle = useAnimatedStyle(() => ({
+  const positionStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
-    // Same perspective-before-rotateY ordering as the flying letters, so the
-    // wordmark's entrance reads as the same 3D motion, not a flatter effect.
-    transform: [{ scale: scale.value }, { perspective: ROTATE_PERSPECTIVE }, { rotateY: `${rotateY.value}deg` }],
+    transform: [{ scale: scale.value }],
   }));
 
+  const frontStyle = useAnimatedStyle(() => ({
+    // Same perspective-before-rotateY ordering as the flying letters, so the
+    // wordmark's entrance reads as the same 3D motion, not a flatter effect.
+    transform: [{ perspective: ROTATE_PERSPECTIVE }, { rotateY: `${rotateY.value}deg` }],
+  }));
+
+  // Same shadow-duplicate depth cue as `FlyingLetter` (see the file-level
+  // doc comment) — always computed (hooks can't be conditional), but only
+  // ever MOUNTED below when `rotateYStartDeg` is set, so the reduced-motion
+  // fallback (`rotateYStartDeg` undefined) stays a plain, untouched static
+  // fade with no extra layer at all.
+  const shadowStyle = useAnimatedStyle(() => {
+    const swing = Math.sin((rotateY.value * Math.PI) / 180);
+    return {
+      opacity: Math.abs(swing) * SHADOW_MAX_OPACITY,
+      transform: [
+        { translateX: swing * SHADOW_OFFSET_PX },
+        { translateY: Math.abs(swing) * SHADOW_DROP_PX },
+      ],
+    };
+  });
+
   return (
-    <Animated.View style={[styles.wordmarkAnchor, animatedStyle]} accessible={false}>
-      <Text variant="hero" color="primary">
-        {label}
-      </Text>
+    <Animated.View style={[styles.wordmarkAnchor, positionStyle]} accessible={false}>
+      {rotateYStartDeg !== undefined ? (
+        <>
+          <Animated.View style={[styles.depthLayer, shadowStyle]}>
+            <Text variant="hero" color="textMuted">
+              {label}
+            </Text>
+          </Animated.View>
+          <Animated.View style={frontStyle}>
+            <Text variant="hero" color="primary">
+              {label}
+            </Text>
+          </Animated.View>
+        </>
+      ) : (
+        <Text variant="hero" color="primary">
+          {label}
+        </Text>
+      )}
     </Animated.View>
   );
 }
@@ -382,5 +471,14 @@ const styles = StyleSheet.create({
   },
   wordmarkAnchor: {
     position: 'absolute',
+  },
+  // The shadow duplicate sits absolutely at the top-left of its rotating
+  // sibling's box so it starts out perfectly overlapping the front glyph;
+  // its own animated `translateX`/`translateY` then slides it out from
+  // behind as `rotateY` sweeps toward edge-on.
+  depthLayer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
   },
 });
