@@ -178,6 +178,8 @@ interface Report {
     kind: 'character' | 'vocab';
     key: string;
     categorySlug?: string;
+    /** Only set for `kind: 'vocab'` rows — defaults to `'hi'` for rows written before this field existed. */
+    languageCode?: string;
     /** Only set for `kind: 'character'` rows — which script this character belongs to. */
     script?: string;
     ok: boolean;
@@ -672,34 +674,91 @@ async function genAudioCharacters(scriptSlug: ScriptSlug, force?: boolean) {
   if (r.failed > 0) console.log(JSON.stringify(r.results.filter((x: any) => !x.ok), null, 2));
 }
 
-async function genAudioVocab(categorySlug: CategorySlug, force?: boolean) {
+/**
+ * `languageCode` defaults to `'hi'` (every call site before 2026-08-05 only
+ * ever needed Hindi) but is now a real parameter — vocabulary content is
+ * expanding to the other 12 live languages, which need their own audio pass
+ * per category. Bhashini is dead in practice for `gu`/`ur` (confirmed,
+ * `plans/phase-12-v1-launch.md` Step 0), so those two route through
+ * `google/vocabularyTts.ts`'s single-item action in a loop instead of
+ * Bhashini's batch one — that module has no batch equivalent, only
+ * `generateVocabularyAudioGoogle` (one item at a time), so this function
+ * absorbs the looping/batching Bhashini's action does natively.
+ */
+async function genAudioVocab(categorySlug: CategorySlug, languageCode: string = 'hi', force?: boolean) {
   const report = loadReport();
   const items = itemsForCategory(categorySlug);
-  console.log(`Generating audio for ${items.length} "${categorySlug}" items...`);
-  const r = runConvex('bhashini/vocabularyTts:generateVocabularyAudioForCategory', {
-    categorySlug,
-    itemKeys: items.map((i) => i.itemKey),
-    languageCode: 'hi',
-    force: force ?? false,
-  });
+  console.log(`Generating ${languageCode} audio for ${items.length} "${categorySlug}" items...`);
+
+  const useGoogle = languageCode === 'gu' || languageCode === 'ur';
+  let results: Array<{ itemKey: string; ok: boolean; detail: string; audioUrl: string | null }>;
+  let succeeded: number;
+  let failed: number;
+
+  if (useGoogle) {
+    results = [];
+    for (const item of items) {
+      const r = runConvex('google/vocabularyTts:generateVocabularyAudioGoogle', {
+        categorySlug,
+        itemKey: item.itemKey,
+        languageCode,
+        force: force ?? false,
+      });
+      results.push({
+        itemKey: item.itemKey,
+        ok: r.ok,
+        detail: r.ok ? (r.skipped ? 'already existed' : `${r.gender}, ${r.durationMs}ms`) : r.reason,
+        audioUrl: r.ok && !r.skipped ? r.audioUrl : null,
+      });
+      await new Promise((resolve) => setTimeout(resolve, 300));
+    }
+    succeeded = results.filter((r) => r.ok).length;
+    failed = results.filter((r) => !r.ok).length;
+  } else {
+    const r = runConvex('bhashini/vocabularyTts:generateVocabularyAudioForCategory', {
+      categorySlug,
+      itemKeys: items.map((i) => i.itemKey),
+      languageCode,
+      force: force ?? false,
+    });
+    results = r.results;
+    succeeded = r.succeeded;
+    failed = r.failed;
+  }
+
   report.audioCalls = report.audioCalls.filter(
-    (c) => !(c.kind === 'vocab' && c.categorySlug === categorySlug),
+    (c) => !(c.kind === 'vocab' && c.categorySlug === categorySlug && (c.languageCode ?? 'hi') === languageCode),
   );
   const byKey = new Map(items.map((i) => [i.itemKey, i]));
-  for (const row of r.results) {
+  for (const row of results) {
+    // `expectedText` must be the ACTUAL translated text for `languageCode`,
+    // not `data.ts`'s static Hindi source text — for `hi` those are the same
+    // thing (free), but for every other language using the Hindi string here
+    // would make `asr-check` compare (say) Bengali audio against Hindi text
+    // and spuriously report every single row as a mismatch.
+    let expectedText = byKey.get(row.itemKey)?.text;
+    if (languageCode !== 'hi' && row.ok) {
+      const { translation } = runConvex('bhashini/vocabularyTts:getItemAndTranslation', {
+        categorySlug,
+        itemKey: row.itemKey,
+        languageCode,
+      });
+      expectedText = translation?.text ?? expectedText;
+    }
     report.audioCalls.push({
       kind: 'vocab',
       key: row.itemKey,
       categorySlug,
+      languageCode,
       ok: row.ok,
       detail: row.detail,
       audioUrl: row.audioUrl ?? null,
-      expectedText: byKey.get(row.itemKey)?.text,
+      expectedText,
     });
   }
   saveReport(report);
-  console.log(`Succeeded: ${r.succeeded}, Failed: ${r.failed}`);
-  if (r.failed > 0) console.log(JSON.stringify(r.results.filter((x: any) => !x.ok), null, 2));
+  console.log(`Succeeded: ${succeeded}, Failed: ${failed}`);
+  if (failed > 0) console.log(JSON.stringify(results.filter((x) => !x.ok), null, 2));
 }
 
 async function downloadImages() {
@@ -750,7 +809,11 @@ async function downloadImages() {
  * pass skip re-verifying Devanagari's already-reviewed 49 characters. Passing
  * NEITHER filter checks everything (original behaviour, unchanged).
  */
-async function asrCheck(onlyCategorySlugs?: string[], onlyScripts?: string[]) {
+async function asrCheck(
+  onlyCategorySlugs?: string[],
+  onlyScripts?: string[],
+  onlyLanguageCodes?: string[],
+) {
   const report = loadReport();
   for (const call of report.audioCalls) {
     if (!call.ok || !call.audioUrl) continue;
@@ -758,6 +821,13 @@ async function asrCheck(onlyCategorySlugs?: string[], onlyScripts?: string[]) {
       continue;
     }
     if (onlyScripts && !(call.script && onlyScripts.includes(call.script))) {
+      continue;
+    }
+    // Only meaningful for `kind: 'vocab'` rows, now that a category can carry
+    // several languages' audio — lets a per-language pass (e.g. a freshly-
+    // added Bengali translation batch) skip re-verifying every other
+    // already-checked language's rows in the same category.
+    if (onlyLanguageCodes && !(call.kind === 'vocab' && onlyLanguageCodes.includes(call.languageCode ?? 'hi'))) {
       continue;
     }
     try {
@@ -771,11 +841,12 @@ async function asrCheck(onlyCategorySlugs?: string[], onlyScripts?: string[]) {
       // For `character` rows, the correct ASR voice/language is the script's
       // own live language (SCRIPTS map), not a hardcoded 'hi' — Bengali
       // characters must be transcribed with a bn ASR model, not hi's.
-      // `vocab` rows stay 'hi' (vocabulary/numbers content is Hindi-only so far).
+      // `vocab` rows use their own recorded `languageCode` (defaults to 'hi'
+      // for rows written before per-language vocabulary existed).
       const languageCode =
         call.kind === 'character'
           ? SCRIPTS[(call.script ?? 'devanagari') as ScriptSlug]?.languageCode ?? 'hi'
-          : 'hi';
+          : (call.languageCode ?? 'hi');
       const r = runConvex('bhashini/asr:transcribeSpeech', { audioBase64, languageCode });
       if (r.ok) {
         call.asrTranscript = r.transcript;
@@ -828,15 +899,15 @@ async function approveVocabItems(categorySlug: string, keysJson: string) {
 }
 
 /** After human review — approve a (item, hi) translation+audio pair for a list of itemKeys. */
-async function approveVocabTranslations(categorySlug: string, keysJson: string) {
+async function approveVocabTranslations(categorySlug: string, keysJson: string, languageCode: string = 'hi') {
   const keys: string[] = JSON.parse(keysJson);
   for (const itemKey of keys) {
     runConvex('vocabulary:approveVocabularyTranslationAndAudio', {
       categorySlug,
       itemKey,
-      languageCode: 'hi',
+      languageCode,
     });
-    console.log(`  ✓ approved translation+audio ${categorySlug}/${itemKey} (hi)`);
+    console.log(`  ✓ approved translation+audio ${categorySlug}/${itemKey} (${languageCode})`);
   }
 }
 
@@ -846,7 +917,7 @@ async function promoteCategory(categorySlug: string) {
 }
 
 async function main() {
-  const [cmd, arg, arg2, arg3] = process.argv.slice(2);
+  const [cmd, arg, arg2, arg3, arg4] = process.argv.slice(2);
   switch (cmd) {
     case 'seed-characters':
       return seedCharacters(arg as ScriptSlug);
@@ -859,20 +930,27 @@ async function main() {
     case 'gen-audio-characters':
       return genAudioCharacters(arg as ScriptSlug, arg2 === '--force');
     case 'gen-audio-vocab':
-      return genAudioVocab(arg as CategorySlug, arg2 === '--force');
+      // Usage: gen-audio-vocab <category> [languageCode] [--force]
+      // languageCode defaults to 'hi' if omitted (all pre-2026-08-05 call sites).
+      return genAudioVocab(
+        arg as CategorySlug,
+        arg2 && arg2 !== '--force' ? arg2 : 'hi',
+        arg2 === '--force' || arg3 === '--force',
+      );
     case 'download-images':
       return downloadImages();
     case 'asr-check':
       return asrCheck(
-        arg ? (JSON.parse(arg) as string[]) : undefined,
-        arg2 ? (JSON.parse(arg2) as string[]) : undefined,
+        arg && arg !== 'null' ? (JSON.parse(arg) as string[]) : undefined,
+        arg2 && arg2 !== 'null' ? (JSON.parse(arg2) as string[]) : undefined,
+        arg3 && arg3 !== 'null' ? (JSON.parse(arg3) as string[]) : undefined,
       );
     case 'approve-characters':
       return approveCharacters(arg as ScriptSlug, arg2);
     case 'approve-vocab-items':
       return approveVocabItems(arg, arg2);
     case 'approve-vocab-translations':
-      return approveVocabTranslations(arg, arg2);
+      return approveVocabTranslations(arg, arg2, arg3 ?? 'hi');
     case 'promote-category':
       return promoteCategory(arg);
     default:

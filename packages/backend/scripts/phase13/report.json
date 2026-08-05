@@ -8807,6 +8807,646 @@
       "asrTranscript": "ایسے چائے",
       "asrOk": true,
       "asrNote": "Isolated-letter ASR is inherently unreliable — treat mismatch as weak signal only."
+    },
+    {
+      "kind": "vocab",
+      "key": "1",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": true,
+      "detail": "female, 801ms",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/f8d0d3b6-3a4a-488e-8146-bbd0923d5c6f",
+      "expectedText": "एक"
+    },
+    {
+      "kind": "vocab",
+      "key": "2",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"2\"",
+      "audioUrl": null,
+      "expectedText": "दो"
+    },
+    {
+      "kind": "vocab",
+      "key": "3",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"3\"",
+      "audioUrl": null,
+      "expectedText": "तीन"
+    },
+    {
+      "kind": "vocab",
+      "key": "4",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"4\"",
+      "audioUrl": null,
+      "expectedText": "चार"
+    },
+    {
+      "kind": "vocab",
+      "key": "5",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"5\"",
+      "audioUrl": null,
+      "expectedText": "पांच"
+    },
+    {
+      "kind": "vocab",
+      "key": "6",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"6\"",
+      "audioUrl": null,
+      "expectedText": "छह"
+    },
+    {
+      "kind": "vocab",
+      "key": "7",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"7\"",
+      "audioUrl": null,
+      "expectedText": "सात"
+    },
+    {
+      "kind": "vocab",
+      "key": "8",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"8\"",
+      "audioUrl": null,
+      "expectedText": "आठ"
+    },
+    {
+      "kind": "vocab",
+      "key": "9",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"9\"",
+      "audioUrl": null,
+      "expectedText": "नौ"
+    },
+    {
+      "kind": "vocab",
+      "key": "10",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"10\"",
+      "audioUrl": null,
+      "expectedText": "दस"
+    },
+    {
+      "kind": "vocab",
+      "key": "11",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"11\"",
+      "audioUrl": null,
+      "expectedText": "ग्यारह"
+    },
+    {
+      "kind": "vocab",
+      "key": "12",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"12\"",
+      "audioUrl": null,
+      "expectedText": "बारह"
+    },
+    {
+      "kind": "vocab",
+      "key": "13",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"13\"",
+      "audioUrl": null,
+      "expectedText": "तेरह"
+    },
+    {
+      "kind": "vocab",
+      "key": "14",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"14\"",
+      "audioUrl": null,
+      "expectedText": "चौदह"
+    },
+    {
+      "kind": "vocab",
+      "key": "15",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"15\"",
+      "audioUrl": null,
+      "expectedText": "पंद्रह"
+    },
+    {
+      "kind": "vocab",
+      "key": "16",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"16\"",
+      "audioUrl": null,
+      "expectedText": "सोलह"
+    },
+    {
+      "kind": "vocab",
+      "key": "17",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"17\"",
+      "audioUrl": null,
+      "expectedText": "सत्रह"
+    },
+    {
+      "kind": "vocab",
+      "key": "18",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"18\"",
+      "audioUrl": null,
+      "expectedText": "अठारह"
+    },
+    {
+      "kind": "vocab",
+      "key": "19",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"19\"",
+      "audioUrl": null,
+      "expectedText": "उन्नीस"
+    },
+    {
+      "kind": "vocab",
+      "key": "20",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"20\"",
+      "audioUrl": null,
+      "expectedText": "बीस"
+    },
+    {
+      "kind": "vocab",
+      "key": "25",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"25\"",
+      "audioUrl": null,
+      "expectedText": "पच्चीस"
+    },
+    {
+      "kind": "vocab",
+      "key": "30",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"30\"",
+      "audioUrl": null,
+      "expectedText": "तीस"
+    },
+    {
+      "kind": "vocab",
+      "key": "40",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"40\"",
+      "audioUrl": null,
+      "expectedText": "चालीस"
+    },
+    {
+      "kind": "vocab",
+      "key": "50",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"50\"",
+      "audioUrl": null,
+      "expectedText": "पचास"
+    },
+    {
+      "kind": "vocab",
+      "key": "60",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"60\"",
+      "audioUrl": null,
+      "expectedText": "साठ"
+    },
+    {
+      "kind": "vocab",
+      "key": "70",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"70\"",
+      "audioUrl": null,
+      "expectedText": "सत्तर"
+    },
+    {
+      "kind": "vocab",
+      "key": "80",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"80\"",
+      "audioUrl": null,
+      "expectedText": "अस्सी"
+    },
+    {
+      "kind": "vocab",
+      "key": "90",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"90\"",
+      "audioUrl": null,
+      "expectedText": "नब्बे"
+    },
+    {
+      "kind": "vocab",
+      "key": "100",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"100\"",
+      "audioUrl": null,
+      "expectedText": "सौ"
+    },
+    {
+      "kind": "vocab",
+      "key": "200",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"200\"",
+      "audioUrl": null,
+      "expectedText": "दो सौ"
+    },
+    {
+      "kind": "vocab",
+      "key": "500",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"500\"",
+      "audioUrl": null,
+      "expectedText": "पांच सौ"
+    },
+    {
+      "kind": "vocab",
+      "key": "1000",
+      "categorySlug": "numbers",
+      "languageCode": "gu",
+      "ok": false,
+      "detail": "No \"gu\" translation for \"1000\"",
+      "audioUrl": null,
+      "expectedText": "हज़ार"
+    },
+    {
+      "kind": "vocab",
+      "key": "1",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": true,
+      "detail": "female, 2310ms, 99KB",
+      "audioUrl": "https://opulent-salamander-497.convex.cloud/api/storage/2746650b-25fa-43e4-bdc4-365cf9d47587",
+      "expectedText": "এক"
+    },
+    {
+      "kind": "vocab",
+      "key": "2",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"2\"",
+      "audioUrl": null,
+      "expectedText": "दो"
+    },
+    {
+      "kind": "vocab",
+      "key": "3",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"3\"",
+      "audioUrl": null,
+      "expectedText": "तीन"
+    },
+    {
+      "kind": "vocab",
+      "key": "4",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"4\"",
+      "audioUrl": null,
+      "expectedText": "चार"
+    },
+    {
+      "kind": "vocab",
+      "key": "5",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"5\"",
+      "audioUrl": null,
+      "expectedText": "पांच"
+    },
+    {
+      "kind": "vocab",
+      "key": "6",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"6\"",
+      "audioUrl": null,
+      "expectedText": "छह"
+    },
+    {
+      "kind": "vocab",
+      "key": "7",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"7\"",
+      "audioUrl": null,
+      "expectedText": "सात"
+    },
+    {
+      "kind": "vocab",
+      "key": "8",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"8\"",
+      "audioUrl": null,
+      "expectedText": "आठ"
+    },
+    {
+      "kind": "vocab",
+      "key": "9",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"9\"",
+      "audioUrl": null,
+      "expectedText": "नौ"
+    },
+    {
+      "kind": "vocab",
+      "key": "10",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"10\"",
+      "audioUrl": null,
+      "expectedText": "दस"
+    },
+    {
+      "kind": "vocab",
+      "key": "11",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"11\"",
+      "audioUrl": null,
+      "expectedText": "ग्यारह"
+    },
+    {
+      "kind": "vocab",
+      "key": "12",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"12\"",
+      "audioUrl": null,
+      "expectedText": "बारह"
+    },
+    {
+      "kind": "vocab",
+      "key": "13",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"13\"",
+      "audioUrl": null,
+      "expectedText": "तेरह"
+    },
+    {
+      "kind": "vocab",
+      "key": "14",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"14\"",
+      "audioUrl": null,
+      "expectedText": "चौदह"
+    },
+    {
+      "kind": "vocab",
+      "key": "15",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"15\"",
+      "audioUrl": null,
+      "expectedText": "पंद्रह"
+    },
+    {
+      "kind": "vocab",
+      "key": "16",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"16\"",
+      "audioUrl": null,
+      "expectedText": "सोलह"
+    },
+    {
+      "kind": "vocab",
+      "key": "17",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"17\"",
+      "audioUrl": null,
+      "expectedText": "सत्रह"
+    },
+    {
+      "kind": "vocab",
+      "key": "18",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"18\"",
+      "audioUrl": null,
+      "expectedText": "अठारह"
+    },
+    {
+      "kind": "vocab",
+      "key": "19",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"19\"",
+      "audioUrl": null,
+      "expectedText": "उन्नीस"
+    },
+    {
+      "kind": "vocab",
+      "key": "20",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"20\"",
+      "audioUrl": null,
+      "expectedText": "बीस"
+    },
+    {
+      "kind": "vocab",
+      "key": "25",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"25\"",
+      "audioUrl": null,
+      "expectedText": "पच्चीस"
+    },
+    {
+      "kind": "vocab",
+      "key": "30",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"30\"",
+      "audioUrl": null,
+      "expectedText": "तीस"
+    },
+    {
+      "kind": "vocab",
+      "key": "40",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"40\"",
+      "audioUrl": null,
+      "expectedText": "चालीस"
+    },
+    {
+      "kind": "vocab",
+      "key": "50",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"50\"",
+      "audioUrl": null,
+      "expectedText": "पचास"
+    },
+    {
+      "kind": "vocab",
+      "key": "60",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"60\"",
+      "audioUrl": null,
+      "expectedText": "साठ"
+    },
+    {
+      "kind": "vocab",
+      "key": "70",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"70\"",
+      "audioUrl": null,
+      "expectedText": "सत्तर"
+    },
+    {
+      "kind": "vocab",
+      "key": "80",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"80\"",
+      "audioUrl": null,
+      "expectedText": "अस्सी"
+    },
+    {
+      "kind": "vocab",
+      "key": "90",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"90\"",
+      "audioUrl": null,
+      "expectedText": "नब्बे"
+    },
+    {
+      "kind": "vocab",
+      "key": "100",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"100\"",
+      "audioUrl": null,
+      "expectedText": "सौ"
+    },
+    {
+      "kind": "vocab",
+      "key": "200",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"200\"",
+      "audioUrl": null,
+      "expectedText": "दो सौ"
+    },
+    {
+      "kind": "vocab",
+      "key": "500",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"500\"",
+      "audioUrl": null,
+      "expectedText": "पांच सौ"
+    },
+    {
+      "kind": "vocab",
+      "key": "1000",
+      "categorySlug": "numbers",
+      "languageCode": "bn",
+      "ok": false,
+      "detail": "No \"bn\" translation for \"1000\"",
+      "audioUrl": null,
+      "expectedText": "हज़ार"
     }
   ]
 }
