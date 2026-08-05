@@ -32,7 +32,20 @@ export function ProfileHeader({ name, email }: ProfileHeaderProps) {
   const trimmedName = name?.trim();
 
   return (
-    <Box alignItems="center" marginBottom="xl">
+    <Box
+      alignItems="center"
+      backgroundColor="surface"
+      borderRadius="l"
+      paddingVertical="l"
+      marginBottom="l"
+      style={{
+        shadowColor: theme.colors.shadow,
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 1,
+        shadowRadius: 10,
+        elevation: 2,
+      }}
+    >
       <Box
         width={80}
         height={80}

@@ -60,7 +60,17 @@ const palette = {
    * existing caption/body contrast is preserved, while still reading as a
    * distinct, coordinated hue per card.
    */
-  saffronTint50: '#FDECD1',
+  // Was '#FDECD1' — too close in both hue AND lightness to `background`
+  // (`cream50`, '#FFF8F0'): both are warm near-neutral off-whites, so the
+  // Common Phrases card (the one badge/card using `primary`) read as
+  // blending into the page instead of standing out like the other three
+  // (accent/success/info are all COOL-hued tints, which contrast against a
+  // warm cream page by hue alone even at similar lightness — primary's own
+  // tint needs more saturation to do the same job, since it shares the
+  // background's warm hue family). Kept at a similar LIGHTNESS to preserve
+  // the caption-contrast reasoning above; only pushed more clearly toward
+  // saffron's actual hue/saturation, not darker.
+  saffronTint50: '#FADFB3',
   tealTint50: '#DFF7F3',
   greenTint50: '#E1F7E6',
   blueTint50: '#E1EEFC',
