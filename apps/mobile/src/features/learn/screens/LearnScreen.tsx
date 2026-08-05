@@ -129,7 +129,7 @@ export function LearnScreen() {
         >
           <Text variant="label" color="textSecondary" flexShrink={1}>
             {targetLanguageDef
-              ? t('Learn.LEARNING_LANGUAGE_LABEL', { language: targetLanguageDef.nativeName })
+              ? t('Learn.LEARNING_LANGUAGE_LABEL', { language: targetLanguageDef.englishName })
               : t('Learn.NO_TARGET_LANGUAGE_LABEL')}
           </Text>
           <Pressable

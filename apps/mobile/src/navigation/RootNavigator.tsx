@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { ActivityIndicator, useColorScheme } from 'react-native';
 import { NavigationContainer, DefaultTheme, DarkTheme, type Theme as NavigationTheme } from '@react-navigation/native';
 import { useMutation } from 'convex/react';
@@ -6,6 +6,7 @@ import { api } from '@backend/_generated/api';
 import { Box, useTheme } from '@theme';
 import { authClient } from '@core/auth/authClient';
 import { AuthScreen } from '@features/auth/screens/AuthScreen';
+import { IntroSequence } from '@shared/components/organisms/IntroSequence';
 import { MainTabNavigator } from './MainTabNavigator';
 
 /**
@@ -22,6 +23,15 @@ import { MainTabNavigator } from './MainTabNavigator';
  * server-side, but the client still guards against re-firing on every
  * re-render, and re-arms if the session changes (sign-out then a different
  * account signs in).
+ *
+ * `showIntro` gates a one-time, in-memory (never persisted) animated intro —
+ * script letters flying together into the "Sarvabhasha" wordmark — shown
+ * once per cold launch (once per process start, since it's plain component
+ * state, not storage). It renders as an overlay ON TOP of whichever branch
+ * below is active, not instead of it: the auth-check effect above still
+ * fires immediately underneath, in parallel — the intro never blocks or
+ * delays real data loading, it only visually covers the screen until its
+ * own timeline finishes.
  */
 export function RootNavigator() {
   const theme = useTheme();
@@ -29,6 +39,7 @@ export function RootNavigator() {
   const { data: session, isPending } = authClient.useSession();
   const getOrCreateCurrentUser = useMutation(api.users.getOrCreateCurrentUser);
   const [userReady, setUserReady] = useState(false);
+  const [showIntro, setShowIntro] = useState(true);
   const firedForRef = useRef<string | null>(null);
 
   useEffect(() => {
@@ -51,44 +62,51 @@ export function RootNavigator() {
       .finally(() => setUserReady(true));
   }, [session, getOrCreateCurrentUser]);
 
+  // Computed as a single value (rather than the previous early `return`s) so
+  // the intro overlay below can be layered on top of whichever branch is
+  // active, without duplicating it or changing any of this branching logic.
+  let content: ReactNode;
+
   if (isPending) {
-    return (
+    content = (
       <Box flex={1} backgroundColor="background" alignItems="center" justifyContent="center">
         <ActivityIndicator color={theme.colors.primary} />
       </Box>
     );
-  }
-
-  if (!session) {
-    return <AuthScreen />;
-  }
-
-  if (!userReady) {
-    return (
+  } else if (!session) {
+    content = <AuthScreen />;
+  } else if (!userReady) {
+    content = (
       <Box flex={1} backgroundColor="background" alignItems="center" justifyContent="center">
         <ActivityIndicator color={theme.colors.primary} />
       </Box>
     );
+  } else {
+    const isDark = colorScheme === 'dark';
+    const baseNavigationTheme = isDark ? DarkTheme : DefaultTheme;
+    const navigationTheme: NavigationTheme = {
+      ...baseNavigationTheme,
+      colors: {
+        ...baseNavigationTheme.colors,
+        primary: theme.colors.primary,
+        background: theme.colors.background,
+        card: theme.colors.surface,
+        text: theme.colors.textPrimary,
+        border: theme.colors.border,
+        notification: theme.colors.accent,
+      },
+    };
+    content = (
+      <NavigationContainer theme={navigationTheme}>
+        <MainTabNavigator />
+      </NavigationContainer>
+    );
   }
-
-  const isDark = colorScheme === 'dark';
-  const baseNavigationTheme = isDark ? DarkTheme : DefaultTheme;
-  const navigationTheme: NavigationTheme = {
-    ...baseNavigationTheme,
-    colors: {
-      ...baseNavigationTheme.colors,
-      primary: theme.colors.primary,
-      background: theme.colors.background,
-      card: theme.colors.surface,
-      text: theme.colors.textPrimary,
-      border: theme.colors.border,
-      notification: theme.colors.accent,
-    },
-  };
 
   return (
-    <NavigationContainer theme={navigationTheme}>
-      <MainTabNavigator />
-    </NavigationContainer>
+    <>
+      {content}
+      {showIntro ? <IntroSequence onFinish={() => setShowIntro(false)} /> : null}
+    </>
   );
 }

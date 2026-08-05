@@ -1,4 +1,7 @@
 {
+  "Intro.WORDMARK": "Sarvabhasha",
+  "Intro.ACCESSIBILITY_LABEL": "Sarvabhasha, loading",
+
   "Auth.SIGN_IN_TITLE": "Welcome back",
   "Auth.SIGN_UP_TITLE": "Create your account",
   "Auth.EMAIL_LABEL": "Email",
