@@ -60,20 +60,25 @@ const palette = {
    * existing caption/body contrast is preserved, while still reading as a
    * distinct, coordinated hue per card.
    */
-  // Was '#FDECD1' (too close to `background`/`cream50`, '#FFF8F0' — blended
-  // into the page), then briefly '#FADFB3' (overcorrected: read as the same
-  // vivid orange as `primary`/`saffron500` — the active-tab-bar indicator
-  // color — rather than a distinct pale tint; a card background matching a
-  // meaningful UI accent color reads as confusing, not "on-brand"). This
-  // value is deliberately more MUTED (lower saturation) than that attempt,
-  // not just paler — enough hue to read as warm/distinct from the cream
-  // page, nowhere close to saffron500's actual vividness.
-  saffronTint50: '#F3E2CB',
+  // Three saffron attempts ('#FDECD1', '#FADFB3', '#F3E2CB') all failed for
+  // the same structural reason, not a shade-tuning problem: saffron is BOTH
+  // `background`'s hue family (cream is warm/saffron-toned) AND `primary`'s
+  // hue (the active-tab-bar indicator). Any saffron tint fights on two
+  // fronts — pale enough to avoid `primary` and it blends into `background`;
+  // distinct enough from `background` and it reads as `primary`. No amount
+  // of lightness/saturation tuning within that one hue escapes both at once.
+  // teal/green/blue work as card tints because they're hues NOTHING else in
+  // the app uses. This token gets the same treatment: rose, a hue no badge
+  // or accent uses, sized to the same pastel register as the other three.
+  // First attempt ('#F9DCE7') read "dull" next to the other three — its
+  // chroma was too close to a neutral pale pink. Pushed more saturated so it
+  // holds its own at a glance instead of receding.
+  roseTint50: '#F5C6DA',
   tealTint50: '#DFF7F3',
   greenTint50: '#E1F7E6',
   blueTint50: '#E1EEFC',
 
-  saffronTint900: '#2E2013',
+  roseTint900: '#331B24',
   tealTint900: '#16302C',
   greenTint900: '#173420',
   blueTint900: '#182A42',
@@ -174,7 +179,7 @@ export const lightTheme = createTheme({
      * (`primary`/`accent`/`success`/`info`) so each card's badge and
      * background read as one coordinated hue family.
      */
-    primaryTint: palette.saffronTint50,
+    primaryTint: palette.roseTint50,
     accentTint: palette.tealTint50,
     successTint: palette.greenTint50,
     infoTint: palette.blueTint50,
@@ -224,7 +229,7 @@ export const darkTheme: Theme = {
     warning: palette.amber400,
     info: palette.blue400,
 
-    primaryTint: palette.saffronTint900,
+    primaryTint: palette.roseTint900,
     accentTint: palette.tealTint900,
     successTint: palette.greenTint900,
     infoTint: palette.blueTint900,
