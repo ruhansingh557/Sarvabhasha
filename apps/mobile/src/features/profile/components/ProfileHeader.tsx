@@ -56,7 +56,10 @@ export function ProfileHeader({ name, email }: ProfileHeaderProps) {
       <Text variant="h2" textAlign="center">
         {trimmedName || email || ''}
       </Text>
-      {trimmedName && email ? (
+      {/* Some sign-up flows default `name` to the email address (e.g. this
+       * app's own dev/test AuthScreen flow) — skip the redundant second line
+       * rather than showing the same string twice. */}
+      {trimmedName && email && trimmedName !== email ? (
         <Text variant="body" color="textSecondary" marginTop="xs">
           {email}
         </Text>
