@@ -507,3 +507,60 @@ export const getCategoryCoverage = query({
     return { category: { slug: category.slug, status: category.status }, rows, perLanguage };
   },
 });
+
+/**
+ * Admin/QA-only helper: resolves every item's (translation text, audio
+ * storage URL) for ONE (category, language) pair — the same data
+ * `scripts/phase13/run.ts`'s local `report.json` audit trail is meant to
+ * carry, needed here as a direct-from-Convex fallback because that file is a
+ * single unsynchronized JSON blob shared across concurrent authoring
+ * sessions (parallel per-language passes race on read-modify-write and can
+ * silently clobber each other's rows). This query has no such race — it
+ * always reflects the live database. Read-only, not reachable from the
+ * mobile app's UI surface (no `speakerCharacter`/gating logic needed since
+ * this is authoring tooling, not `listItemsByCategory`).
+ */
+export const getVocabularyAudioForQA = query({
+  args: { categorySlug: v.string(), languageCode: v.string() },
+  returns: v.array(
+    v.object({
+      itemKey: v.string(),
+      text: v.union(v.string(), v.null()),
+      audioUrl: v.union(v.string(), v.null()),
+    }),
+  ),
+  handler: async (ctx, args) => {
+    const category = await ctx.db
+      .query('vocabularyCategories')
+      .withIndex('by_slug', (q) => q.eq('slug', args.categorySlug))
+      .first();
+    if (!category) return [];
+
+    const items = await ctx.db
+      .query('vocabularyItems')
+      .withIndex('by_category_order', (q) => q.eq('categoryId', category._id))
+      .collect();
+
+    return await Promise.all(
+      items.map(async (item) => {
+        const translation = await ctx.db
+          .query('vocabularyTranslations')
+          .withIndex('by_item_language', (q) =>
+            q.eq('vocabularyItemId', item._id).eq('languageCode', args.languageCode),
+          )
+          .first();
+        const audio = await ctx.db
+          .query('vocabularyAudio')
+          .withIndex('by_item_language', (q) =>
+            q.eq('vocabularyItemId', item._id).eq('languageCode', args.languageCode),
+          )
+          .first();
+        return {
+          itemKey: item.itemKey,
+          text: translation?.text ?? null,
+          audioUrl: audio ? await ctx.storage.getUrl(audio.storageId) : null,
+        };
+      }),
+    );
+  },
+});

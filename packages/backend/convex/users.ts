@@ -148,6 +148,33 @@ export const setBirthYear = mutation({
 });
 
 /**
+ * Sets the learner's display name on OUR `users` mirror. `name` is seeded
+ * once from the Better Auth identity at `getOrCreateCurrentUser` time (see
+ * above) but is otherwise plain user-editable profile data from here on —
+ * this does NOT write back to the Better Auth component, only our mirror,
+ * matching `setUiLanguage`/`setTargetLanguage`'s pattern of only ever
+ * touching this table.
+ */
+export const updateName = mutation({
+  args: { name: v.string() },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const user = await requireCurrentUserDoc(ctx);
+
+    const trimmed = args.name.trim();
+    if (trimmed.length === 0) {
+      throw new Error('Name cannot be empty.');
+    }
+    if (trimmed.length > 100) {
+      throw new Error('Name is too long (max 100 characters).');
+    }
+
+    await ctx.db.patch(user._id, { name: trimmed });
+    return null;
+  },
+});
+
+/**
  * Sets the learner's UI (interface-chrome) language. Deliberately does NOT
  * enforce `status === 'live'` the way `setTargetLanguage` does: `uiLanguage`
  * is not a claim about lesson-content availability, just which language the
