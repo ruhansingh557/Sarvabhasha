@@ -113,6 +113,11 @@ const MNEMONIC_CONNECTOR: Record<string, string> = {
   // word) for any language missing here, which still gives the model two
   // real words of context instead of an isolated glyph, without asserting a
   // specific Tamil grammatical convention this project can't verify.
+  ur: 'سے', // "se" — the SAME word as Hindi's से (Hindi/Urdu share this
+  // postposition as one spoken language, Hindustani, in two scripts).
+  // Confirmed via a real published primer, "ا سے اُردو" (Alif Se Urdu,
+  // Sarah Hashmi), using exactly this "<letter> سے <word>" title pattern —
+  // see `data.ts`'s `URDU_CHARACTERS` header for the full sourcing note.
 };
 
 /**

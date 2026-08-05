@@ -47,6 +47,11 @@
   "Learn.SITUATION_LABEL": "When to use this",
   "Learn.PHRASE_UNAVAILABLE": "This phrase isn't available right now.",
 
+  "Learn.LEARNING_LANGUAGE_LABEL": "You're learning {{language}}",
+  "Learn.NO_TARGET_LANGUAGE_LABEL": "Choose a language to start learning",
+  "Learn.CHANGE_LANGUAGE_CTA": "Change",
+  "Learn.CHANGE_LANGUAGE_CTA_A11Y": "Go to Profile to change your learning language",
+
   "Learn.COMMON_PHRASES_CARD_TITLE": "Common Phrases",
   "Learn.COMMON_PHRASES_TITLE": "Common Phrases",
   "Learn.COMMON_PHRASES_COUNT": "{{categoriesLabel}} · {{phrasesLabel}}",
@@ -91,6 +96,7 @@
   "Learn.VOCAB_CATEGORY_TRANSPORT": "Transport",
   "Learn.VOCAB_CATEGORY_COMMON_OBJECTS": "Common Objects",
   "Learn.VOCAB_CATEGORY_VEGETABLES": "Vegetables",
+  "Learn.VOCAB_CATEGORY_SCHOOL_ITEMS": "School Items",
 
   "Tutor.TITLE": "Tutor",
   "Tutor.COMING_SOON": "Your conversational AI tutor is coming soon.",

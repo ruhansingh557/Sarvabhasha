@@ -91,6 +91,8 @@ import {
   GUJARATI_CHARACTERS,
   GURMUKHI_CHARACTERS,
   MALAYALAM_CHARACTERS,
+  URDU_CHARACTERS,
+  MEETEI_CHARACTERS,
   NUMBERS,
   FAMILY,
   FOOD_DRINK,
@@ -100,6 +102,8 @@ import {
   HOUSEHOLD_ITEMS,
   CLOTHES,
   VEGETABLES,
+  TRANSPORT,
+  SCHOOL_ITEMS,
   type ScriptCharacterData,
 } from './data';
 
@@ -112,9 +116,21 @@ type CategorySlug =
   | 'body-parts'
   | 'household-items'
   | 'clothing'
-  | 'vegetables';
+  | 'vegetables'
+  | 'transport'
+  | 'school-items';
 
-type ScriptSlug = 'devanagari' | 'bengali' | 'tamil' | 'telugu' | 'kannada' | 'gujarati' | 'gurmukhi' | 'malayalam';
+type ScriptSlug =
+  | 'devanagari'
+  | 'bengali'
+  | 'tamil'
+  | 'telugu'
+  | 'kannada'
+  | 'gujarati'
+  | 'gurmukhi'
+  | 'malayalam'
+  | 'arabic'
+  | 'meetei';
 
 /**
  * Every script authored through this pipeline, plus the ONE live language
@@ -123,6 +139,13 @@ type ScriptSlug = 'devanagari' | 'bengali' | 'tamil' | 'telugu' | 'kannada' | 'g
  * voice is needed to record it, same reasoning `google/aksharmalaTts.ts`
  * already documents for Devanagari/hi). Bengali serves both bn and as;
  * bn is the live language whose Chirp3-HD voice is used here.
+ *
+ * `arabic` (Urdu, 2026-08-04) is the NINTH script and the first
+ * right-to-left one — see `URDU_CHARACTERS`'s header in `data.ts` for the
+ * full sourcing/structural notes. `ur` already has a provisioned Google
+ * Chirp3-HD voice (`GOOGLE_VOICES.ur` in `convex/google/tts.ts`), so this
+ * script goes through `gen-audio-characters` exactly like every other
+ * script here — no new voice work needed.
  */
 const SCRIPTS: Record<ScriptSlug, { characters: ScriptCharacterData[]; languageCode: string }> = {
   devanagari: { characters: DEVANAGARI_CHARACTERS, languageCode: 'hi' },
@@ -133,6 +156,12 @@ const SCRIPTS: Record<ScriptSlug, { characters: ScriptCharacterData[]; languageC
   gujarati: { characters: GUJARATI_CHARACTERS, languageCode: 'gu' },
   gurmukhi: { characters: GURMUKHI_CHARACTERS, languageCode: 'pa' },
   malayalam: { characters: MALAYALAM_CHARACTERS, languageCode: 'ml' },
+  arabic: { characters: URDU_CHARACTERS, languageCode: 'ur' },
+  // No Google Chirp3-HD voice exists for `mni` (confirmed live via
+  // `voices.list` — see `data.ts`'s `MEETEI_CHARACTERS` header), so this is
+  // the one script whose `languageCode` maps to a Bhashini-only audio path —
+  // `genAudioCharacters` below branches on this specific slug.
+  meetei: { characters: MEETEI_CHARACTERS, languageCode: 'mni' },
 };
 
 const BACKEND_DIR = resolve(__dirname, '..', '..');
@@ -327,6 +356,30 @@ function vegetableImagePrompt(subjectDescription: string): string {
   );
 }
 
+/** Mirrors `convex/fal/vocabularyImages.ts`'s `transportImagePrompt` — see that file for the reasoning. */
+function transportImagePrompt(subjectDescription: string): string {
+  return (
+    `A simple, friendly icon-style illustration of "${subjectDescription}" — a single, clearly ` +
+    `recognizable vehicle, centered, filling most of the frame, nothing else sharing the frame. ` +
+    `Soft-shaded 2D digital illustration style — gently dimensional rendering with smooth gradient ` +
+    `shading, NO hard black outline or visible linework. Warm, saturated Indian-daylight color ` +
+    `palette (not pastel, not muted). Plain softly-warm background, no scene, no setting. Clean, ` +
+    `friendly, iconic, readable at small size. No text, no watermark, no logo.`
+  );
+}
+
+/** Mirrors `convex/fal/vocabularyImages.ts`'s `schoolItemImagePrompt` — see that file for the reasoning. */
+function schoolItemImagePrompt(subjectDescription: string): string {
+  return (
+    `A simple, clean icon-style illustration of "${subjectDescription}" — a single, clearly ` +
+    `recognizable school/classroom object, centered, filling most of the frame, nothing else ` +
+    `sharing the frame. Soft-shaded 2D digital illustration style — gently dimensional rendering ` +
+    `with smooth gradient shading, NO hard black outline or visible linework. Warm, saturated ` +
+    `Indian-daylight color palette (not pastel, not muted). Plain softly-warm background, no ` +
+    `scene, no setting. Clean, friendly, iconic, readable at small size. No text, no watermark, no logo.`
+  );
+}
+
 function itemsForCategory(categorySlug: CategorySlug) {
   switch (categorySlug) {
     case 'numbers':
@@ -347,6 +400,10 @@ function itemsForCategory(categorySlug: CategorySlug) {
       return CLOTHES;
     case 'vegetables':
       return VEGETABLES;
+    case 'transport':
+      return TRANSPORT;
+    case 'school-items':
+      return SCHOOL_ITEMS;
   }
 }
 
@@ -480,12 +537,26 @@ async function genImages(categorySlug: CategorySlug, onlyKeys?: string[]) {
                         sortOrder: i + 1,
                         prompt: clothesImagePrompt(c.imageSubject),
                       }))
-                    : VEGETABLES.map((v, i) => ({
-                        itemKey: v.itemKey,
-                        englishWord: v.englishWord,
-                        sortOrder: i + 1,
-                        prompt: vegetableImagePrompt(v.imageSubject),
-                      }))
+                    : categorySlug === 'vegetables'
+                      ? VEGETABLES.map((v, i) => ({
+                          itemKey: v.itemKey,
+                          englishWord: v.englishWord,
+                          sortOrder: i + 1,
+                          prompt: vegetableImagePrompt(v.imageSubject),
+                        }))
+                      : categorySlug === 'transport'
+                        ? TRANSPORT.map((t, i) => ({
+                            itemKey: t.itemKey,
+                            englishWord: t.englishWord,
+                            sortOrder: i + 1,
+                            prompt: transportImagePrompt(t.imageSubject),
+                          }))
+                        : SCHOOL_ITEMS.map((s, i) => ({
+                            itemKey: s.itemKey,
+                            englishWord: s.englishWord,
+                            sortOrder: i + 1,
+                            prompt: schoolItemImagePrompt(s.imageSubject),
+                          }))
   ).filter((item) => !onlyKeys || onlyKeys.includes(item.itemKey));
 
   for (const item of items) {
@@ -545,9 +616,11 @@ async function genImages(categorySlug: CategorySlug, onlyKeys?: string[]) {
  * the same mnemonic phrasing and pace). Bengali (2026-08-03, the SECOND
  * script through this pipeline) goes straight to Google Chirp3-HD from the
  * start — no repeat of the two-pass Bhashini discovery process, per this
- * pass's own explicit instruction — so this orchestrator always calls the
- * Google module, never the Bhashini one. `bhashini/aksharmalaTts.ts` still
- * exists and remains available for a future script that doesn't need it.
+ * pass's own explicit instruction — so this orchestrator calls the Google
+ * module for every script EXCEPT `meetei` (no Google voice exists for
+ * `mni` — see `data.ts`'s `MEETEI_CHARACTERS` header), which is the "future
+ * script that doesn't need [Google]" this comment always anticipated:
+ * `bhashini/aksharmalaTts.ts` remains available and is used for that one case.
  *
  * IMPORTANT (fixed 2026-08-03 when Bengali became the second script):
  * previously this unconditionally wiped ALL `kind: 'character'` rows before
@@ -560,7 +633,9 @@ async function genAudioCharacters(scriptSlug: ScriptSlug, force?: boolean) {
   const report = loadReport();
   const { characters, languageCode } = SCRIPTS[scriptSlug];
   console.log(`Generating audio for ${characters.length} ${scriptSlug} characters (voice: ${languageCode})...`);
-  const r = runConvex('google/aksharmalaTts:generateScriptCharacterAudioForScript', {
+  const engineModule =
+    scriptSlug === 'meetei' ? 'bhashini/aksharmalaTts' : 'google/aksharmalaTts';
+  const r = runConvex(`${engineModule}:generateScriptCharacterAudioForScript`, {
     script: scriptSlug,
     characters: characters.map((c) => c.character),
     languageCode,
@@ -586,10 +661,14 @@ async function genAudioCharacters(scriptSlug: ScriptSlug, force?: boolean) {
     });
   }
   saveReport(report);
-  console.log(
-    `Succeeded: ${r.succeeded}, Failed: ${r.failed}, chars sent: ${r.totalCharCount}, ` +
-      `estimated cost: $${r.estimatedCostUsd.toFixed(6)}`,
-  );
+  // Bhashini's version of this action (used only for `meetei`, see the engine
+  // branch above) is free and doesn't track per-character billing, so it has
+  // no `totalCharCount`/`estimatedCostUsd` fields — the Google-only ones.
+  const costSuffix =
+    r.totalCharCount !== undefined && r.estimatedCostUsd !== undefined
+      ? `, chars sent: ${r.totalCharCount}, estimated cost: $${r.estimatedCostUsd.toFixed(6)}`
+      : ' (Bhashini — free, no per-character cost tracked)';
+  console.log(`Succeeded: ${r.succeeded}, Failed: ${r.failed}${costSuffix}`);
   if (r.failed > 0) console.log(JSON.stringify(r.results.filter((x: any) => !x.ok), null, 2));
 }
 

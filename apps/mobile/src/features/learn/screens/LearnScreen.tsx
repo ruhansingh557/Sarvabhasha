@@ -1,6 +1,8 @@
+import { Pressable } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, type CompositeNavigationProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useQuery } from 'convex/react';
 import { api } from '@backend/_generated/api';
 import { getLanguage } from '@sarvabhasha/shared';
@@ -9,7 +11,20 @@ import { Ionicons } from '@expo/vector-icons';
 import { Screen } from '@shared/components/atoms/Screen';
 import { FoundationCard } from '../components/FoundationCard';
 import { fallbackGlyphForScript } from '../utils/foundationsDisplay';
-import type { LearnStackParamList } from '@navigation/types';
+import type { LearnStackParamList, MainTabParamList } from '@navigation/types';
+
+/**
+ * This screen needs to navigate both within its own stack (`PhraseCategories`,
+ * `Aksharmala`, …) and, for the "change language" CTA, up to the `ProfileTab`
+ * sibling in the parent bottom-tab navigator — a plain
+ * `NativeStackNavigationProp<LearnStackParamList>` only knows this stack's
+ * own routes, so this composes it with the tab navigator's prop the same way
+ * `HomeScreen` reaches into `LearnTab`.
+ */
+type LearnScreenNavigationProp = CompositeNavigationProp<
+  NativeStackNavigationProp<LearnStackParamList>,
+  BottomTabNavigationProp<MainTabParamList>
+>;
 
 /**
  * Learn tab root — the locked "Foundations" IA (Option A, four equal-peer
@@ -30,20 +45,26 @@ import type { LearnStackParamList } from '@navigation/types';
 export function LearnScreen() {
   const { t } = useTranslation();
   const theme = useTheme();
-  const navigation = useNavigation<NativeStackNavigationProp<LearnStackParamList>>();
+  const navigation = useNavigation<LearnScreenNavigationProp>();
 
   const phraseCategories = useQuery(api.categories.listCategories);
   const user = useQuery(api.users.getCurrentUser);
   const vocabCategories = useQuery(api.vocabulary.listCategories);
   const numbersResult = useQuery(api.vocabulary.listItemsByCategory, { categorySlug: 'numbers' });
 
-  const targetScript = user?.targetLanguage ? getLanguage(user.targetLanguage)?.script : undefined;
+  const targetLanguageDef = user?.targetLanguage ? getLanguage(user.targetLanguage) : undefined;
+  const targetScript = targetLanguageDef?.script;
   // `'skip'` until a script is resolvable — same pattern `HomeScreen` uses
   // for a query with nothing to fetch yet.
   const scriptCharacters = useQuery(
     api.aksharmala.listCharactersForScript,
     targetScript ? { script: targetScript } : 'skip',
   );
+
+  // Language switching itself lives on the Profile tab (`ProfileScreen`'s
+  // target-language `LanguagePicker`) — this screen's job is only to get the
+  // learner there, not to duplicate that control inline.
+  const goToProfile = () => navigation.navigate('ProfileTab', { screen: 'Profile' });
 
   // ---- Common Phrases: "N categories · M phrases", both derived from the
   // same live-only query LearnScreen used to drive its own category list.
@@ -89,6 +110,47 @@ export function LearnScreen() {
 
   return (
     <Screen scroll>
+      {/*
+        "You're learning <language>" eyebrow + a CTA to the Profile tab,
+        where target-language switching actually lives (`ProfileScreen`'s
+        `LanguagePicker`) — this row's only job is getting the learner there,
+        never an inline switcher. Skipped entirely while `user` is still
+        resolving (`undefined`) to avoid a flash of the wrong copy; once
+        resolved it shows the "no language yet" variant instead when
+        `targetLanguageDef` is missing, same "user can reach Learn before
+        picking a language" case `HomeScreen`'s empty state already handles.
+      */}
+      {user ? (
+        <Box
+          flexDirection="row"
+          alignItems="center"
+          justifyContent="space-between"
+          marginBottom="xs"
+        >
+          <Text variant="label" color="textSecondary" flexShrink={1}>
+            {targetLanguageDef
+              ? t('Learn.LEARNING_LANGUAGE_LABEL', { language: targetLanguageDef.nativeName })
+              : t('Learn.NO_TARGET_LANGUAGE_LABEL')}
+          </Text>
+          <Pressable
+            onPress={goToProfile}
+            accessibilityRole="button"
+            accessibilityLabel={t('Learn.CHANGE_LANGUAGE_CTA_A11Y')}
+          >
+            <Box
+              flexDirection="row"
+              alignItems="center"
+              gap="xs"
+              minHeight={44}
+              paddingLeft="m"
+              justifyContent="center"
+            >
+              <Text variant="link">{t('Learn.CHANGE_LANGUAGE_CTA')}</Text>
+              <Ionicons name="chevron-forward" size={16} color={theme.colors.primary} />
+            </Box>
+          </Pressable>
+        </Box>
+      ) : null}
       <Text variant="h1" marginBottom="l">
         {t('Learn.TITLE')}
       </Text>

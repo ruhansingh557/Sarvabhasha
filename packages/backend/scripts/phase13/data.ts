@@ -22,11 +22,19 @@ export interface ScriptCharacterData {
   character: string;
   characterType: CharacterType;
   romanization: string;
-  exampleWord: string;
-  exampleTransliteration: string;
+  /**
+   * Optional (matches `schema.ts`'s own `v.optional` on this field — "not
+   * every character... needs one") since Meetei Mayek genuinely has letters
+   * with no confidently-attested example word rather than a forced/guessed
+   * one — see `MEETEI_CHARACTERS`'s header. Every other script in this
+   * pipeline happens to have one for every row, but the type was never
+   * meant to require that.
+   */
+  exampleWord?: string;
+  exampleTransliteration?: string;
   sortOrder: number;
   /** English gloss of the example word — for the review report only, not stored. */
-  exampleGloss: string;
+  exampleGloss?: string;
   /** Non-null only for the handful of characters with no natural word-initial example. */
   note?: string;
 }
@@ -786,6 +794,150 @@ export const MALAYALAM_CHARACTERS: ScriptCharacterData[] = [
   { character: 'ജ്ഞ', characterType: 'conjunct', romanization: 'jnya', exampleWord: 'ജ്ഞാനം', exampleTransliteration: 'jnanam', exampleGloss: 'knowledge', sortOrder: 54 },
 ];
 
+/**
+ * Urdu (`script: 'arabic'` in `@sarvabhasha/shared`'s `languages.ts`, live
+ * language `ur`) — the NINTH script authored through this pipeline
+ * (2026-08-04), and the first that is NOT a Brahmic abugida. Perso-Arabic
+ * Nastaliq, written RIGHT-TO-LEFT — every other script here is
+ * left-to-right. See the run's own task brief for the full list of
+ * structural differences this required verifying rather than assuming; this
+ * header documents what was actually found.
+ *
+ * SOURCING (WebSearch-verified across multiple independent sources —
+ * Wikipedia's "Urdu alphabet" article, r12a.github.io's Urdu orthography
+ * notes, and cross-checked against desilingua.net/remitly.com/kylian.ai):
+ * all agree the Urdu حروفِ تہجی (huroof-e-tahajji) is standardly cited as 39
+ * letters — the 28 core Arabic letters, plus 4 Persian additions (پ چ ژ گ),
+ * plus 6 more South-Asian-specific additions Urdu itself contributes beyond
+ * Persian (ٹ ڈ ڑ retroflex stops/flap, ں nasalization marker, ھ aspiration
+ * marker, ے a vowel-only "bari ye"), plus ء (hamza) and the base ح/ہ/ی/و
+ * already counted among the 28. A handful of sources count a 40th letter by
+ * additionally splitting out آ (alif madda, "alif" + the madda diacritic) —
+ * this dataset follows the more common 39-letter convention and does NOT
+ * give آ its own row, same "pick the standard convention, document the
+ * alternative" discipline as Bengali's chandrabindu-classification note.
+ *
+ * ROW ORDER IS THE REAL huroof-e-tahajji ORDER, NOT a "vowels block, then
+ * consonants block" grouping the way every OTHER script in this file is
+ * laid out. This is a deliberate, verified difference, not an oversight:
+ * Urdu's own pedagogical tradition interleaves its 4 vowel-carrying letters
+ * (ا و ی ے) into their natural alphabetical position among the 35
+ * consonants — it does not front-load them the way Devanagari's स्वर/
+ * व्यंजन split or Malayalam's സ്വരാക്ഷരം/വ്യഞ്ജനാക്ഷരം split does. Re-sorting
+ * to LOOK like the other 8 scripts would misrepresent Urdu's actual
+ * alphabet, which is exactly the mistake Bengali's header already warns
+ * against ("do not fix this to match — it is [this script's] own
+ * convention"). `characterType` still correctly marks each of the 4 as
+ * `'vowel'` (ا alif, و vao, ی choti ye, ے bari ye — Urdu's own حروفِ علت،
+ * huroof-e-illat, "weak/vowel letters" classification, confirmed via
+ * chiragh-e-urdu.org's lesson materials and Rekhta Dictionary — the
+ * remaining 35 are `'consonant'`); there is no `'conjunct'` row for Urdu —
+ * Nastaliq has no Sanskrit-style fused-glyph conjunct tradition, and the
+ * closest analogue (aspirated digraphs like پھ/بھ/تھ, a base consonant
+ * immediately followed by ھ) is explicitly OUT OF SCOPE as its own flashcard
+ * row: both halves (e.g. پ and ھ) already have their own row, and the
+ * `character` field is one glyph per the run brief, not a two-glyph
+ * digraph — same "don't chase every extended combination" precedent as
+ * Malayalam's chillu letters or Tamil's 216 vowel-consonant ligatures.
+ *
+ * ISOLATED PRESENTATION FORMS ONLY: every `character` value below is the
+ * standalone/isolated Unicode codepoint for that letter (e.g. U+0628 ب, not
+ * a mid-word medial/initial contextual glyph) — the correct choice for a
+ * "here is the letter" flashcard per the run brief; Urdu text shaping
+ * (initial/medial/final/isolated) is expected to be handled by the
+ * rendering font/OS, not baked into the stored character.
+ *
+ * POSITION-RESTRICTED LETTERS (a real structural fact about Urdu
+ * orthography, not a research gap — confirmed independently by both
+ * Wikipedia's and r12a's letter tables): ڑ (retroflex flap), ں
+ * (nasalization), ھ (aspiration marker), and ے (bari ye) never occur
+ * word-INITIALLY. Each is given a genuine, common medial/final example
+ * instead, flagged with `note`, the same honest-gap discipline as
+ * Devanagari's ङ/ञ/अः or Bengali's ড়.
+ *
+ * HAMZA (ء) IS A SPECIAL CASE, not just position-restricted: Urdu almost
+ * never writes it as the bare ء glyph inside a real word — it is nearly
+ * always "seated" on a carrier (ؤ wao-seat or ئ yeh-seat) depending on
+ * surrounding vowels (confirmed via talkpal.ai's and Columbia's Urdu-program
+ * hamza handouts). گاؤں (village) is used as the example, with hamza carried
+ * on و rather than appearing bare — flagged with `note` rather than silently
+ * presenting a hamza-in-isolation example that doesn't reflect how the
+ * letter is actually encountered in real text.
+ *
+ * SOUND MERGERS: modern spoken Urdu has collapsed several historically
+ * distinct Arabic letters onto the same sound — ث/ص/س all →/s/, ذ/ز/ض/ظ all
+ * →/z/, ط/ت both →/t/, ح/ہ both →/h/ — while orthography still requires
+ * knowing which specific letter a word is spelled with. Because of this,
+ * `romanization` below is the letter's traditional NAME (alif, be, se,
+ * zwad, zoe, …) rather than a sound-based syllable the way Devanagari's
+ * 'ka'/'kha' are — a name-based scheme is both the standard convention used
+ * across every Urdu-teaching resource consulted and the only way to keep 39
+ * rows individually identifiable when several genuinely sound identically.
+ * Retroflex letters still get the same capitalized-first-letter treatment
+ * this project already uses elsewhere (ٹ 'Te' vs ت 'te', ڈ 'Dal' vs د 'dal',
+ * ڑ 'Re' vs ر 're') for at-a-glance consistency with Devanagari/Malayalam's
+ * Ta/Da/Ra convention.
+ *
+ * A GENUINE, EXPECTED COGNATE PATTERN, not a coincidence worth treating as a
+ * "discovery" the way Malayalam/Tamil's was: Hindi and Urdu are the same
+ * spoken language (Hindustani) in two different scripts/registers, so a
+ * large fraction of the example words below are the literal same word as
+ * Devanagari's own picks for the phonetically closest letter — انار/अनार
+ * (anaar), بکری/बकरी (bakri), خرگوش/खरगोश (khargosh), عینک/ऐनक (ainak, a
+ * genuine shared Perso-Arabic loanword in both), ہاتھی/हाथी (haathi),
+ * دروازہ/दरवाज़ा (darwaza), and more, noted inline only where the parallel
+ * is worth flagging (loanword cases), not on every plain cognate.
+ *
+ * MNEMONIC CONVENTION: `ur` DOES get a `MNEMONIC_CONNECTOR` entry in
+ * `bhashini/aksharmalaTts.ts` — سے ("se"), the same word as Hindi's से and
+ * for the same reason (Hindi and Urdu share this postposition). Verified via
+ * a real published primer, "ا سے اُردو" (Alif Se Urdu, Sarah Hashmi) using
+ * exactly this "<letter> سے <word>" title pattern, plus general confirmation
+ * this is the standard Urdu-medium primary-school approach — not assumed
+ * from the Hindi precedent alone.
+ */
+export const URDU_CHARACTERS: ScriptCharacterData[] = [
+  { character: 'ا', characterType: 'vowel', romanization: 'alif', exampleWord: 'انار', exampleTransliteration: 'anaar', exampleGloss: 'pomegranate', sortOrder: 1 },
+  { character: 'ب', characterType: 'consonant', romanization: 'be', exampleWord: 'بکری', exampleTransliteration: 'bakri', exampleGloss: 'goat', sortOrder: 2 },
+  { character: 'پ', characterType: 'consonant', romanization: 'pe', exampleWord: 'پانی', exampleTransliteration: 'paani', exampleGloss: 'water', sortOrder: 3 },
+  { character: 'ت', characterType: 'consonant', romanization: 'te', exampleWord: 'تربوز', exampleTransliteration: 'tarbooz', exampleGloss: 'watermelon', sortOrder: 4 },
+  { character: 'ٹ', characterType: 'consonant', romanization: 'Te', exampleWord: 'ٹماٹر', exampleTransliteration: 'tamatar', exampleGloss: 'tomato', sortOrder: 5 },
+  { character: 'ث', characterType: 'consonant', romanization: 'se', exampleWord: 'ثبوت', exampleTransliteration: 'saboot', exampleGloss: 'proof/evidence', sortOrder: 6, note: 'ث is an Arabic-origin letter pronounced identically to س/ص in modern Urdu (historical distinction preserved in spelling only). ثبوت is a genuinely common word (news/legal register), not a strained pick.' },
+  { character: 'ج', characterType: 'consonant', romanization: 'jeem', exampleWord: 'جوتا', exampleTransliteration: 'joota', exampleGloss: 'shoe', sortOrder: 7 },
+  { character: 'چ', characterType: 'consonant', romanization: 'che', exampleWord: 'چمچہ', exampleTransliteration: 'chamcha', exampleGloss: 'spoon', sortOrder: 8 },
+  { character: 'ح', characterType: 'consonant', romanization: 'hay', exampleWord: 'حلوہ', exampleTransliteration: 'halwa', exampleGloss: 'halwa (a sweet dessert)', sortOrder: 9, note: 'ح ("bari he") is phonetically merged with ہ ("choti he") in modern spoken Urdu — both approximate /h/, distinguished only in spelling, same historical-merger pattern as this script’s s-group (ث/ص/س) and z-group (ذ/ز/ض/ظ) letters.' },
+  { character: 'خ', characterType: 'consonant', romanization: 'khe', exampleWord: 'خرگوش', exampleTransliteration: 'khargosh', exampleGloss: 'rabbit', sortOrder: 10, note: 'خرگوش is the same Perso-Arabic-origin loanword Devanagari’s ख uses for its own खरगोश — a genuine shared borrowing, not an independent coincidence.' },
+  { character: 'د', characterType: 'consonant', romanization: 'dal', exampleWord: 'دروازہ', exampleTransliteration: 'darwaza', exampleGloss: 'door', sortOrder: 11 },
+  { character: 'ڈ', characterType: 'consonant', romanization: 'Dal', exampleWord: 'ڈبہ', exampleTransliteration: 'dibba', exampleGloss: 'box', sortOrder: 12 },
+  { character: 'ذ', characterType: 'consonant', romanization: 'zal', exampleWord: 'ذائقہ', exampleTransliteration: 'zaaiqa', exampleGloss: 'taste/flavor', sortOrder: 13, note: 'ذ is pronounced identically to ز/ض/ظ in modern Urdu (/z/); ذائقہ is a genuinely common everyday word rather than an obscure Arabic-origin pick.' },
+  { character: 'ر', characterType: 'consonant', romanization: 're', exampleWord: 'روٹی', exampleTransliteration: 'roti', exampleGloss: 'flatbread', sortOrder: 14 },
+  { character: 'ڑ', characterType: 'consonant', romanization: 'Re', exampleWord: 'گھوڑا', exampleTransliteration: 'ghoraa', exampleGloss: 'horse', sortOrder: 15, note: 'ڑ (retroflex flap) never occurs word-initially in Urdu (confirmed structural restriction, same category as Devanagari’s ङ/ञ) — گھوڑا is a standard medial example.' },
+  { character: 'ز', characterType: 'consonant', romanization: 'ze', exampleWord: 'زبان', exampleTransliteration: 'zabaan', exampleGloss: 'tongue/language', sortOrder: 16 },
+  { character: 'ژ', characterType: 'consonant', romanization: 'zhe', exampleWord: 'ژالہ', exampleTransliteration: 'zhaala', exampleGloss: 'hailstone', sortOrder: 17, note: 'ژ is the rarest Urdu letter, used almost exclusively in Persian-origin loanwords. ژالہ (hailstone) is the standard, dictionary-confirmed primer example — same rarity category as Devanagari’s ङ or Bengali’s ঞ.' },
+  { character: 'س', characterType: 'consonant', romanization: 'seen', exampleWord: 'سورج', exampleTransliteration: 'sooraj', exampleGloss: 'sun', sortOrder: 18 },
+  { character: 'ش', characterType: 'consonant', romanization: 'sheen', exampleWord: 'شیر', exampleTransliteration: 'sher', exampleGloss: 'lion', sortOrder: 19 },
+  { character: 'ص', characterType: 'consonant', romanization: 'swad', exampleWord: 'صابن', exampleTransliteration: 'saabun', exampleGloss: 'soap', sortOrder: 20, note: 'ص is pronounced identically to ث/س in modern Urdu (/s/).' },
+  { character: 'ض', characterType: 'consonant', romanization: 'zwad', exampleWord: 'ضد', exampleTransliteration: 'zid', exampleGloss: 'stubbornness/insistence', sortOrder: 21 },
+  { character: 'ط', characterType: 'consonant', romanization: 'toe', exampleWord: 'طوطا', exampleTransliteration: 'tota', exampleGloss: 'parrot', sortOrder: 22, note: 'Verified (cross-checked against multiple Urdu dictionaries) that طوطا, spelled with ط, is the standard form — توتا (with ت) appears only as a rarer informal variant.' },
+  { character: 'ظ', characterType: 'consonant', romanization: 'zoe', exampleWord: 'ظالم', exampleTransliteration: 'zaalim', exampleGloss: 'cruel/tyrant', sortOrder: 23, note: 'ظ is the rarest of Urdu’s four letters pronounced /z/ (ز ذ ض ظ); ظالم is a genuinely common adjective.' },
+  { character: 'ع', characterType: 'consonant', romanization: 'ain', exampleWord: 'عینک', exampleTransliteration: 'ainak', exampleGloss: 'spectacles', sortOrder: 24, note: 'عینک is the same Perso-Arabic loanword Devanagari’s ऐ uses for its own ऐनक — genuinely borrowed into Hindi via Urdu/Persian, not independently coincidental.' },
+  { character: 'غ', characterType: 'consonant', romanization: 'ghain', exampleWord: 'غبارہ', exampleTransliteration: 'ghubaara', exampleGloss: 'balloon', sortOrder: 25 },
+  { character: 'ف', characterType: 'consonant', romanization: 'fe', exampleWord: 'فرش', exampleTransliteration: 'farsh', exampleGloss: 'floor', sortOrder: 26 },
+  { character: 'ق', characterType: 'consonant', romanization: 'qaf', exampleWord: 'قلم', exampleTransliteration: 'qalam', exampleGloss: 'pen', sortOrder: 27 },
+  { character: 'ک', characterType: 'consonant', romanization: 'kaf', exampleWord: 'کنول', exampleTransliteration: 'kanwal', exampleGloss: 'lotus', sortOrder: 28, note: 'کنول is Urdu/Persian’s own word for lotus — the same concept as Devanagari’s क uses (कमल, from a different Sanskrit root), a conceptual rather than literal cognate.' },
+  { character: 'گ', characterType: 'consonant', romanization: 'gaf', exampleWord: 'گائے', exampleTransliteration: 'gaay', exampleGloss: 'cow', sortOrder: 29 },
+  { character: 'ل', characterType: 'consonant', romanization: 'lam', exampleWord: 'لڈو', exampleTransliteration: 'laddu', exampleGloss: 'laddu (a round Indian sweet)', sortOrder: 30 },
+  { character: 'م', characterType: 'consonant', romanization: 'meem', exampleWord: 'مچھلی', exampleTransliteration: 'machhli', exampleGloss: 'fish', sortOrder: 31 },
+  { character: 'ن', characterType: 'consonant', romanization: 'noon', exampleWord: 'نل', exampleTransliteration: 'nal', exampleGloss: 'tap/faucet', sortOrder: 32 },
+  { character: 'ں', characterType: 'consonant', romanization: 'noon-ghunna', exampleWord: 'کہاں', exampleTransliteration: 'kahaan', exampleGloss: 'where', sortOrder: 33, note: 'ں (nasalization marker) never occurs word-initially, only word-finally — same restricted-position category as ڑ/ھ/ے.' },
+  { character: 'و', characterType: 'vowel', romanization: 'vao', exampleWord: 'وقت', exampleTransliteration: 'waqt', exampleGloss: 'time', sortOrder: 34 },
+  { character: 'ہ', characterType: 'consonant', romanization: 'he', exampleWord: 'ہاتھی', exampleTransliteration: 'haathi', exampleGloss: 'elephant', sortOrder: 35 },
+  { character: 'ھ', characterType: 'consonant', romanization: 'do-chashmi-he', exampleWord: 'پھول', exampleTransliteration: 'phool', exampleGloss: 'flower', sortOrder: 36, note: 'ھ (do-chashmi he, the aspiration marker) never occurs independently or word-initially — it is always the SECOND half of a consonant+ھ digraph (e.g. پھ = "ph" as in پھول). A structural fact, not a research gap: unlike every other Urdu letter, ھ has no standalone word of its own.' },
+  { character: 'ء', characterType: 'consonant', romanization: 'hamza', exampleWord: 'گاؤں', exampleTransliteration: 'gaaon', exampleGloss: 'village', sortOrder: 37, note: 'Hamza almost never appears as the bare ء glyph inside a real word — Urdu orthography seats it on a carrier depending on surrounding vowels (here, ؤ — wao-seat). گاؤں is the standard, extremely common example; the glyph on the card is the isolated letter form, not how it is actually encountered in text.' },
+  { character: 'ی', characterType: 'vowel', romanization: 'ye', exampleWord: 'یار', exampleTransliteration: 'yaar', exampleGloss: 'friend', sortOrder: 38 },
+  { character: 'ے', characterType: 'vowel', romanization: 'bari-ye', exampleWord: 'چائے', exampleTransliteration: 'chaay', exampleGloss: 'tea', sortOrder: 39, note: 'ے (bari ye) never occurs word-initially — it is a word-final/medial-only vowel letter. چائے is the standard, extremely common example.' },
+];
+
 export interface NumberItem {
   itemKey: string;
   englishWord: string;
@@ -1057,4 +1209,151 @@ export const HOUSEHOLD_ITEMS: FamilyItem[] = [
   { itemKey: 'pillow', englishWord: 'Pillow', text: 'तकिया', transliteration: 'takiya', imageSubject: 'a single soft rectangular bed pillow with a plain pillowcase, no fabric tag, label, or stitched brand mark anywhere on it' },
   { itemKey: 'blanket', englishWord: 'Blanket', text: 'कंबल', transliteration: 'kambal', imageSubject: 'a single neatly folded warm woolen blanket' },
   { itemKey: 'knife', englishWord: 'Knife', text: 'चाकू', transliteration: 'chaaku', imageSubject: 'a single kitchen knife with a completely plain, unmarked blade (no engraving, no logo, no brand text) and a plain handle, resting on a small wooden cutting board' },
+];
+
+/**
+ * Transport (2026-08-04, fourth follow-on pass). `imageSubject` describes a
+ * single vehicle, side view where natural — same "single recognizable
+ * item, no clutter" discipline as every prior category, via a new
+ * `transportImagePrompt`. EVERY item explicitly specifies "no visible
+ * text/logos/badges/route numbers" — a lesson learned directly from this
+ * same pass's Clothing category (kurta/cap both needed retries to remove
+ * fake text and brand-like marks fal.ai kept adding), applied proactively
+ * here instead of discovered after the fact.
+ */
+export const TRANSPORT: FamilyItem[] = [
+  { itemKey: 'car', englishWord: 'Car', text: 'कार', transliteration: 'car', imageSubject: 'a single small car, side view, no visible brand badges, logos, or number plate text' },
+  { itemKey: 'bus', englishWord: 'Bus', text: 'बस', transliteration: 'bus', imageSubject: 'a single bus, side view, no visible route numbers, destination text, or logos' },
+  { itemKey: 'train', englishWord: 'Train', text: 'रेलगाड़ी', transliteration: 'relgaadi', imageSubject: 'a single train engine with one or two carriages, side view, no visible text or numbers' },
+  { itemKey: 'airplane', englishWord: 'Airplane', text: 'हवाई जहाज़', transliteration: 'hawai jahaz', imageSubject: 'a single passenger airplane in flight, side view, no visible airline logos or text' },
+  { itemKey: 'bicycle', englishWord: 'Bicycle', text: 'साइकिल', transliteration: 'cycle', imageSubject: 'a single bicycle, side view, no visible brand text' },
+  { itemKey: 'motorcycle', englishWord: 'Motorcycle', text: 'मोटरसाइकिल', transliteration: 'motorcycle', imageSubject: 'a single motorcycle, side view, no visible brand text or logos' },
+  { itemKey: 'boat', englishWord: 'Boat', text: 'नाव', transliteration: 'naav', imageSubject: 'a single small wooden rowboat, side view' },
+  { itemKey: 'ship', englishWord: 'Ship', text: 'जहाज़', transliteration: 'jahaz', imageSubject: 'a single large cargo ship, side view, no visible text or flags' },
+  { itemKey: 'truck', englishWord: 'Truck', text: 'ट्रक', transliteration: 'truck', imageSubject: 'a single delivery truck, side view, no visible text or logos' },
+  { itemKey: 'rickshaw', englishWord: 'Rickshaw', text: 'रिक्शा', transliteration: 'rickshaw', imageSubject: 'a single cycle rickshaw, side view, no visible text' },
+  { itemKey: 'auto', englishWord: 'Auto-rickshaw', text: 'ऑटो', transliteration: 'auto', imageSubject: 'a single three-wheeled auto-rickshaw, side view, no visible text or number plate' },
+  { itemKey: 'helicopter', englishWord: 'Helicopter', text: 'हेलीकॉप्टर', transliteration: 'helicopter', imageSubject: 'a single helicopter, side view, no visible text or logos' },
+  { itemKey: 'ambulance', englishWord: 'Ambulance', text: 'एम्बुलेंस', transliteration: 'ambulance', imageSubject: 'a single ambulance van, side view, with a plain red cross symbol only, no other text or logos' },
+  { itemKey: 'fire-truck', englishWord: 'Fire Truck', text: 'दमकल', transliteration: 'damkal', imageSubject: 'a single red fire truck with a ladder on top, side view, no visible text or logos' },
+  { itemKey: 'scooter', englishWord: 'Scooter', text: 'स्कूटर', transliteration: 'scooter', imageSubject: 'a single two-wheeled scooter, side view, no visible brand text' },
+];
+
+/**
+ * School Items (2026-08-04, fourth follow-on pass). Same "single item, no
+ * clutter, no text/logos" discipline as `TRANSPORT`, via a new
+ * `schoolItemImagePrompt`. `book`/`notebook`/`blackboard` all explicitly
+ * specify blank/no-title-text — the single highest-risk sub-category for
+ * fal.ai inventing fake text, learned from this pass's Clothing lesson.
+ */
+export const SCHOOL_ITEMS: FamilyItem[] = [
+  { itemKey: 'book', englishWord: 'Book', text: 'किताब', transliteration: 'kitaab', imageSubject: 'a single closed hardcover book, no visible title text or author name on the cover' },
+  { itemKey: 'pencil', englishWord: 'Pencil', text: 'पेंसिल', transliteration: 'pencil', imageSubject: 'a single wooden pencil with a pink eraser tip, lying flat, no visible brand text' },
+  { itemKey: 'pen', englishWord: 'Pen', text: 'कलम', transliteration: 'kalam', imageSubject: 'a single ballpoint pen, lying flat, no visible brand text' },
+  { itemKey: 'eraser', englishWord: 'Eraser', text: 'रबड़', transliteration: 'rabar', imageSubject: 'a single rectangular pink eraser, no visible brand text' },
+  { itemKey: 'ruler', englishWord: 'Ruler', text: 'स्केल', transliteration: 'scale', imageSubject: 'a single flat wooden ruler with plain tick marks, no printed numerals or brand text' },
+  { itemKey: 'bag', englishWord: 'School Bag', text: 'बस्ता', transliteration: 'basta', imageSubject: 'a single school backpack, no visible logos or text' },
+  { itemKey: 'notebook', englishWord: 'Notebook', text: 'कॉपी', transliteration: 'copy', imageSubject: 'a single spiral-bound notebook with a plain solid-colour cover, no visible title text or writing' },
+  { itemKey: 'blackboard', englishWord: 'Blackboard', text: 'ब्लैकबोर्ड', transliteration: 'blackboard', imageSubject: 'a single small blackboard on an easel stand, completely blank with no chalk writing or drawing on it' },
+  { itemKey: 'chalk', englishWord: 'Chalk', text: 'चॉक', transliteration: 'chalk', imageSubject: 'a few white sticks of chalk lying together, no visible text' },
+  { itemKey: 'desk', englishWord: 'Desk', text: 'मेज़', transliteration: 'mez', imageSubject: 'a single simple wooden school desk, viewed from the front' },
+  { itemKey: 'chair', englishWord: 'Chair', text: 'कुर्सी', transliteration: 'kursi', imageSubject: 'a single simple wooden chair, side view' },
+  { itemKey: 'scissors', englishWord: 'Scissors', text: 'कैंची', transliteration: 'kainchi', imageSubject: 'a single pair of blunt-tipped safety scissors, lying flat, no visible brand text' },
+  { itemKey: 'glue', englishWord: 'Glue', text: 'गोंद', transliteration: 'gond', imageSubject: 'a single small bottle of white glue with its cap, standing upright, no visible brand text' },
+  { itemKey: 'crayons', englishWord: 'Crayons', text: 'क्रेयॉन', transliteration: 'crayon', imageSubject: 'a few colourful wax crayons lying together, tips visible, no wrapper text' },
+  { itemKey: 'sharpener', englishWord: 'Sharpener', text: 'शार्पनर', transliteration: 'sharpener', imageSubject: 'a single small pencil sharpener, no visible brand text' },
+];
+
+/**
+ * Meetei Mayek (`script: 'meetei'`, serving `mni`/Manipuri) — the TENTH
+ * script through this pipeline (2026-08-04), merged in here from a
+ * temporarily-separate `meeteiData.ts` (built while another agent had live
+ * uncommitted edits to this exact file for Urdu — see git history / that
+ * agent's report for the full trail; the separation was precautionary, not
+ * structural, and this merge is the anticipated safe follow-up).
+ *
+ * FEASIBILITY WAS VERIFIED FIRST, NOT ASSUMED (full trail in
+ * `plans/phase-13-foundations-vocab-numbers-alphabet.md`'s 2026-08-04 entry):
+ * iOS font rendering confirmed live (real shaped glyphs, not tofu); Google
+ * Cloud TTS confirmed to have NO `mni` voice (live `voices.list` call, zero
+ * matches — unlike every other script here); Bhashini confirmed working for
+ * isolated/short Meetei Mayek text specifically (the harder synthesis case),
+ * via a dedicated orphaned-blob trial tool (`bhashini/meeteiTrial.ts`).
+ * Because there is no Google voice, Meetei audio generation uses
+ * `bhashini/aksharmalaTts.ts` — the ONE script in this pipeline that does,
+ * everything else having moved to Google Chirp3-HD (see `genAudioCharacters`
+ * in `run.ts` for the explicit engine branch this requires).
+ *
+ * STRUCTURE — genuinely unlike every other script here (Unicode Standard
+ * v17.0's Meetei Mayek code chart, cross-checked against Wikipedia/Atlas of
+ * Endangered Alphabets): 27 "Iyek Ipee" main letters, only 3 of them vowels,
+ * interleaved in a fixed traditional order with NO vowel/consonant block
+ * split. 18 are the original script, each traditionally named after a human
+ * body part (kok=head, sam=hair, lai=god...) — a genuine acrophonic mnemonic
+ * system. The other 9 are modern 20th-century additions for Bengali/Hindi/
+ * Sanskrit loanwords, with NO traditional name — a real structural fact, not
+ * a sourcing gap. No conjuncts (none exist for this script). Lonsum
+ * (final-consonant) and Cheitap (dependent vowel sign) forms exist but are
+ * deliberately not seeded as their own rows — same "matras aren't standalone
+ * Aksharmala entries" scope precedent as Devanagari/Bengali; they're used
+ * compositionally below, to spell the 18 traditional names.
+ *
+ * SOURCING TIER — READ BEFORE TRUSTING THIS AT THE SAME LEVEL AS THE OTHER 9
+ * SCRIPTS: unlike Devanagari/Bengali/Tamil's primer-verified picks, no
+ * published chart showing how the 18 traditional NAMES are actually SPELLED
+ * in Meetei Mayek script was found despite genuine search effort (Omniglot,
+ * Wikipedia, Atlas of Endangered Alphabets, the Unicode L2 proposal doc).
+ * Every `exampleWord` below for the 18 original letters is this pipeline's
+ * OWN CONSTRUCTION from Unicode's documented phonetic values — principled,
+ * mechanical, NOT independently native-verified. This is why every row below
+ * carries a `note` and why the script is seeded + audio-generated but held
+ * at `draft`, not promoted — CLAUDE.md rule 14's human review gate is what
+ * this pipeline could not itself perform for this specific script. 3 of 18
+ * traditional names (PA, NA, I) and 6 of 9 loan letters are left with NO
+ * `exampleWord` at all rather than a forced/guessed one (schema.ts: "not
+ * every character... needs one").
+ *
+ * TOTAL: 27/27 letters seeded (a complete, correct CHARACTER SET, the
+ * non-negotiable bar) — 21/27 have an `exampleWord`, 6/27 are
+ * romanization-only, honestly, not hidden.
+ */
+const MEETEI_PIPELINE_SPELLING_NOTE =
+  'exampleWord spelling is pipeline-constructed from Unicode-documented phonetic values ' +
+  '(letter + vowel sign + lonsum), NOT sourced from a published native spelling chart — ' +
+  'needs native Manipuri speaker confirmation at the review gate before promotion. See this ' +
+  "file's Meetei Mayek header for the full sourcing-tier explanation.";
+
+export const MEETEI_CHARACTERS: ScriptCharacterData[] = [
+  // ---- 18 original Iyek Ipee — traditionally named after body parts ----
+  { character: 'ꯀ', characterType: 'consonant', romanization: 'ka', exampleWord: 'ꯀꯣꯛ', exampleTransliteration: 'kok', exampleGloss: "head/brain (this letter's own traditional name)", sortOrder: 1, note: MEETEI_PIPELINE_SPELLING_NOTE },
+  { character: 'ꯁ', characterType: 'consonant', romanization: 'sa', exampleWord: 'ꯁꯝ', exampleTransliteration: 'sam', exampleGloss: "hair (this letter's own traditional name)", sortOrder: 2, note: MEETEI_PIPELINE_SPELLING_NOTE + ' Lowest-risk construction in this set — only a lonsum final added to the bare inherent-vowel reading, no vowel-sign change.' },
+  { character: 'ꯂ', characterType: 'consonant', romanization: 'la', exampleWord: 'ꯂꯩ', exampleTransliteration: 'lai', exampleGloss: 'god/deity (this letter\'s own traditional name — corroborated independently by "Lai Haraoba," Manipur\'s well-documented traditional festival literally meaning "merriment of the gods")', sortOrder: 3, note: MEETEI_PIPELINE_SPELLING_NOTE + ' One source (Atlas of Endangered Alphabets) glossed this letter\'s name as "forehead" instead — "god" was kept as the better-corroborated reading (Lai Haraoba), but flagging the discrepancy for the review gate.' },
+  { character: 'ꯃ', characterType: 'consonant', romanization: 'ma', exampleWord: 'ꯃꯤꯠ', exampleTransliteration: 'mit', exampleGloss: "eye (this letter's own traditional name)", sortOrder: 4, note: MEETEI_PIPELINE_SPELLING_NOTE },
+  { character: 'ꯄ', characterType: 'consonant', romanization: 'pa', sortOrder: 5, note: 'Traditional name ("pā") means eyelash, but is essentially identical to the letter\'s own bare reading ("pa") — no distinctly-spelled exampleWord found worth constructing. Left empty rather than forced (schema.ts: "not every character... needs one").' },
+  { character: 'ꯅ', characterType: 'consonant', romanization: 'na', sortOrder: 6, note: 'Traditional name ("nā") means ear, but is essentially identical to the letter\'s own bare reading ("na") — same call as PA above. Left empty rather than forced.' },
+  { character: 'ꯆ', characterType: 'consonant', romanization: 'cha', exampleWord: 'ꯆꯤꯜ', exampleTransliteration: 'chil', exampleGloss: "lips (this letter's own traditional name)", sortOrder: 7, note: MEETEI_PIPELINE_SPELLING_NOTE },
+  { character: 'ꯇ', characterType: 'consonant', romanization: 'ta', exampleWord: 'ꯇꯤꯜ', exampleTransliteration: 'til', exampleGloss: "saliva (this letter's own traditional name)", sortOrder: 8, note: MEETEI_PIPELINE_SPELLING_NOTE },
+  { character: 'ꯈ', characterType: 'consonant', romanization: 'kha', exampleWord: 'ꯈꯧ', exampleTransliteration: 'khou', exampleGloss: "throat/palate/neck (this letter's own traditional name)", sortOrder: 9, note: MEETEI_PIPELINE_SPELLING_NOTE },
+  { character: 'ꯉ', characterType: 'consonant', romanization: 'nga', exampleWord: 'ꯉꯧ', exampleTransliteration: 'ngou', exampleGloss: "larynx/pharynx (this letter's own traditional name)", sortOrder: 10, note: MEETEI_PIPELINE_SPELLING_NOTE },
+  { character: 'ꯊ', characterType: 'consonant', romanization: 'tha', exampleWord: 'ꯊꯧ', exampleTransliteration: 'thou', exampleGloss: "chest/ribs (this letter's own traditional name)", sortOrder: 11, note: MEETEI_PIPELINE_SPELLING_NOTE },
+  { character: 'ꯋ', characterType: 'consonant', romanization: 'wa', exampleWord: 'ꯋꯩ', exampleTransliteration: 'wai', exampleGloss: "navel/heart (this letter's own traditional name)", sortOrder: 12, note: MEETEI_PIPELINE_SPELLING_NOTE },
+  { character: 'ꯌ', characterType: 'consonant', romanization: 'ya', exampleWord: 'ꯌꯪ', exampleTransliteration: 'yang', exampleGloss: "spine (this letter's own traditional name)", sortOrder: 13, note: MEETEI_PIPELINE_SPELLING_NOTE },
+  { character: 'ꯍ', characterType: 'consonant', romanization: 'ha', exampleWord: 'ꯍꯨꯛ', exampleTransliteration: 'huk', exampleGloss: "joint (this letter's own traditional name)", sortOrder: 14, note: MEETEI_PIPELINE_SPELLING_NOTE },
+  { character: 'ꯎ', characterType: 'vowel', romanization: 'u', exampleWord: 'ꯎꯟ', exampleTransliteration: 'un', exampleGloss: "skin (this letter's own traditional name)", sortOrder: 15, note: MEETEI_PIPELINE_SPELLING_NOTE },
+  { character: 'ꯏ', characterType: 'vowel', romanization: 'i', sortOrder: 16, note: 'Sources conflict on this letter\'s traditional name/meaning (Wikipedia\'s table names it "e" meaning "blood" with IPA /iː/ — an internally inconsistent pairing) and no independent corroboration was found. Left empty rather than guess.' },
+  { character: 'ꯐ', characterType: 'consonant', romanization: 'pha', exampleWord: 'ꯐꯝ', exampleTransliteration: 'pham', exampleGloss: "buttocks/uterus (this letter's own traditional name)", sortOrder: 17, note: MEETEI_PIPELINE_SPELLING_NOTE + ' Same low-risk single-lonsum construction as SAM above.' },
+  { character: 'ꯑ', characterType: 'vowel', romanization: 'a', exampleWord: 'ꯑꯇꯤꯌ', exampleTransliteration: 'atiya', exampleGloss: "heaven/divinity/immortality/birth (this letter's own traditional name)", sortOrder: 18, note: MEETEI_PIPELINE_SPELLING_NOTE + ' The most complex construction in this set (4 glyphs, 3 syllables) — highest spelling-risk row, prioritize this one at the review gate.' },
+
+  // ---- 9 modern loan letters — 20th-century additions for Bengali/Hindi/
+  // Sanskrit loanwords; NO traditional body-part name or meaning exists for
+  // these (a real structural fact, not a gap). ----
+  { character: 'ꯒ', characterType: 'consonant', romanization: 'ga', exampleWord: 'ꯒꯨꯔꯨ', exampleTransliteration: 'guru', exampleGloss: 'teacher (real pan-Indian Sanskrit loanword current in Manipuri, not this letter\'s "name" — it has none)', sortOrder: 19, note: MEETEI_PIPELINE_SPELLING_NOTE + ' Loanword pick, not a traditional letter-name (this letter has none — see file header).' },
+  { character: 'ꯓ', characterType: 'consonant', romanization: 'jha', sortOrder: 20, note: 'Modern loan letter, no traditional name. No confidently-attested common Manipuri example word found for this sound — left empty rather than forced.' },
+  { character: 'ꯔ', characterType: 'consonant', romanization: 'ra', exampleWord: 'ꯔꯖ', exampleTransliteration: 'raja', exampleGloss: 'king (real pan-Indian loanword current in Manipuri)', sortOrder: 21, note: MEETEI_PIPELINE_SPELLING_NOTE + ' Loanword pick, not a traditional letter-name.' },
+  { character: 'ꯕ', characterType: 'consonant', romanization: 'ba', exampleWord: 'ꯕꯕ', exampleTransliteration: 'baba', exampleGloss: 'father (common address-term loanword current in Manipuri)', sortOrder: 22, note: MEETEI_PIPELINE_SPELLING_NOTE + ' Loanword pick, not a traditional letter-name.' },
+  { character: 'ꯖ', characterType: 'consonant', romanization: 'ja', sortOrder: 23, note: 'Modern loan letter, no traditional name. No confidently-attested common Manipuri example word found — left empty rather than forced.' },
+  { character: 'ꯗ', characterType: 'consonant', romanization: 'da', sortOrder: 24, note: 'Modern loan letter, no traditional name. No confidently-attested common Manipuri example word found — left empty rather than forced.' },
+  { character: 'ꯘ', characterType: 'consonant', romanization: 'gha', sortOrder: 25, note: 'Modern loan letter, no traditional name. No confidently-attested common Manipuri example word found — left empty rather than forced.' },
+  { character: 'ꯙ', characterType: 'consonant', romanization: 'dha', sortOrder: 26, note: 'Modern loan letter, no traditional name. No confidently-attested common Manipuri example word found — left empty rather than forced.' },
+  { character: 'ꯚ', characterType: 'consonant', romanization: 'bha', sortOrder: 27, note: 'Modern loan letter, no traditional name. No confidently-attested common Manipuri example word found — left empty rather than forced.' },
 ];

@@ -40,6 +40,8 @@ const VOCAB_CATEGORY_LABEL_KEYS: Record<string, string> = {
   'common-objects': 'Learn.VOCAB_CATEGORY_COMMON_OBJECTS',
   objects: 'Learn.VOCAB_CATEGORY_COMMON_OBJECTS',
   vegetables: 'Learn.VOCAB_CATEGORY_VEGETABLES',
+  'school-items': 'Learn.VOCAB_CATEGORY_SCHOOL_ITEMS',
+  school: 'Learn.VOCAB_CATEGORY_SCHOOL_ITEMS',
 };
 
 function humanizeSlug(slug: string): string {
@@ -75,6 +77,8 @@ const VOCAB_CATEGORY_ICONS: Record<string, IoniconName> = {
   'common-objects': 'cube-outline',
   numbers: 'calculator-outline',
   vegetables: 'nutrition-outline',
+  'school-items': 'school-outline',
+  school: 'school-outline',
 };
 const DEFAULT_VOCAB_ICON: IoniconName = 'ellipse-outline';
 

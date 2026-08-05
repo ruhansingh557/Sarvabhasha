@@ -43,6 +43,32 @@ const palette = {
   amber400: '#FBBF24',
   blue500: '#2563EB',
   blue400: '#60A5FA',
+
+  /**
+   * Pale per-hue "tint" washes for a colored SURFACE (e.g. `FoundationCard`'s
+   * whole background) as opposed to `primaryMuted`'s job, which is a
+   * mid/vivid chip behind an icon (`HomeScreen`'s category icon,
+   * `VocabularyItemCard`'s play button) — matching the "warm/playful, not
+   * pastel" badge register those already commit to.
+   *
+   * Deliberately NOT the same value as `primaryMuted`/a straight `badgeColor`:
+   * a full-card fill at badge saturation (e.g. `saffron400`) drops
+   * `textMuted` caption contrast against it to ~1.4–3:1 depending on theme —
+   * a real regression versus the ~2.85:1 that same caption already gets
+   * against plain `surface` today. These tints keep luminance close to
+   * `surface`/`background` (light) or `surface`/`surfaceRaised` (dark) so
+   * existing caption/body contrast is preserved, while still reading as a
+   * distinct, coordinated hue per card.
+   */
+  saffronTint50: '#FDECD1',
+  tealTint50: '#DFF7F3',
+  greenTint50: '#E1F7E6',
+  blueTint50: '#E1EEFC',
+
+  saffronTint900: '#2E2013',
+  tealTint900: '#16302C',
+  greenTint900: '#173420',
+  blueTint900: '#182A42',
 };
 
 /**
@@ -134,6 +160,18 @@ export const lightTheme = createTheme({
     info: palette.blue500,
 
     /**
+     * Per-badge-color light card-surface tints — see the `saffronTint50`
+     * etc. comment in the `palette` block above for why these are distinct
+     * from `primaryMuted`. One per `FoundationCard` badge color
+     * (`primary`/`accent`/`success`/`info`) so each card's badge and
+     * background read as one coordinated hue family.
+     */
+    primaryTint: palette.saffronTint50,
+    accentTint: palette.tealTint50,
+    successTint: palette.greenTint50,
+    infoTint: palette.blueTint50,
+
+    /**
      * Shadow color for elevated surfaces (e.g. `FoundationCard`). Baked-in
      * alpha, not a plain hex — pass straight to `shadowColor` with
      * `shadowOpacity: 1`. Unlike other tokens this deliberately does NOT
@@ -177,6 +215,11 @@ export const darkTheme: Theme = {
     success: palette.green400,
     warning: palette.amber400,
     info: palette.blue400,
+
+    primaryTint: palette.saffronTint900,
+    accentTint: palette.tealTint900,
+    successTint: palette.greenTint900,
+    infoTint: palette.blueTint900,
 
     // Near-black shadow, higher alpha than light mode — a dark surface
     // needs a stronger shadow for the same perceived depth.

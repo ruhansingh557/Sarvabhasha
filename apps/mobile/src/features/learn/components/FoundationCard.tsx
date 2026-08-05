@@ -58,6 +58,21 @@ const CARD_HEIGHT = 190;
  */
 type BadgeColor = 'primary' | 'accent' | 'success' | 'info';
 
+/**
+ * Each badge color's matching light card-surface tint (`theme.ts`'s
+ * `primaryTint`/`accentTint`/`successTint`/`infoTint`) — badge and background
+ * read as one coordinated hue family per card instead of four identical
+ * white boxes with different-colored badges. See the tint tokens' own
+ * comments in `theme.ts` for why these are pale washes rather than a reuse
+ * of the badge color itself (caption-text contrast).
+ */
+const TINT_BY_BADGE: Record<BadgeColor, 'primaryTint' | 'accentTint' | 'successTint' | 'infoTint'> = {
+  primary: 'primaryTint',
+  accent: 'accentTint',
+  success: 'successTint',
+  info: 'infoTint',
+};
+
 interface FoundationCardProps {
   /** An `<Ionicons>` element or a `<Text variant="h2">` glyph — this card is icon-agnostic. */
   icon: ReactNode;
@@ -110,7 +125,7 @@ export function FoundationCard({ icon, title, countLabel, badgeColor, onPress }:
       style={{ flex: 1 }}
     >
       <Box
-        backgroundColor="surface"
+        backgroundColor={TINT_BY_BADGE[badgeColor]}
         borderRadius="l"
         borderWidth={1}
         borderColor="border"

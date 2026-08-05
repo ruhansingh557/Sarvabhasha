@@ -14,6 +14,7 @@ import type * as auth from "../auth.js";
 import type * as bhashini_aksharmalaTts from "../bhashini/aksharmalaTts.js";
 import type * as bhashini_asr from "../bhashini/asr.js";
 import type * as bhashini_lib from "../bhashini/lib.js";
+import type * as bhashini_meeteiTrial from "../bhashini/meeteiTrial.js";
 import type * as bhashini_tts from "../bhashini/tts.js";
 import type * as bhashini_tutorSpeech from "../bhashini/tutorSpeech.js";
 import type * as bhashini_vocabularyTts from "../bhashini/vocabularyTts.js";
@@ -56,6 +57,7 @@ declare const fullApi: ApiFromModules<{
   "bhashini/aksharmalaTts": typeof bhashini_aksharmalaTts;
   "bhashini/asr": typeof bhashini_asr;
   "bhashini/lib": typeof bhashini_lib;
+  "bhashini/meeteiTrial": typeof bhashini_meeteiTrial;
   "bhashini/tts": typeof bhashini_tts;
   "bhashini/tutorSpeech": typeof bhashini_tutorSpeech;
   "bhashini/vocabularyTts": typeof bhashini_vocabularyTts;

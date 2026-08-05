@@ -206,6 +206,39 @@ export function vegetableImagePrompt(subjectDescription: string): string {
   );
 }
 
+/**
+ * Prompt for a Transport vocabulary item: one vehicle, side view where
+ * natural — same "single subject, no clutter" discipline as every other
+ * category. `subjectDescription` (see `data.ts`'s `TRANSPORT`) always
+ * includes an explicit "no visible text/logos/route numbers" clause —
+ * proactive, not reactive: this project's Clothing category needed real
+ * retries to remove fake text/brand marks fal.ai kept adding, and vehicles
+ * (license plates, route boards, airline liveries) are an even higher-risk
+ * surface for the same failure mode.
+ */
+export function transportImagePrompt(subjectDescription: string): string {
+  return (
+    `A simple, friendly icon-style illustration of "${subjectDescription}" — a single, clearly ` +
+    `recognizable vehicle, centered, filling most of the frame, nothing else sharing the frame. ` +
+    `${VOCAB_STYLE_ANCHOR}`
+  );
+}
+
+/**
+ * Prompt for a School Items vocabulary item: one classroom object, same
+ * "single subject, no clutter" discipline. Books/notebooks/blackboards are
+ * the highest-risk items in this category for fake title text — every one
+ * of their `imageSubject` entries in `data.ts` explicitly specifies a
+ * blank/plain cover.
+ */
+export function schoolItemImagePrompt(subjectDescription: string): string {
+  return (
+    `A simple, clean icon-style illustration of "${subjectDescription}" — a single, clearly ` +
+    `recognizable school/classroom object, centered, filling most of the frame, nothing else ` +
+    `sharing the frame. ${VOCAB_STYLE_ANCHOR}`
+  );
+}
+
 // ----------------------------------------------------------------- internals
 
 const FLUX_DEV_RATE_PER_IMAGE = 0.025; // fal-ai/flux/dev, single 1024px-class image — verify live.

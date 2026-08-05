@@ -78,7 +78,14 @@ export function AksharmalaScreen() {
 
   return (
     <Screen scroll topInset={false}>
-      <Text variant="h1" marginBottom="l">
+      {/*
+        `m`, not `l` — this screen's whole flashcard interface (progress
+        counter, glyph, romanization, audio button, example word, prev/next,
+        jump-to-letter grid) has to fit one standard-phone viewport without
+        scrolling; every token trimmed here and below buys back a few points
+        toward that, without cutting any of those pieces.
+      */}
+      <Text variant="h1" marginBottom="m">
         {t('Learn.AKSHARMALA_TITLE')}
       </Text>
       {/*
@@ -118,7 +125,10 @@ function AksharmalaFlashcards({ characters, tallScript }: AksharmalaFlashcardsPr
   const goNext = () => setIndex((i) => Math.min(characters.length - 1, i + 1));
 
   return (
-    <Box gap="l">
+    // `m`, not `l`, between the four top-level blocks (progress / card /
+    // prev-next / jump grid) — see the fit-without-scrolling note on
+    // `AksharmalaScreen`'s title above.
+    <Box gap="m">
       <Text variant="caption" color="textMuted" textAlign="center">
         {t('Learn.AKSHARMALA_PROGRESS', { current: safeIndex + 1, total: characters.length })}
       </Text>
@@ -128,17 +138,28 @@ function AksharmalaFlashcards({ characters, tallScript }: AksharmalaFlashcardsPr
         borderRadius="xl"
         alignItems="center"
         justifyContent="center"
-        paddingVertical={tallScript ? 'xxl' : 'xl'}
+        // Tall scripts still get MORE padding than non-tall (guards against
+        // clipped matras/ascenders around the glyph), just a smaller gap
+        // between the two than before (`xl`/`l`, not `xxl`/`xl`) — freed for
+        // the fit-without-scrolling budget now that the glyph itself
+        // (`h1`, not `hero`) also takes less vertical space.
+        paddingVertical={tallScript ? 'xl' : 'l'}
         paddingHorizontal="l"
         gap="m"
       >
         {/*
-          The giant glyph — this app's largest text token (`hero`), reused
-          rather than inventing a bigger fontSize (CLAUDE.md rule 4). Extra
-          vertical padding (above) on tall scripts guards against clipped
-          matras/ascenders instead of hand-tuning a lineHeight number.
+          The glyph — `h1`, not `hero` (this app's largest token): the full
+          flashcard (progress counter, glyph, romanization, audio button,
+          example word, prev/next row, jump-to-letter grid) has to fit in one
+          viewport without scrolling, and `hero` alone (56 lineHeight) ate too
+          much of that budget on a standard phone. `h1` still reads as the
+          card's main event — same size+weight tier (`fontWeight: '700'`)
+          `hero`/`display` use, just the smallest of the three — while giving
+          roughly half the vertical space back. Extra vertical padding (above)
+          on tall scripts guards against clipped matras/ascenders instead of
+          hand-tuning a lineHeight number.
         */}
-        <Text variant="hero" textAlign="center">
+        <Text variant="h1" textAlign="center">
           {current.character}
         </Text>
         <Text variant="h3" color="textSecondary">
